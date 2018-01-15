@@ -1,0 +1,180 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-list/iron-list.html">
+<link rel="import" href="lrndesign-gallery-image.html">
+<link rel="import" href="lrndesign-gallery-thumbnail.html">
+
+<!--
+`lrndesign-gallery-grid`
+A LRN element
+
+@demo demo/index.html
+
+@microcopy - the mental model for this element
+  title = "My Carousel"            //required
+  thumbnail-size = "small"         //optional, small or larger
+
+-->
+
+<dom-module id="lrndesign-gallery-grid">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      :host #items {
+        margin-top: 15px;
+        width: 100%;
+        position: relative;
+        padding-bottom: 50%;
+      }
+      :host ::slotted(*) #image {
+        width: 100%;
+        padding-top: 75%;
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+      @media screen {
+      }
+      @media print {
+        :host #thumbnails {
+          display: none;
+        }
+      }
+    </style>
+    <h1>[[title]]</h1>
+    <slot id="description"></slot>
+    <div id="items">
+      <slot></slot>
+    </div>
+    <div id="thumbnails">
+      <iron-list id="thumbnails-inner" items="{{items}}" as="item" grid selection-enabled>
+        <template>
+          <lrndesign-gallery-thumbnail
+            anchor$="[[item.anchor]]"  
+            controls$="[[item.controls]]"
+            item$="[[item.item]]" 
+            src$="[[item.src]]" 
+            style="width: 150px; height: 150px;"
+            title$="[[item.title]]" 
+            target$="[[item.target]]" >
+          </lrndesign-gallery-thumbnail>
+        </template>
+      </iron-list>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'lrndesign-gallery-grid',
+      listeners: {
+        'thumbnailTap': '_thumbnailTapped',
+      },
+
+      properties: {
+        /** 
+        * An array of grid items
+        */
+        nodes: {
+          type: Array,
+          value: [],
+        },
+        /** 
+        * An array of grid item thumbnails
+        */
+        thumbnails: {
+          type: Array,
+          value: [],
+        },
+        /** 
+        * The grid's title'
+        */
+        title: {
+          type: String,
+          value: 'Default Title',
+        },
+        /** 
+        * The grid's thumbnail size: small-medium or large
+        */
+        thumbnailSize: {
+          type: String,
+          value: 'default',
+        },
+      },
+      ready: function(){
+      },/*
+      attached: function(){
+        let root = this;
+        this.__anchor = 0;
+        this._getUniqueId(this,root.title);
+        this.items = this._getItems(Polymer.dom(root).getEffectiveChildNodes());
+        console.log(this.items);
+        this.goToItem(this.__anchor);
+        if(this.__anchor !== 0) {
+          document.getElementById(this.__anchor).scrollIntoView();
+        }
+      },
+      goToItem: function(selection){
+        console.log(selection,typeof selection,document.getElementById(selection));
+        if (this.selected !== undefined) {
+          this.selected.setAttribute('selected',false);
+        }
+        if (typeof selection === 'string') {
+          this.selected = document.getElementById(selection);
+        } else if (typeof selection === 'number') {
+          this.selected = document.getElementById(this.items[selection].item);
+        } else {
+          this.selected = selection;
+        }
+        this.selected.setAttribute('selected',true);
+      },
+      _getItems: function(nodes){
+        let temp = [];
+        for (i in nodes) {
+          if (nodes[i].tagName !== undefined && nodes[i].tagName.toLowerCase() == 'lrndesign-gallery-image'){
+            let title = nodes[i].getAttribute('title'), src = nodes[i].getAttribute('thumbnail'), id = this._getUniqueId(nodes[i],title);
+            temp.push({
+              'controls': this.id,
+              'item': id,
+              'src': src,
+              'target': this,
+              'title': title,
+            });
+            if (window.location.hash == '#'+id) {
+              this.__anchor = id;
+            }
+          }
+        }
+        return temp;
+      },
+      /**
+       * Gets, sets, and returns a unique ID given a text prefix.
+       * 
+      _getUniqueId: function(obj,prefix,cntr){
+        let root = this, newid = prefix == undefined ? "item" : prefix.toString().toLowerCase().replace(/[^a-z|0-9]/g,'');
+        if (cntr !== undefined) {
+          newid += cntr;
+        } else {
+          cntr = 0;
+        }
+        if (document.getElementById(newid) !== null) {
+          cntr++;
+          newid = root._getUniqueId(obj,prefix,cntr);
+        } else {
+          obj.id = newid;
+        }
+        return newid;
+      },
+      /**
+       * When a thumbnail is tapped, go to that item.
+       *
+      _thumbnailTapped: function(e){
+        this.goToItem(e.detail.item);
+      },
+      */
+    });
+  </script>
+</dom-module>

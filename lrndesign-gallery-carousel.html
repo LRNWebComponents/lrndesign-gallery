@@ -1,0 +1,259 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-list/iron-list.html">
+<link rel="import" href="lrndesign-gallery-image.html">
+<link rel="import" href="lrndesign-gallery-thumbnail.html">
+
+<!--
+`lrndesign-gallery-carousel`
+A LRN element that renders a collection of gallery items into a carousel.
+
+@demo demo/index.html
+
+@microcopy - the mental model for this element
+  theme = "dark"         //optional, dark or default
+  title = "My Carousel"  //required
+  type = "wide"          //optional, narrow, wide or xwide
+
+-->
+
+<dom-module id="lrndesign-gallery-carousel">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      @media screen {
+        :host ::slotted(*) #container {
+          margin-top: 15px;
+          width: 100%;
+          position: relative;
+          padding-bottom: 50%;
+        }
+        :host ::slotted(*) #image {
+          width: 66.67%;
+          padding-top: 50%;
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+        :host ::slotted(*) #details {
+          width: 33.33%;
+          padding-top: 50%;
+          max-height: 100%;
+          position: absolute;
+          right: 0;
+          top: 0;
+          overflow-y: scroll;
+          background-color: #f0f0f0;
+        }
+        :host ::slotted(*) #details-inner {
+          padding: 20px;
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+        :host #thumbnails {
+          padding: 5px 0;
+          margin-top: 15px;
+          border-top: 1px solid #ddd;
+        }
+        :host #thumbnails-inner {
+          overflow-y: visible !important;
+        }
+        :host lrndesign-gallery-thumbnail {
+          width: 50px;
+          height: 50px;
+        }
+        :host[type="xwide"] ::slotted(*) #container {
+          padding-bottom: 25%;
+        }
+        :host[type="xwide"] ::slotted(*) #image {
+          width: 66.67%;
+          padding-top: 25%;
+        }
+        :host[type="xwide"] ::slotted(*) #details {
+          width: 33.33%;
+          padding-top: 25%;
+        }
+        :host[type="wide"] ::slotted(*) #container {
+          padding-bottom: 33.33%;
+        }
+        :host[type="wide"] ::slotted(*) #image {
+          width: 66.67%;
+          padding-top: 33.33%;
+        }
+        :host[type="wide"] ::slotted(*) #details {
+          width: 33.33%;
+          padding-top: 33.33%;
+        }
+        :host[type="narrow"] ::slotted(*) #container {
+          padding-bottom: 100%;
+        }
+        :host[type="narrow"] ::slotted(*) #image {
+          width: 100%;
+          padding-top: 80%;
+        }
+        :host[type="narrow"] ::slotted(*) #details {
+          width: 100%;
+          padding-top: 20%;
+          top: 80%;
+        }
+        :host[theme="dark"] #thumbnails {
+          background-color:#222;
+          margin-top: 0px;
+          border-top: 1px solid #666;
+        }
+        :host[theme="dark"] ::slotted(*) #image {
+          background-color:#222;
+        }
+        :host[theme="dark"] ::slotted(*) #details {
+          background-color: black;
+          color: white;
+        }
+      }
+      @media print {
+        :host #thumbnails {
+          display: none;
+        }
+      }
+    </style>
+    <h1>[[title]]</h1>
+    <slot id="description"></slot>
+    <div id="items">
+      <slot></slot>
+    </div>
+    <div id="thumbnails">
+      <iron-list id="thumbnails-inner" items="{{items}}" as="item" grid selection-enabled>
+        <template>
+          <lrndesign-gallery-thumbnail
+            anchor$="[[item.anchor]]"  
+            controls$="[[item.controls]]"
+            item$="[[item.item]]" 
+            src$="[[item.src]]" 
+            title$="[[item.title]]" 
+            target$="[[item.target]]">
+          </lrndesign-gallery-thumbnail>
+        </template>
+      </iron-list>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'lrndesign-gallery-carousel',
+      listeners: {
+        'thumbnailTap': '_thumbnailTapped',
+      },
+
+      properties: {
+        /** 
+        * An array of carousel items
+        */
+        nodes: {
+          type: Array,
+          value: [],
+        },
+        /** 
+        * The theme of the carousel: default or dark
+        */
+        theme: {
+          type: String,
+          value: 'default',
+        },
+        /** 
+        * An array of carousel item thumbnails
+        */
+        thumbnails: {
+          type: Array,
+          value: [],
+        },
+        /** 
+        * The carousel's title'
+        */
+        title: {
+          type: String,
+          value: 'Default Title',
+        },
+        /** 
+        * The carousel's layout type: narrow, default, wide, or xwide
+        */
+        type: {
+          type: String,
+          value: 'default',
+        },
+      },
+      ready: function(){
+      },
+      attached: function(){
+        let root = this;
+        this.__anchor = 0;
+        this._getUniqueId(this,root.title);
+        this.items = this._getItems(Polymer.dom(root).getEffectiveChildNodes());
+        this.goToItem(this.__anchor);
+        if(this.__anchor !== 0) {
+          document.getElementById(this.__anchor).scrollIntoView();
+        }
+      },
+      goToItem: function(selection){
+        console.log(selection,typeof selection,document.getElementById(selection));
+        if (this.selected !== undefined) {
+          this.selected.setAttribute('selected',false);
+        }
+        if (typeof selection === 'string') {
+          this.selected = document.getElementById(selection);
+        } else if (typeof selection === 'number') {
+          this.selected = document.getElementById(this.items[selection].item);
+        } else {
+          this.selected = selection;
+        }
+        this.selected.setAttribute('selected',true);
+      },
+      _getItems: function(nodes){
+        let temp = [];
+        for (i in nodes) {
+          if (nodes[i].tagName !== undefined && nodes[i].tagName.toLowerCase() == 'lrndesign-gallery-image'){
+            let title = nodes[i].getAttribute('title'), src = nodes[i].getAttribute('thumbnail'), id = this._getUniqueId(nodes[i],title);
+            temp.push({
+              'controls': this.id,
+              'item': id,
+              'src': src,
+              'target': this,
+              'title': title,
+            });
+            if (window.location.hash == '#'+id) {
+              this.__anchor = id;
+            }
+          }
+        }
+        return temp;
+      },
+      /**
+       * Gets, sets, and returns a unique ID given a text prefix.
+       */ 
+      _getUniqueId: function(obj,prefix,cntr){
+        let root = this, newid = prefix == undefined ? "item" : prefix.toString().toLowerCase().replace(/[^a-z|0-9]/g,'');
+        if (cntr !== undefined) {
+          newid += cntr;
+        } else {
+          cntr = 0;
+        }
+        if (document.getElementById(newid) !== null) {
+          cntr++;
+          newid = root._getUniqueId(obj,prefix,cntr);
+        } else {
+          obj.id = newid;
+        }
+        return newid;
+      },
+      /**
+       * When a thumbnail is tapped, go to that item.
+       */ 
+      _thumbnailTapped: function(e){
+        this.goToItem(e.detail.item);
+      },
+    });
+  </script>
+</dom-module>

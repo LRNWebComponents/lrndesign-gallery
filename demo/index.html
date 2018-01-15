@@ -17,126 +17,173 @@
         max-width: 1024px;
       }
     </style>
+    <script>
+    </script>
   </head>
   <body>
     <div class="vertical-section-container centered">
       <h3>Basic lrndesign-gallery demo</h3>
+      <h4>Thumbnail Grids</h4>
       <demo-snippet>
         <template>
-          <lrndesign-gallery id="carousel" title="Carousel">
-            <slot id="description">This is a <em>regular</em> <strong>carousel</strong>.</slot>
+          <lrndesign-gallery-grid id="grid" title="Grid">
+            <slot id="description">This is a <em>regular</em> <strong>grid</strong>.</slot>
+            Hi there
             <lrndesign-gallery-image 
-              class="xwide"
-              title="Dog"
-              src="images/dog.jpg"
-              thumbnail="images/thumbnails/dog.jpg">
+              src="images/dog.jpg" 
+              thumbnail="images/thumbnails/dog.jpg" 
+              title="Dog">
               This is a <em>dog</em> picture in <strong>portrait</strong> orientation.
             </lrndesign-gallery-image>
             <lrndesign-gallery-image 
-              title="Cat"
-              src="images/cat.jpeg"
-              thumbnail="images/thumbnails/cat.jpeg">
+              src="images/cat.jpeg" 
+              thumbnail="images/thumbnails/cat.jpeg" 
+              title="Cat">
               This is a <em>cat</em> picture in <strong>landscape</strong> orientation.
             </lrndesign-gallery-image>
             <lrndesign-gallery-image 
-              title="Bird"
-              src="images/bird.jpg"
-              thumbnail="images/thumbnails/bird.jpg">
+              src="images/bird.jpg" 
+              thumbnail="images/thumbnails/bird.jpg" 
+              title="Bird">
               This is a <em>bird</em> picture that is almost a <strong>square</strong>.
             </lrndesign-gallery-image>
             <lrndesign-gallery-image 
-              title="Fish"
-              src="images/fish.jpg"
-              thumbnail="images/thumbnails/fish.jpg">
+              src="images/fish.jpg" 
+              thumbnail="images/thumbnails/fish.jpg" 
+              title="Fish">
               This is a <em>fish</em> picture in <strong>landscape</strong> orientation.
             </lrndesign-gallery-image>
-          </lrndesign-gallery>
-          <lrndesign-gallery id="carouselxwide" title="Extra-Wide Carousel" type="xwide">
-            <slot id="description">This is an <em>extra-wide</em> <strong>carousel</strong>.</slot>
-            <lrndesign-gallery-image 
-              class="xwide"
-              title="Dog"
-              src="images/dog.jpg"
-              thumbnail="images/thumbnails/dog.jpg">
-              This is a <em>dog</em> picture in <strong>portrait</strong> orientation.
-            </lrndesign-gallery-image>
-            <lrndesign-gallery-image 
-              title="Cat"
-              src="images/cat.jpeg"
-              thumbnail="images/thumbnails/cat.jpeg">
-              This is a <em>cat</em> picture in <strong>landscape</strong> orientation.
-            </lrndesign-gallery-image>
-            <lrndesign-gallery-image 
-              title="Bird"
-              src="images/bird.jpg"
-              thumbnail="images/thumbnails/bird.jpg">
-              This is a <em>bird</em> picture that is almost a <strong>square</strong>.
-            </lrndesign-gallery-image>
-            <lrndesign-gallery-image 
-              title="Fish"
-              src="images/fish.jpg"
-              thumbnail="images/thumbnails/fish.jpg">
-              This is a <em>fish</em> picture in <strong>landscape</strong> orientation.
-            </lrndesign-gallery-image>
-          </lrndesign-gallery>
-          <lrndesign-gallery id="carouselwide" title="Wide Carousel" type="wide">
-            <slot id="description">This is a <em>wide</em> <strong>carousel</strong>.</slot>
-            <lrndesign-gallery-image 
-              class="xwide"
-              title="Dog"
-              src="images/dog.jpg"
-              thumbnail="images/thumbnails/dog.jpg">
-              This is a <em>dog</em> picture in <strong>portrait</strong> orientation.
-            </lrndesign-gallery-image>
-            <lrndesign-gallery-image 
-              title="Cat"
-              src="images/cat.jpeg"
-              thumbnail="images/thumbnails/cat.jpeg">
-              This is a <em>cat</em> picture in <strong>landscape</strong> orientation.
-            </lrndesign-gallery-image>
-            <lrndesign-gallery-image 
-              title="Bird"
-              src="images/bird.jpg"
-              thumbnail="images/thumbnails/bird.jpg">
-              This is a <em>bird</em> picture that is almost a <strong>square</strong>.
-            </lrndesign-gallery-image>
-            <lrndesign-gallery-image 
-              title="Fish"
-              src="images/fish.jpg"
-              thumbnail="images/thumbnails/fish.jpg">
-              This is a <em>fish</em> picture in <strong>landscape</strong> orientation.
-            </lrndesign-gallery-image>
-          </lrndesign-gallery>
-          <lrndesign-gallery id="carouselnarrow" title="Narrow Carousel" type="narrow">
-            <slot id="description">This is a <em>narrow</em> <strong>carousel</strong>.</slot>
-            <lrndesign-gallery-image 
-              class="xwide"
-              title="Dog"
-              src="images/dog.jpg"
-              thumbnail="images/thumbnails/dog.jpg">
-              This is a <em>dog</em> picture in <strong>portrait</strong> orientation.
-            </lrndesign-gallery-image>
-            <lrndesign-gallery-image 
-              title="Cat"
-              src="images/cat.jpeg"
-              thumbnail="images/thumbnails/cat.jpeg">
-              This is a <em>cat</em> picture in <strong>landscape</strong> orientation.
-            </lrndesign-gallery-image>
-            <lrndesign-gallery-image 
-              title="Bird"
-              src="images/bird.jpg"
-              thumbnail="images/thumbnails/bird.jpg">
-              This is a <em>bird</em> picture that is almost a <strong>square</strong>.
-            </lrndesign-gallery-image>
-            <lrndesign-gallery-image 
-              title="Fish"
-              src="images/fish.jpg"
-              thumbnail="images/thumbnails/fish.jpg">
-              This is a <em>fish</em> picture in <strong>landscape</strong> orientation.
-            </lrndesign-gallery-image>
-          </lrndesign-gallery>
+          </lrndesign-gallery-grid>
         </template>
       </demo-snippet>
+      <h4>Carousels</h4>
+      <demo-snippet>
+        <template>
+          <lrndesign-gallery-carousel id="carousel" title="Carousel">
+            <slot id="description">This is a <em>regular</em> <strong>carousel</strong>.</slot>
+            <lrndesign-gallery-image 
+              src="images/dog.jpg" 
+              thumbnail="images/thumbnails/dog.jpg" 
+              title="Dog">
+              This is a <em>dog</em> picture in <strong>portrait</strong> orientation.
+            </lrndesign-gallery-image>
+            <lrndesign-gallery-image 
+              src="images/cat.jpeg" 
+              thumbnail="images/thumbnails/cat.jpeg" 
+              title="Cat">
+              This is a <em>cat</em> picture in <strong>landscape</strong> orientation.
+            </lrndesign-gallery-image>
+            <lrndesign-gallery-image 
+              src="images/bird.jpg" 
+              thumbnail="images/thumbnails/bird.jpg" 
+              title="Bird">
+              This is a <em>bird</em> picture that is almost a <strong>square</strong>.
+            </lrndesign-gallery-image>
+            <lrndesign-gallery-image 
+              src="images/fish.jpg" 
+              thumbnail="images/thumbnails/fish.jpg" 
+              title="Fish">
+              This is a <em>fish</em> picture in <strong>landscape</strong> orientation.
+            </lrndesign-gallery-image>
+          </lrndesign-gallery-carousel>
+        </template>
+      </demo-snippet>
+
+      <!--demo-snippet>
+        <template>
+          <lrndesign-gallery-carousel id="carouselxwide" title="Extra-Wide, Dark Carousel" type="xwide" theme="dark">
+            <slot id="description">This is an <em>extra-wide</em> <strong>carousel</strong> with the <em>dark</em> theme.</slot>
+            <lrndesign-gallery-image 
+              src="images/dog.jpg" 
+              thumbnail="images/thumbnails/dog.jpg" 
+              title="Dog">
+              This is a <em>dog</em> picture in <strong>portrait</strong> orientation.
+            </lrndesign-gallery-image>
+            <lrndesign-gallery-image 
+              src="images/cat.jpeg" 
+              thumbnail="images/thumbnails/cat.jpeg" 
+              title="Cat">
+              This is a <em>cat</em> picture in <strong>landscape</strong> orientation.
+            </lrndesign-gallery-image>
+            <lrndesign-gallery-image 
+              src="images/bird.jpg" 
+              thumbnail="images/thumbnails/bird.jpg" 
+              title="Bird">
+              This is a <em>bird</em> picture that is almost a <strong>square</strong>.
+            </lrndesign-gallery-image>
+            <lrndesign-gallery-image 
+              src="images/fish.jpg" 
+              thumbnail="images/thumbnails/fish.jpg" 
+              title="Fish">
+              This is a <em>fish</em> picture in <strong>landscape</strong> orientation.
+            </lrndesign-gallery-image>
+          </lrndesign-gallery-carousel>
+        </template>
+      </demo-snippet>
+
+      <demo-snippet>
+        <template>
+          <lrndesign-gallery-carousel id="carouselwide" title="Wide Carousel" type="wide">
+            <slot id="description">This is a <em>wide</em> <strong>carousel</strong>.</slot>
+            <lrndesign-gallery-image 
+              src="images/dog.jpg" 
+              thumbnail="images/thumbnails/dog.jpg" 
+              title="Dog">
+              This is a <em>dog</em> picture in <strong>portrait</strong> orientation.
+            </lrndesign-gallery-image>
+            <lrndesign-gallery-image 
+              src="images/cat.jpeg" 
+              thumbnail="images/thumbnails/cat.jpeg" 
+              title="Cat">
+              This is a <em>cat</em> picture in <strong>landscape</strong> orientation.
+            </lrndesign-gallery-image>
+            <lrndesign-gallery-image 
+              src="images/bird.jpg" 
+              thumbnail="images/thumbnails/bird.jpg" 
+              title="Bird">
+              This is a <em>bird</em> picture that is almost a <strong>square</strong>.
+            </lrndesign-gallery-image>
+            <lrndesign-gallery-image 
+              src="images/fish.jpg" 
+              thumbnail="images/thumbnails/fish.jpg" 
+              title="Fish">
+              This is a <em>fish</em> picture in <strong>landscape</strong> orientation.
+            </lrndesign-gallery-image>
+          </lrndesign-gallery-carousel>
+        </template>
+      </demo-snippet>
+
+      <demo-snippet>
+        <template>
+          <lrndesign-gallery-carousel id="carouselnarrow" title="Narrow Carousel" type="narrow">
+            <slot id="description">This is a <em>narrow</em> <strong>carousel</strong>.</slot>
+            <lrndesign-gallery-image 
+              src="images/dog.jpg" 
+              thumbnail="images/thumbnails/dog.jpg" 
+              title="Dog">
+              This is a <em>dog</em> picture in <strong>portrait</strong> orientation.
+            </lrndesign-gallery-image>
+            <lrndesign-gallery-image 
+              src="images/cat.jpeg" 
+              thumbnail="images/thumbnails/cat.jpeg" 
+              title="Cat">
+              This is a <em>cat</em> picture in <strong>landscape</strong> orientation.
+            </lrndesign-gallery-image>
+            <lrndesign-gallery-image 
+              src="images/bird.jpg" 
+              thumbnail="images/thumbnails/bird.jpg" 
+              title="Bird">
+              This is a <em>bird</em> picture that is almost a <strong>square</strong>.
+            </lrndesign-gallery-image>
+            <lrndesign-gallery-image 
+              src="images/fish.jpg" 
+              thumbnail="images/thumbnails/fish.jpg" 
+              title="Fish">
+              This is a <em>fish</em> picture in <strong>landscape</strong> orientation.
+            </lrndesign-gallery-image>
+          </lrndesign-gallery-carousel>
+        </template>
+      </demo-snippet-->
     </div>
   </body>
 </html>
