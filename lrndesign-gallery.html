@@ -1,4 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="lrndesign-gallery-image.html">
+<link rel="import" href="lrndesign-gallery-thumbnail.html">
 
 <!--
 `lrndesign-gallery`
@@ -7,9 +10,10 @@ A LRN element
 @demo demo/index.html
 
 @microcopy - the mental model for this element
- -
- -
- -
+  details = "LONG DESCRIPTION"                //optional
+  src = "PATH/TO/IMG.JPG"                     //required
+  thumbnail = "PATH/TO/THUMBNAIL_IMG.JPG"     //required
+  title = "TITLE/ALT TEXT HERE"               //required
 
 -->
 
@@ -18,23 +22,262 @@ A LRN element
     <style>
       :host {
         display: block;
+        border: 1px solid #ddd;
+        padding: 20px;
+      }
+      @media screen {
+        :host ::slotted(*) #container {
+          margin-top: 15px;
+          width: 100%;
+          position: relative;
+          padding-bottom: 50%;
+        }
+        :host ::slotted(*) #image {
+          width: 66.67%;
+          padding-top: 50%;
+          position: absolute;
+          left: 0;
+          top: 0;
+          background-color:#222;
+        }
+        :host ::slotted(*) #details {
+          width: 33.33%;
+          padding-top: 50%;
+          max-height: 100%;
+          position: absolute;
+          right: 0;
+          top: 0;
+          overflow-y: scroll;
+          background-color: black;
+          color: white;
+        }
+        :host ::slotted(*) #details-inner {
+          padding: 20px;
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+        :host[type="xwide"] ::slotted(*) #container {
+          margin-top: 15px;
+          width: 100%;
+          padding-bottom: 25%;
+        }
+        :host[type="xwide"] ::slotted(*) #image {
+          width: 66.67%;
+          padding-top: 25%;
+          position: absolute;
+          left: 0;
+          top: 0;
+          background-color:#222;
+        }
+        :host[type="xwide"] ::slotted(*) #details {
+          width: 33.33%;
+          padding-top: 25%;
+          max-height: 100%;
+          position: absolute;
+          right: 0;
+          top: 0;
+          overflow-y: scroll;
+          background-color: black;
+          color: white;
+        }
+        :host[type="wide"] ::slotted(*) #container {
+          margin-top: 15px;
+          width: 100%;
+          padding-bottom: 33.33%;
+        }
+        :host[type="wide"] ::slotted(*) #image {
+          width: 66.67%;
+          padding-top: 33.33%;
+          position: absolute;
+          left: 0;
+          top: 0;
+          background-color:#222;
+        }
+        :host[type="wide"] ::slotted(*) #details {
+          width: 33.33%;
+          padding-top: 33.33%;
+          max-height: 100%;
+          position: absolute;
+          right: 0;
+          top: 0;
+          overflow-y: scroll;
+          background-color: black;
+          color: white;
+        }
+        :host[type="narrow"] ::slotted(*) #container {
+          margin-top: 15px;
+          width: 100%;
+          padding-bottom: 100%;
+        }
+        :host[type="narrow"] ::slotted(*) #image {
+          width: 100%;
+          padding-top: 80%;
+          position: absolute;
+          left: 0;
+          top: 0;
+          background-color:#222;
+        }
+        :host[type="narrow"] ::slotted(*) #details {
+          width: 100%;
+          padding-top: 20%;
+          max-height: 100%;
+          position: absolute;
+          right: 0;
+          top: 80%;
+          overflow-y: scroll;
+          background-color: black;
+          color: white;
+        }
+      }
+      @media print {
+        :host #thumbnails {
+          display: none;
+        }
       }
     </style>
-    <h2>[[title]]</h2>
+    <h1>[[title]]</h1>
+    <slot id="description"></slot>
+    <div id="items">
+      <slot></slot>
+    </div>
+    <div id="thumbnails">
+      <template is="dom-repeat" items="{{items}}" as="item">
+        <lrndesign-gallery-thumbnail
+          anchor$="[[item.anchor]]"  
+          controls$="[[item.controls]]"
+          item$="[[item.item]]" 
+          selected="false"   
+          src$="[[item.src]]" 
+          title$="[[item.title]]" 
+          target$="[[item.target]]">
+        </lrndesign-gallery-thumbnail>
+      </template>
+    </div>
   </template>
 
   <script>
     Polymer({
 
       is: 'lrndesign-gallery',
-
-      properties: {
-        title: {
-          type: String,
-          value: 'lrndesign-gallery',
-        },
+      listeners: {
+        'thumbnailTap': '_thumbnailTapped',
       },
 
+      properties: {
+        /** 
+        * Does the gallery item appear as a modal?
+        */
+        isModal: {
+          type: Boolean,
+          value: false,
+        },
+        /** 
+        * An array of gallery items
+        */
+        nodes: {
+          type: Array,
+          value: [],
+        },
+        /** 
+        * An array of gallery item thumbnails
+        */
+        thumbnails: {
+          type: Array,
+          value: [],
+        },
+        /** 
+        * An array of gallery item thumbnails
+        */
+        thumbnailSize: {
+          type: Number,
+          value: 100,
+        },
+        /** 
+        * The gallery's title'
+        */
+        title: {
+          type: String,
+          value: 'Default Title',
+        },
+        /** 
+        * The gallery's layout type
+        */
+        type: {
+          type: String,
+          value: null,
+        },
+      },
+      ready: function(){
+      },
+      attached: function(){
+        let root = this;
+        this.__anchor = 0;
+        this._getUniqueId(this,root.title);
+        this.items = this._getItems(Polymer.dom(root).getEffectiveChildNodes());
+        this.goToItem(this.__anchor);
+        if(this.__anchor !== 0) {
+          document.getElementById(this.__anchor).scrollIntoView();
+        }
+      },
+      goToItem: function(selection){
+        console.log(selection,typeof selection,document.getElementById(selection));
+        if (this.selected !== undefined) {
+          this.selected.setAttribute('selected',false);
+        }
+        if (typeof selection === 'string') {
+          this.selected = document.getElementById(selection);
+        } else if (typeof selection === 'number') {
+          this.selected = document.getElementById(this.items[selection].item);
+        } else {
+          this.selected = selection;
+        }
+        this.selected.setAttribute('selected',true);
+      },
+      _getItems: function(nodes){
+        let temp = [];
+        for (i in nodes) {
+          if (nodes[i].tagName !== undefined && nodes[i].tagName.toLowerCase() == 'lrndesign-gallery-image'){
+            let title = nodes[i].getAttribute('title'), src = nodes[i].getAttribute('thumbnail'), id = this._getUniqueId(nodes[i],title);
+            temp.push({
+              'controls': this.id,
+              'item': id,
+              'src': src,
+              'target': this,
+              'title': title,
+            });
+            if (window.location.hash == '#'+id) {
+              this.__anchor = id;
+            }
+          }
+        }
+        return temp;
+      },
+      /**
+       * Gets, sets, and returns a unique ID given a text prefix.
+       */ 
+      _getUniqueId: function(obj,prefix,cntr){
+        let root = this, newid = prefix == undefined ? "item" : prefix.toString().toLowerCase().replace(/[^a-z|0-9]/g,'');
+        if (cntr !== undefined) {
+          newid += cntr;
+        } else {
+          cntr = 0;
+        }
+        if (document.getElementById(newid) !== null) {
+          cntr++;
+          newid = root._getUniqueId(obj,prefix,cntr);
+        } else {
+          obj.id = newid;
+        }
+        return newid;
+      },
+      /**
+       * When a thumbnail is tapped, go to that item.
+       */ 
+      _thumbnailTapped: function(e){
+        console.log(e);
+        this.goToItem(e.detail.item);
+      },
     });
   </script>
 </dom-module>

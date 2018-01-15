@@ -1,0 +1,113 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
+
+<!--
+`lrndesign-gallery-item`
+A LRN element
+
+@demo demo/index.html
+
+@microcopy - the mental model for this element
+  controls = "GALLERY-OR-DIALOG-ID"     //required
+  item = "ITEM-ID"                      //required
+  src = "PATH/TO/THUMBNAIL_IMG.JPG"     //required
+  target = "GALLERY OR DIALOG OBJECT"   //required
+  title = "TITLE/ALT TEXT HERE"         //required
+
+-->
+
+<dom-module id="lrndesign-gallery-thumbnail">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+      }
+      :host iron-image {
+        width: 100px;
+        height: 100px;
+        background-color: #ddd;
+      }
+    </style>
+    <lrnsys-button 
+      id="lrnsysbutton"
+      item$="[[item]]" 
+      aria-controls$="[[controls]]" 
+      target$="[[target]]" 
+      title$="[[title]]" 
+      tabindex="0">
+      <iron-image alt$="[[title]]" 
+        class="lrndesign-gallery-thumbnail-image" 
+        fade 
+        sizing="cover" 
+        src$="[[src]]">
+      </iron-image>
+    </lrnsys-button>
+    <iron-a11y-keys 
+      id="a11y" 
+      keys="enter" 
+      target$="[[button]]"
+      on-keys-pressed="_tapped">
+    </iron-a11y-keys>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'lrndesign-gallery-thumbnail',
+      listeners: {
+        'tap': '_tapped',
+      },
+
+      properties: {
+        /** 
+        * The thumbnail button
+        */
+        button: {
+          type: Object,
+          value: null,
+        },
+        /** 
+        * The id of the thumbnail button target
+        */
+        controls: {
+          type: String,
+          value: null,
+        },
+        /** 
+        * The gallery item's id
+        */
+        item: {
+          type: String,
+          value: null,
+        },
+        /** 
+        * The path for the thumbnail image
+        */
+        src: {
+          type: String,
+          value: null,
+        },
+        /** 
+        * The target for the thumbnail button
+        */
+        target: {
+          type: Object,
+          value: null,
+        },
+        /** 
+        * The gallery item's title/alt text
+        */
+        title: {
+          type: String,
+          value: null,
+        },
+      },
+      ready: function(){
+        this.button = this.$.lrnsysbutton;
+      },
+      _tapped: function(e){
+        this.fire('thumbnailTap',{'item': this.item});
+      },
+    });
+  </script>
+</dom-module>
