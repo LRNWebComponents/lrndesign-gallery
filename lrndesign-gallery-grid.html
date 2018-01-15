@@ -24,6 +24,8 @@ A LRN element
     <style>
       :host {
         display: block;
+        border: 1px solid #ddd; 
+        padding: 10px;
       }
       :host #items {
         margin-top: 15px;
@@ -36,15 +38,17 @@ A LRN element
         height: 450px;
       }
       :host #thumbnails lrndesign-gallery-thumbnail {
-        padding: 10px;
+        padding: 7.5px;
         width: 150px;
         height: 150px;
       }
       :host[thumbnail-size="small"] #thumbnails lrndesign-gallery-thumbnail {
+        padding: 5px;
         width: 75px;
         height: 75px;
       }
       :host[thumbnail-size="large"] #thumbnails lrndesign-gallery-thumbnail {
+        padding: 10px;
         width: 300px;
         height: 300px;
       }
@@ -161,9 +165,9 @@ A LRN element
         }
 
         if (this.selected !== undefined) {
-          this.$.modalid = this.selected.getAttribute('title');
-          this.$.modalcontent.innerHTML = this.selected.innerHTML;
-          console.log(this.$.modalid,this.$.modalcontent,this.$.modal);
+          this.$.modalid.innerHTML = this.selected.getAttribute('title');
+          this.$.modalcontent.innerHTML = '<div>'+this.selected.querySelector('#details-body').innerHTML+'</div>';
+          this.$.modalcontent.appendChild(this.selected.querySelector('#image'));
           this.$.modal.open();
         }
       },

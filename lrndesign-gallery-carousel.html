@@ -23,9 +23,13 @@ A LRN element that renders a collection of gallery items into a carousel.
     <style>
       :host {
         display: block;
-          border: 1px solid #ddd;
+        border: 1px solid #ddd;
       }
       @media screen {
+        :host #carousel-title,
+        :host #carousel-description {
+          padding: 0 20px;
+        }
         :host ::slotted(*) #container {
           margin-top: 15px;
           width: 100%;
@@ -51,7 +55,7 @@ A LRN element that renders a collection of gallery items into a carousel.
           background-color: #f0f0f0;
         }
         :host ::slotted(*) #details-inner {
-          padding: 20px;
+          padding: 0 20px 10px;
           position: absolute;
           left: 0;
           top: 0;
@@ -101,12 +105,13 @@ A LRN element that renders a collection of gallery items into a carousel.
           padding-top: 20%;
           top: 80%;
         }
-        :host[theme="dark"] #thumbnails {
+        :host[theme="dark"] {
           background-color:#222;
-          border-top: 1px solid #666;
+          color: white;
         }
-        :host[theme="dark"] ::slotted(*) #image {
-          background-color:#222;
+        :host[theme="dark"] #thumbnails,
+        :host[theme="dark"] ::slotted(*) #container {
+          border-top: 1px solid #666;
         }
         :host[theme="dark"] ::slotted(*) #details {
           background-color: black;
@@ -120,8 +125,10 @@ A LRN element that renders a collection of gallery items into a carousel.
       }
     </style>
     <article>
-      <h1>[[title]]</h1>
-      <slot id="description" name="description"></slot>
+      <h1 id="carousel-title">[[title]]</h1>
+      <div id="carousel-description">
+        <slot name="description"></slot>
+      </div>
       <div id="carousel">
         <div id="items">
           <slot></slot>
