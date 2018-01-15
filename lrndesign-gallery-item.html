@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <!--
-`lrndesign-gallery-image`
+`lrndesign-gallery-item`
 A LRN element
 
 @demo demo/index.html
@@ -14,40 +14,25 @@ A LRN element
 
 -->
 
-<dom-module id="lrndesign-gallery-image">
+<dom-module id="lrndesign-gallery-item">
   <template>
     <style>
-      :host {
-        display: block;
-        position: relative;
-        width: 100%;
-      }
-      :host #image {
-        display: block;
-      }
-      @media screen {
-        :host:not([selected="true"]) {
-          display: none;
-        }
-      }
       @media print {
-        :host #container {
-          margin-bottom: 15px;
-        }
-        :host #image {
-          margin-top: 15px;
-          width: 100%;
-          height: 400px;
+        :host {
+          display: block;
         }
       }
     </style>
-    <section id="container">
-      <div id="details">
-        <div id="details-inner">
-          <h2>[[title]]</h2>
-          <slot></slot>
-        </div>
-      </div>
+    <section
+    id="image"
+    alt$="[[title]" 
+    fade 
+    placeholder$="[[thumbnail]]" 
+    sizing="contain" 
+    src$="[[src]]">
+      <h2>[[title]]</h2>
+      <slot></slot>
+    </section>
       <iron-image 
         id="image"
         alt$="[[title]" 
@@ -56,13 +41,25 @@ A LRN element
         sizing="contain" 
         src$="[[src]]">
       </iron-image>
-    </section>
+      <div id="details">
+        <div id="details-inner">
+          <h2>[[title]]</h2>
+          <slot></slot>
+        </div>
+      </div>
+    </div>
+    <img 
+      alt$="[[title]" 
+      id="print-image"
+      src$="[[src]]" 
+      width="100%" >
+    </iron-image>
   </template>
 
   <script>
     Polymer({
 
-      is: 'lrndesign-gallery-image',
+      is: 'lrndesign-gallery-item',
 
       properties: {
         /** 

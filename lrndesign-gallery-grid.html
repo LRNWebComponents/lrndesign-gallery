@@ -2,6 +2,8 @@
 <link rel="import" href="../iron-image/iron-image.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-list/iron-list.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="lrndesign-gallery-image.html">
 <link rel="import" href="lrndesign-gallery-thumbnail.html">
 
@@ -27,16 +29,27 @@ A LRN element
         margin-top: 15px;
         width: 100%;
         position: relative;
-        padding-bottom: 50%;
       }
       :host ::slotted(*) #image {
-        width: 100%;
-        padding-top: 75%;
-        position: absolute;
-        left: 0;
-        top: 0;
+        margin-top: 15px;
+        width: 600px;
+        height: 450px;
       }
-      @media screen {
+      :host #thumbnails lrndesign-gallery-thumbnail {
+        padding: 10px;
+        width: 150px;
+        height: 150px;
+      }
+      :host[thumbnail-size="small"] #thumbnails lrndesign-gallery-thumbnail {
+        width: 75px;
+        height: 75px;
+      }
+      :host[thumbnail-size="large"] #thumbnails lrndesign-gallery-thumbnail {
+        width: 300px;
+        height: 300px;
+      }
+      :host #modal > * {
+        padding: 0 20px 20px;
       }
       @media print {
         :host #thumbnails {
@@ -45,25 +58,33 @@ A LRN element
       }
     </style>
     <h1>[[title]]</h1>
-    <slot id="description"></slot>
+    <slot id="description" name="description"></slot>
     <div id="items">
       <slot></slot>
     </div>
-    <div id="thumbnails">
+    <div id="thumbnails" name="thumbnails">
       <iron-list id="thumbnails-inner" items="{{items}}" as="item" grid selection-enabled>
         <template>
           <lrndesign-gallery-thumbnail
             anchor$="[[item.anchor]]"  
             controls$="[[item.controls]]"
             item$="[[item.item]]" 
+            rounded-edges$="[[item.roundedEdges]]" 
             src$="[[item.src]]" 
-            style="width: 150px; height: 150px;"
             title$="[[item.title]]" 
-            target$="[[item.target]]" >
+            target$="[[item.target]]">
           </lrndesign-gallery-thumbnail>
         </template>
       </iron-list>
     </div>
+    <paper-dialog id="modal" aria-labelledby="modalid">
+      <h2 id="modalid"></h2>
+      <paper-dialog-scrollable id="modalcontent">
+      </paper-dialog-scrollable>
+      <div class="buttons">
+        <paper-button dialog-confirm autofocus>OK</paper-button>
+      </div>
+    </paper-dialog>
   </template>
 
   <script>
@@ -81,6 +102,13 @@ A LRN element
         nodes: {
           type: Array,
           value: [],
+        },
+        /** 
+        * Round the edges of the thumbnail?
+        */
+        roundedEdges: {
+          type: Boolean,
+          value: false,
         },
         /** 
         * An array of grid item thumbnails
@@ -105,23 +133,25 @@ A LRN element
         },
       },
       ready: function(){
-      },/*
+      },
       attached: function(){
         let root = this;
         this.__anchor = 0;
         this._getUniqueId(this,root.title);
+        this.modalId = this.id + '-modal';
         this.items = this._getItems(Polymer.dom(root).getEffectiveChildNodes());
         console.log(this.items);
-        this.goToItem(this.__anchor);
         if(this.__anchor !== 0) {
+          this.goToItem(this.__anchor);
           document.getElementById(this.__anchor).scrollIntoView();
         }
       },
+      /**
+       * Navigates to specified item.
+       */ 
       goToItem: function(selection){
         console.log(selection,typeof selection,document.getElementById(selection));
-        if (this.selected !== undefined) {
-          this.selected.setAttribute('selected',false);
-        }
+        
         if (typeof selection === 'string') {
           this.selected = document.getElementById(selection);
         } else if (typeof selection === 'number') {
@@ -129,18 +159,28 @@ A LRN element
         } else {
           this.selected = selection;
         }
-        this.selected.setAttribute('selected',true);
+
+        if (this.selected !== undefined) {
+          this.$.modalid = this.selected.getAttribute('title');
+          this.$.modalcontent.innerHTML = this.selected.innerHTML;
+          console.log(this.$.modalid,this.$.modalcontent,this.$.modal);
+          this.$.modal.open();
+        }
       },
+      /**
+       * Gets all the gallery items and creates a thumbnail.
+       */ 
       _getItems: function(nodes){
         let temp = [];
         for (i in nodes) {
           if (nodes[i].tagName !== undefined && nodes[i].tagName.toLowerCase() == 'lrndesign-gallery-image'){
             let title = nodes[i].getAttribute('title'), src = nodes[i].getAttribute('thumbnail'), id = this._getUniqueId(nodes[i],title);
             temp.push({
-              'controls': this.id,
+              'controls': 'modal',
               'item': id,
+              'roundedEdges': this.roundedEdges, 
               'src': src,
-              'target': this,
+              'target': this.$.modal,
               'title': title,
             });
             if (window.location.hash == '#'+id) {
@@ -152,7 +192,7 @@ A LRN element
       },
       /**
        * Gets, sets, and returns a unique ID given a text prefix.
-       * 
+       */ 
       _getUniqueId: function(obj,prefix,cntr){
         let root = this, newid = prefix == undefined ? "item" : prefix.toString().toLowerCase().replace(/[^a-z|0-9]/g,'');
         if (cntr !== undefined) {
@@ -170,11 +210,10 @@ A LRN element
       },
       /**
        * When a thumbnail is tapped, go to that item.
-       *
+       */
       _thumbnailTapped: function(e){
         this.goToItem(e.detail.item);
       },
-      */
     });
   </script>
 </dom-module>

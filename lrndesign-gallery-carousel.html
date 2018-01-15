@@ -23,6 +23,7 @@ A LRN element that renders a collection of gallery items into a carousel.
     <style>
       :host {
         display: block;
+          border: 1px solid #ddd;
       }
       @media screen {
         :host ::slotted(*) #container {
@@ -30,6 +31,7 @@ A LRN element that renders a collection of gallery items into a carousel.
           width: 100%;
           position: relative;
           padding-bottom: 50%;
+          border-top: 1px solid #ddd;
         }
         :host ::slotted(*) #image {
           width: 66.67%;
@@ -56,7 +58,6 @@ A LRN element that renders a collection of gallery items into a carousel.
         }
         :host #thumbnails {
           padding: 5px 0;
-          margin-top: 15px;
           border-top: 1px solid #ddd;
         }
         :host #thumbnails-inner {
@@ -102,7 +103,6 @@ A LRN element that renders a collection of gallery items into a carousel.
         }
         :host[theme="dark"] #thumbnails {
           background-color:#222;
-          margin-top: 0px;
           border-top: 1px solid #666;
         }
         :host[theme="dark"] ::slotted(*) #image {
@@ -119,25 +119,30 @@ A LRN element that renders a collection of gallery items into a carousel.
         }
       }
     </style>
-    <h1>[[title]]</h1>
-    <slot id="description"></slot>
-    <div id="items">
-      <slot></slot>
-    </div>
-    <div id="thumbnails">
-      <iron-list id="thumbnails-inner" items="{{items}}" as="item" grid selection-enabled>
-        <template>
-          <lrndesign-gallery-thumbnail
-            anchor$="[[item.anchor]]"  
-            controls$="[[item.controls]]"
-            item$="[[item.item]]" 
-            src$="[[item.src]]" 
-            title$="[[item.title]]" 
-            target$="[[item.target]]">
-          </lrndesign-gallery-thumbnail>
-        </template>
-      </iron-list>
-    </div>
+    <article>
+      <h1>[[title]]</h1>
+      <slot id="description" name="description"></slot>
+      <div id="carousel">
+        <div id="items">
+          <slot></slot>
+        </div>
+        <div id="thumbnails">
+          <iron-list id="thumbnails-inner" items="{{items}}" as="item" grid selection-enabled>
+            <template>
+              <lrndesign-gallery-thumbnail
+                anchor$="[[item.anchor]]"  
+                controls$="[[item.controls]]"
+                item$="[[item.item]]" 
+                rounded-edges="false"
+                src$="[[item.src]]" 
+                title$="[[item.title]]" 
+                target$="[[item.target]]">
+              </lrndesign-gallery-thumbnail>
+            </template>
+          </iron-list>
+        </div>
+      </div>
+    </article>
   </template>
 
   <script>
@@ -198,7 +203,6 @@ A LRN element that renders a collection of gallery items into a carousel.
         }
       },
       goToItem: function(selection){
-        console.log(selection,typeof selection,document.getElementById(selection));
         if (this.selected !== undefined) {
           this.selected.setAttribute('selected',false);
         }
