@@ -1,19 +1,22 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../lrnsys-button/lrnsys-button.html">
 <link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
 
 <!--
-`lrndesign-gallery-item`
+`lrndesign-gallery-thumbnail`
 A LRN element
 
 @demo demo/index.html
 
 @microcopy - the mental model for this element
-  controls = "GALLERY-OR-DIALOG-ID"     //required
-  item = "ITEM-ID"                      //required
-  src = "PATH/TO/THUMBNAIL_IMG.JPG"     //required
-  target = "GALLERY OR DIALOG OBJECT"   //required
-  title = "TITLE/ALT TEXT HERE"         //required
-
+  <lrndesign-gallery-thumbnail
+    alt = "ALT TEXT HERE"                 //required
+    controls = "GALLERY-OR-DIALOG-ID"     //required
+    item = "ITEM-ID"                      //required
+    roundedEdges = "FALSE"                //optional, default is rounded
+    src = "PATH/TO/THUMBNAIL_IMG.JPG"     //required
+    target = "GALLERY OR DIALOG OBJECT">   //required
+  </lrndesign-gallery-thumbnail>
 -->
 
 <dom-module id="lrndesign-gallery-thumbnail">
@@ -21,6 +24,9 @@ A LRN element
     <style>
       :host {
         display: inline-block;
+      }
+      :host #lrnsysbutton ::slotted(a > paper-button > div.inner) {
+        padding: 0 !important;
       }
       :host iron-image {
         width: 100%;
@@ -36,13 +42,13 @@ A LRN element
       item$="[[item]]" 
       aria-controls$="[[controls]]" 
       target$="[[target]]" 
-      title$="[[title]]" 
+      title$="[[alt]]" 
       tabindex="0">
-      <iron-image alt$="[[title]]" 
+      <iron-image alt$="[[alt]]" 
         class="lrndesign-gallery-thumbnail-image" 
         fade 
         sizing="cover" 
-        src$="[[src]]">
+        src$="[[thumbnail]]">
       </iron-image>
     </lrnsys-button>
     <iron-a11y-keys 
@@ -62,6 +68,13 @@ A LRN element
       },
 
       properties: {
+        /** 
+        * The gallery item's alt text
+        */
+        alt: {
+          type: String,
+          value: null,
+        },
         /** 
         * The thumbnail button
         */
@@ -91,13 +104,6 @@ A LRN element
           value: true,
         },
         /** 
-        * The path for the thumbnail image
-        */
-        src: {
-          type: String,
-          value: null,
-        },
-        /** 
         * The target for the thumbnail button
         */
         target: {
@@ -105,9 +111,9 @@ A LRN element
           value: null,
         },
         /** 
-        * The gallery item's title/alt text
+        * The path for the thumbnail image
         */
-        title: {
+        thumbnail: {
           type: String,
           value: null,
         },
@@ -115,7 +121,11 @@ A LRN element
       ready: function(){
         this.button = this.$.lrnsysbutton;
       },
+      attached: function(){
+        console.log(this.item);
+      },
       _tapped: function(e){
+        console.log('thumbnailTap',{'item': this.item});
         this.fire('thumbnailTap',{'item': this.item});
       },
     });

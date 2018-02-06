@@ -4,7 +4,7 @@
 <link rel="import" href="../iron-list/iron-list.html">
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
-<link rel="import" href="lrndesign-gallery-image.html">
+<link rel="import" href="../responsive-utility/responsive-utility.html">
 <link rel="import" href="lrndesign-gallery-thumbnail.html">
 
 <!--
@@ -61,34 +61,43 @@ A LRN element
         }
       }
     </style>
-    <h1>[[title]]</h1>
-    <slot id="description" name="description"></slot>
-    <div id="items">
-      <slot></slot>
-    </div>
-    <div id="thumbnails" name="thumbnails">
-      <iron-list id="thumbnails-inner" items="{{items}}" as="item" grid selection-enabled>
-        <template>
-          <lrndesign-gallery-thumbnail
-            anchor$="[[item.anchor]]"  
-            controls$="[[item.controls]]"
-            item$="[[item.item]]" 
-            rounded-edges$="[[item.roundedEdges]]" 
-            src$="[[item.src]]" 
-            title$="[[item.title]]" 
-            target$="[[item.target]]">
-          </lrndesign-gallery-thumbnail>
-        </template>
-      </iron-list>
-    </div>
-    <paper-dialog id="modal" aria-labelledby="modalid">
-      <h2 id="modalid"></h2>
-      <paper-dialog-scrollable id="modalcontent">
-      </paper-dialog-scrollable>
-      <div class="buttons">
-        <paper-button dialog-confirm autofocus>OK</paper-button>
+    <responsive-utility 
+      sm$=[[sm]] 
+      md$=[[sm]] 
+      lg$=[[lg]] 
+      xl$=[[xl]] 
+      responsive-to-parent="true">
+    </responsive-utility>
+    <article screen$="[[screen]]">
+      <h1>[[title]]</h1>
+      <slot id="description" name="description"></slot>
+      <div id="items">
+        <slot></slot>
       </div>
-    </paper-dialog>
+      <div id="thumbnails" name="thumbnails">
+        <iron-list id="thumbnails-inner" items="{{items}}" as="item" grid selection-enabled>
+          <template>
+            <lrndesign-gallery-thumbnail
+              anchor$="[[item.anchor]]"  
+              controls$="[[item.controls]]"
+              item$="[[item.item]]" 
+              rounded-edges$="[[item.roundedEdges]]" 
+              src$="[[item.src]]" 
+              title$="[[item.title]]" 
+              target$="[[item.target]]">
+            </lrndesign-gallery-thumbnail>
+          </template>
+        </iron-list>
+      </div>
+      <paper-dialog id="modal" aria-labelledby="modalid">
+        <h2 id="modalid"></h2>
+        <paper-dialog-scrollable id="modalcontent">
+        </paper-dialog-scrollable>
+        <div class="buttons">
+          <paper-button dialog-confirm autofocus>OK</paper-button>
+        </div>
+      </paper-dialog>
+    </article>
   </template>
 
   <script>
@@ -96,6 +105,7 @@ A LRN element
 
       is: 'lrndesign-gallery-grid',
       listeners: {
+        'screen-resize': '_onScreenResize', 
         'thumbnailTap': '_thumbnailTapped',
       },
 
@@ -135,6 +145,15 @@ A LRN element
           type: String,
           value: 'default',
         },
+        /*
+         * screen size: xs, sm, md, lg, or xl
+         */
+        screen: {
+          type: String,
+          value: 'xs',
+          notify: true,
+          reflectToAttribute: true,
+        },
       },
       ready: function(){
       },
@@ -170,6 +189,9 @@ A LRN element
           this.$.modalcontent.appendChild(this.selected.querySelector('#image'));
           this.$.modal.open();
         }
+      },
+      _onScreenResize: function(e){
+        this.screen = e.detail.screen;
       },
       /**
        * Gets all the gallery items and creates a thumbnail.

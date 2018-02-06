@@ -1,0 +1,122 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../lrnsys-button/lrnsys-button.html">
+<link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
+
+<!--
+`lrndesign-gallery-prevnext`
+A LRN element
+
+@demo demo/index.html
+
+@microcopy - the mental model for this element
+  <lrndesign-gallery-prevnext 
+    chevron = "chevron-left"             //required, "chevron-right" for next (default), or "chevron-left" for prev
+    controls = "GALLERY-OR-DIALOG-ID"    //required
+    item = "0"                           //required, index of prev/next item
+    target = "GALLERY OR DIALOG OBJECT"  //required
+    title = "previous">                  //required, "next" (default) or "previous"
+  </lrndesign-gallery-prevnext>
+-->
+
+<dom-module id="lrndesign-gallery-prevnext">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+      }
+      :host #lrnsysbutton ::slotted(a > paper-button > div.inner) {
+      }
+    </style>
+    <lrnsys-button 
+      disabled$="[[disabled]]"
+      icon$="[[chevron]]"
+      id="lrnsysbutton"
+      item$="[[item]]" 
+      aria-controls$="[[controls]]" 
+      target$="[[target]]" 
+      title$="[[title]]" 
+      tabindex="0">
+    </lrnsys-button>
+    <iron-a11y-keys 
+      id="a11y" 
+      keys="enter" 
+      target$="[[button]]"
+      on-keys-pressed="_tapped">
+    </iron-a11y-keys>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'lrndesign-gallery-prevnext',
+      listeners: {
+        'tap': '_tapped',
+      },
+
+      properties: {
+        /** 
+        * button object
+        */
+        button: {
+          type: Object,
+          value: null,
+        },
+        /** 
+        * iron-icon chevron
+        */
+        chevron: {
+          type: String,
+          value: 'chevron-right',
+        },
+        /** 
+        * thumbnail button's target's id
+        */
+        controls: {
+          type: String,
+          value: null,
+        },
+        /** 
+        * prev or next item's index
+        */
+        item: {
+          type: Number,
+          value: null,
+          reflectToAttribute: true,
+        },
+        /** 
+        * prev or next item's index
+        */
+        disabled: {
+          type: Boolean,
+          computed: '_isDisabled(item)',
+          reflectToAttribute: true,
+        },
+        /** 
+        * target for the thumbnail button
+        */
+        target: {
+          type: Object,
+          value: null,
+        },
+        /** 
+        * button title
+        */
+        title: {
+          type: String,
+          value: null,
+        },
+      },
+      ready: function(){
+        this.button = this.$.lrnsysbutton;
+      },
+      _isDisabled: function(item){
+        return item == undefined || item == null || parseInt(item) < 0;
+      },
+      _tapped: function(e){
+        if(this.disabled == false) {
+          this.fire('thumbnailTap',{'item': parseInt(this.item)});
+        }
+      },
+    });
+  </script>
+</dom-module>

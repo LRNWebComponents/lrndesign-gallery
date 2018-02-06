@@ -2,7 +2,9 @@
 <link rel="import" href="../iron-image/iron-image.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-list/iron-list.html">
-<link rel="import" href="lrndesign-gallery-image.html">
+<link rel="import" href="../juicy-html/juicy-html.html">
+<link rel="import" href="../responsive-utility/responsive-utility.html">
+<link rel="import" href="lrndesign-gallery-prevnext.html">
 <link rel="import" href="lrndesign-gallery-thumbnail.html">
 
 <!--
@@ -12,9 +14,30 @@ A LRN element that renders a collection of gallery items into a carousel.
 @demo demo/index.html
 
 @microcopy - the mental model for this element
-  theme = "dark"         //optional, dark or default
-  title = "My Carousel"  //required
-  type = "wide"          //optional, narrow, wide or xwide
+  <lrndesign-gallery-carousel 
+    aspect = "1:1"          //optional, can be 1:1, 5:4, 4:3 (default), 3:2, 16:9.
+    items = "1:1"           //required, an array of items for the carousel.
+    sizing = "contain"      //optional, "cover" for cropping (default) or "contain" for letterboxing
+    theme = "dark"          //optional, dark or default
+    title = "My Carousel">  //optional
+    OPTIONAL TEXT ABOUT THE CAROUSEL HERE.
+  </lrndesign-gallery-carousel>
+
+  To load data into carousel:
+  <script>
+    window.onload = function(){
+      document.getElementById('CAROUSEL-ID-HERE').setData([
+        {
+          "alt": "IMAGE ALT TEXT",
+          "details": "TEXT ABOUT IMAGE HERE",
+          "sizing": "contain",
+          "src": "PATH/TO/FULL/IMAGE/HERE.JPG",
+          "thumbnail": "PATH/TO/THUMBAIL/IMAGE/HERE.JPG",
+          "title": "IMAGE TITLE HERE"
+        }
+      ]);
+    };
+  </script>
 
 -->
 
@@ -23,248 +46,558 @@ A LRN element that renders a collection of gallery items into a carousel.
     <style>
       :host {
         display: block;
-        border: 1px solid #ddd;
+      }
+      :host .print {
+        display: none;
+        margin-bottom: 15px;
+      }
+      :host .print iron-image {
+        display: block;
+        margin-top: 15px;
+        width: 100%;
+        height: 400px;
       }
       @media screen {
-        :host #carousel-title,
-        :host #carousel-description {
-          padding: 0 20px;
+        :host ::slotted(#items) {
+          display: none;
         }
-        :host ::slotted(*) #container {
+        :host #items {
           margin-top: 15px;
           width: 100%;
           position: relative;
-          padding-bottom: 50%;
-          border-top: 1px solid #ddd;
+          background-color: #eee;
+          border: 1px solid #eee;
         }
-        :host ::slotted(*) #image {
-          width: 66.67%;
-          padding-top: 50%;
+        :host[theme="dark"] #items {
+          background-color: black;
+          border: 1px solid black;
+          color: white;
+        }
+        :host #items > .selected-image {
           position: absolute;
           left: 0;
           top: 0;
         }
-        :host ::slotted(*) #details {
-          width: 33.33%;
-          padding-top: 50%;
+        :host #items > .selected-image > lrndesign-gallery-prevnext {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 50%;
+          opacity: 0;
+        }
+        :host #items > .selected-image > lrndesign-gallery-prevnext ::slotted(lrnsys-button > a > paper-button > div.inner) {
+          padding-top: 75%;
+          padding-bottom: 75%;
+          height: 0;
+          overflow: visible;
+        }
+        :host #items > .selected-image > lrndesign-gallery-prevnext[title="next"] {
+          left: 50%;
+          text-align: right;
+        }
+        :host #items > .selected-image > lrndesign-gallery-prevnext:not([disabled]):active, 
+        :host #items > .selected-image > lrndesign-gallery-prevnext:not([disabled]):focus, 
+        :host #items > .selected-image > lrndesign-gallery-prevnext:not([disabled]):hover {
+          opacity: 0.8;
+        }
+        :host #details {
           max-height: 100%;
           position: absolute;
           right: 0;
           top: 0;
-          overflow-y: scroll;
-          background-color: #f0f0f0;
+          color: black;
+          background-color: #f8f8f8;
         }
-        :host ::slotted(*) #details-inner {
-          padding: 0 20px 10px;
+        :host[theme="dark"] #details {
+          background-color: #222;
+          color: white;
+        }
+        :host #details-inner {
+          padding: 0 20px;
           position: absolute;
+          max-height: 45%;
           left: 0;
           top: 0;
+          overflow-y: scroll;
         }
         :host #thumbnails {
-          padding: 5px 0;
-          border-top: 1px solid #ddd;
+          position: absolute;
+          bottom: 5px;
+          width: 100%;
+          max-height: 45%;
         }
-        :host #thumbnails-inner {
-          overflow-y: visible !important;
+        :host #thumbslist {
+          overflow-y: scroll;
         }
         :host lrndesign-gallery-thumbnail {
           width: 50px;
           height: 50px;
         }
-        :host[type="xwide"] ::slotted(*) #container {
+        :host[screen="xl"] #items {
+          padding-top: 20%;
+        }
+        :host[screen="xl"] #items > .selected-image,
+        :host[screen="xl"] #details, {
+          padding-bottom: 20%;
+        }
+        :host[screen="xl"][aspect="16:9"] #items > .selected-image {
+          width: 35.56%;
+        }
+        :host[screen="xl"][aspect="16:9"] #details {
+          width: 64.44%;
+        }
+        :host[screen="xl"][aspect="3:2"] #items > .selected-image {
+          width: 30%;
+        }
+        :host[screen="xl"][aspect="3:2"] #details {
+          width: 70%;
+        }
+        :host[screen="xl"][aspect="4:3"] #items > .selected-image {
+          width: 26.27%;
+        }
+        :host[screen="xl"][aspect="4:3"] #details {
+          width: 73.73%;
+        }
+        :host[screen="xl"][aspect="5:4"] #items > .selected-image {
+          width: 31.25%;
+        }
+        :host[screen="xl"][aspect="5:4"] #details {
+          width: 68.75%;
+        }
+        :host[screen="xl"][aspect="1:1"] #items > .selected-image {
+          width: 80%;
+        }
+        :host[screen="xl"][aspect="1:1"] #details {
+          width: 20%;
+        }
+        :host[screen="lg"] #items {
+          padding-top: 25%;
+        }
+        :host[screen="lg"] #items > .selected-image,
+        :host[screen="lg"] #details, {
           padding-bottom: 25%;
         }
-        :host[type="xwide"] ::slotted(*) #image {
-          width: 66.67%;
-          padding-top: 25%;
+        :host[screen="lg"][aspect="16:9"] #items > .selected-image {
+          width: 48%;
         }
-        :host[type="xwide"] ::slotted(*) #details {
+        :host[screen="lg"][aspect="16:9"] #details {
+          width: 52%;
+        }
+        :host[screen="lg"][aspect="3:2"] #items > .selected-image {
+          width: 37.5%;
+        }
+        :host[screen="lg"][aspect="3:2"] #details {
+          width: 62.5%;
+        }
+        :host[screen="lg"][aspect="4:3"] #items > .selected-image {
           width: 33.33%;
-          padding-top: 25%;
         }
-        :host[type="wide"] ::slotted(*) #container {
+        :host[screen="lg"][aspect="4:3"] #details {
+          width: 66.67%;
+        }
+        :host[screen="lg"][aspect="5:4"] #items > .selected-image {
+          width: 31.25%;
+        }
+        :host[screen="lg"][aspect="5:4"] #details {
+          width: 68.75%;
+        }
+        :host[screen="lg"][aspect="1:1"] #items > .selected-image {
+          width: 25%;
+        }
+        :host[screen="lg"][aspect="1:1"] #details {
+          width: 75%;
+        }
+        :host[screen="md"] #items {
+          padding-top: 33.33%;
+        }
+        :host[screen="md"] #items > .selected-image,
+        :host[screen="md"] #details, {
           padding-bottom: 33.33%;
         }
-        :host[type="wide"] ::slotted(*) #image {
+        :host[screen="md"][aspect="16:9"] #items > .selected-image {
+          width: 59.25%;
+        }
+        :host[screen="md"][aspect="16:9"] #details {
+          width: 40.75%;
+        }
+        :host[screen="md"][aspect="3:2"] #items > .selected-image, 
+        :host[screen="md"][aspect="3:2"] #details {
+          width: 50%;
+        }
+        :host[screen="md"][aspect="4:3"] #items > .selected-image {
+          width: 44.44%;
+        }
+        :host[screen="md"][aspect="4:3"] #details {
           width: 66.67%;
-          padding-top: 33.33%;
         }
-        :host[type="wide"] ::slotted(*) #details {
+        :host[screen="md"][aspect="5:4"] #items > .selected-image {
+          width: 41.66%;
+        }
+        :host[screen="md"][aspect="5:4"] #details {
+          width: 58.34%;
+        }
+        :host[screen="md"][aspect="1:1"] #items > .selected-image {
           width: 33.33%;
-          padding-top: 33.33%;
         }
-        :host[type="narrow"] ::slotted(*) #container {
+        :host[screen="md"][aspect="1:1"] #details {
+          width: 66.67%;
+        }
+        :host[screen="sm"] #items {
+          padding-top: 40%;
+        }
+        :host[screen="sm"] #items > .selected-image,
+        :host[screen="sm"] #details, {
+          padding-bottom: 40%;
+        }
+        :host[screen="sm"][aspect="16:9"] #items > .selected-image {
+          width: 71.11%;
+        }
+        :host[screen="sm"][aspect="16:9"] #details {
+          width: 28.89%;
+        }
+        :host[screen="sm"][aspect="3:2"] #items > .selected-image {
+          width: 60%;
+        } 
+        :host[screen="sm"][aspect="3:2"] #details {
+          width: 40%;
+        }
+        :host[screen="sm"][aspect="4:3"] #items > .selected-image {
+          width: 53.33%;
+        }
+        :host[screen="sm"][aspect="4:3"] #details {
+          width: 46.67%;
+        }
+        :host[screen="sm"][aspect="5:4"] #items > .selected-image, 
+        :host[screen="sm"][aspect="5:4"] #details {
+          width: 50%;
+        }
+        :host[screen="sm"][aspect="1:1"] #items > .selected-image {
+          width: 40%;
+        }
+        :host[screen="sm"][aspect="1:1"] #details {
+          width: 60%;
+        }
+        :host[screen="xs"] #items > .selected-image,
+        :host[screen="xs"] #details {
+          width: 100%;
+        }
+        :host[screen="xs"] #details {
+          padding-bottom: 40%;
+        }
+        :host[screen="xs"][aspect="16:9"] #items {
+          padding-top: 96.25%;
+        }
+        :host[screen="xs"][aspect="16:9"] #items > .selected-image {
+          padding-bottom: 56.25%;
+        }
+        :host[screen="xs"][aspect="16:9"] #details {
+          top: 58.44%;
+        }
+        :host[screen="xs"][aspect="3:2"] #items {
+          padding-top: 106.67%;
+        }
+        :host[screen="xs"][aspect="3:2"] #items > .selected-image {
+          padding-bottom: 66.67%;
+        }
+        :host[screen="xs"][aspect="3:2"] #details {
+          top: 62.05%;
+        }
+        :host[screen="xs"][aspect="4:3"] #items {
+          padding-top: 115%;
+        }
+        :host[screen="xs"][aspect="4:3"] #items > .selected-image {
+          padding-bottom: 75%;
+        }
+        :host[screen="xs"][aspect="4:3"] #details {
+          top: 65.22%;
+        }
+        :host[screen="xs"][aspect="5:4"] #items {
+          padding-top: 120%;
+        }
+        :host[screen="xs"][aspect="5:4"] #items > .selected-image {
+          padding-bottom: 80%;
+        }
+        :host[screen="xs"][aspect="5:4"] #details {
+          top: 66.67%;
+        }
+        :host[screen="xs"][aspect="1:1"] #items {
+          padding-top: 140%;
+        }
+        :host[screen="xs"][aspect="1:1"] #items > .selected-image {
           padding-bottom: 100%;
         }
-        :host[type="narrow"] ::slotted(*) #image {
-          width: 100%;
-          padding-top: 80%;
-        }
-        :host[type="narrow"] ::slotted(*) #details {
-          width: 100%;
-          padding-top: 20%;
-          top: 80%;
-        }
-        :host[theme="dark"] {
-          background-color:#222;
-          color: white;
-        }
-        :host[theme="dark"] #thumbnails,
-        :host[theme="dark"] ::slotted(*) #container {
-          border-top: 1px solid #666;
-        }
-        :host[theme="dark"] ::slotted(*) #details {
-          background-color: black;
-          color: white;
+        :host[screen="xs"][aspect="1:1"] #details {
+          top: 71.43%;
         }
       }
       @media print {
-        :host #thumbnails {
+        :host #carousel {
           display: none;
+        }
+        :host .print {
+          margin-top: 15px;
+          display: block;
+        }
+        :host .print-image {
+          max-width: 100%;
+          border: 1px solid #ddd;
         }
       }
     </style>
+    <responsive-utility 
+      sm$=[[sm]] 
+      md$=[[sm]] 
+      lg$=[[lg]] 
+      xl$=[[xl]] 
+      responsive-to-parent="true">
+    </responsive-utility>
     <article>
-      <h1 id="carousel-title">[[title]]</h1>
+      <template is="dom-if" if="[[hasTitle]]">
+        <h1 id="carousel-title">[[title]]</h1>
+      </template>
       <div id="carousel-description">
         <slot name="description"></slot>
       </div>
       <div id="carousel">
         <div id="items">
-          <slot></slot>
-        </div>
-        <div id="thumbnails">
-          <iron-list id="thumbnails-inner" items="{{items}}" as="item" grid selection-enabled>
-            <template>
-              <lrndesign-gallery-thumbnail
-                anchor$="[[item.anchor]]"  
-                controls$="[[item.controls]]"
-                item$="[[item.item]]" 
-                rounded-edges="false"
-                src$="[[item.src]]" 
-                title$="[[item.title]]" 
-                target$="[[item.target]]">
-              </lrndesign-gallery-thumbnail>
-            </template>
-          </iron-list>
+          <iron-image 
+            alt$="[[selected.alt]]" 
+            class="selected-image" 
+            fade 
+            id$="[[selected.id]]" 
+            placeholder$="[[selected.thumbnail]]" 
+            sizing$="[[selected.sizing]]" 
+            src$="[[selected.src]]">
+          </iron-image>
+          <div class="selected-image" >
+            <lrndesign-gallery-prevnext  
+              chevron="chevron-left" 
+              controls$="[[selected.controls]]" 
+              item$="[[selected.prev]]" 
+              target$="[[selected.target]]" 
+              title="previous">
+            </lrndesign-gallery-prevnext>
+            <lrndesign-gallery-prevnext  
+              chevron="chevron-right" 
+              controls$="[[selected.controls]]" 
+              item$="[[selected.next]]" 
+              target$="[[selected.target]]" 
+              title="next">
+            </lrndesign-gallery-prevnext>
+          </div>
+          <div id="details">
+            <div id="details-inner">
+              <template is="dom-if" if="[[selected.hasTitle]]">
+                <h2 id="carousel-title">[[selected.title]]</h2>
+              </template>
+              <juicy-html html$="[[selected.details]]"></juicy-html>
+            </div>
+            <div id="thumbnails">
+              <iron-list id="thumbslist" items="[[items]]" as="item" grid selection-enabled>
+                <template>
+                  <lrndesign-gallery-thumbnail
+                    alt$="[[item.alt]]"  
+                    controls$="[[item.controls]]"
+                    item$="[[item.id]]" 
+                    rounded-edges="false"
+                    thumbnail$="[[item.thumbnail]]" 
+                    target$="[[item.target]]">
+                  </lrndesign-gallery-thumbnail>
+                </template>
+              </iron-list>
+            </div>
+          </div>
         </div>
       </div>
+      <template id="printlist" is="dom-repeat" items="[[items]]" as="item">
+        <section class="print">
+          <template is="dom-if" if="[[item.hasTitle]]">
+            <h2>[[items.title]]</h2>
+          </template>
+          <juicy-html html$="[[item.details]]"></juicy-html>
+          <img class="print-image" alt$="[[item.alt]]" src$="[[item.src]]"/>
+        </section>
+      </template>
     </article>
+    <template is="dom-if" if="[[selected.prev]]">
+      <iron-a11y-keys 
+        id="a11y" 
+        keys="left" 
+        target$="[[__target]]"
+        on-keys-pressed$="goToItem([[selected.prev]])">
+      </iron-a11y-keys>
+    </template>
+    <template is="dom-if" if="[[selected.next]]">
+      <iron-a11y-keys 
+        id="a11y" 
+        keys="right" 
+        target$="[[__target]]"
+        on-keys-pressed$="goToItem([[selected.next]])">
+      </iron-a11y-keys>
+    </template>
   </template>
 
   <script>
     Polymer({
 
       is: 'lrndesign-gallery-carousel',
+      
       listeners: {
+        'screen-resize': '_onScreenResize', 
         'thumbnailTap': '_thumbnailTapped',
       },
 
       properties: {
         /** 
-        * An array of carousel items
+        * aspect ratio of media: 1:1, 5:4, 4:3, 3:2, or 16:9
         */
-        nodes: {
-          type: Array,
-          value: [],
+        aspect: {
+          type: String,
+          value: '4:3',
         },
         /** 
-        * The theme of the carousel: default or dark
-        */
+         * does it have a title
+         */
+        hasTitle: {
+          type: Boolean,
+          computed: '_isAttrSet(title)',
+          reflectToAttribute: true,
+        },
+        /** 
+         * array of carousel items
+         */
+        items: {
+          type: Array,
+          value: [],
+          notify: true,
+          reflectToAttribute: true,
+        },
+        /*
+         * data for the selected item
+         */
+        selected: {
+          type: Object,
+          value: {},
+        },
+        /**
+         * screen size: xs, sm, md, lg, or xl
+         */
+        screen: {
+          type: String,
+          value: 'xs',
+          notify: true,
+          reflectToAttribute: true,
+        },
+        /**
+         * default sizing: fit screen by cropping (cover) 
+         * or with letterboxing (contain)
+         */
+        sizing: {
+          type: String,
+          value: 'cover',
+        },
+        /** 
+         * theme of the carousel: default or dark
+         */
         theme: {
           type: String,
           value: 'default',
         },
         /** 
-        * An array of carousel item thumbnails
-        */
-        thumbnails: {
-          type: Array,
-          value: [],
-        },
-        /** 
-        * The carousel's title'
-        */
+         * carousel's title
+         */
         title: {
           type: String,
-          value: 'Default Title',
-        },
-        /** 
-        * The carousel's layout type: narrow, default, wide, or xwide
-        */
-        type: {
-          type: String,
-          value: 'default',
+          value: null,
         },
       },
-      ready: function(){
-      },
+      /**
+       * gets unique id for carousel and sets it as a target
+       */
       attached: function(){
-        let root = this;
+        let root = this, prefix = this.id !== undefined ? this.id : this.title;
+        this.__target = this.$.carousel;
         this.__anchor = 0;
-        this._getUniqueId(this,root.title);
-        this.items = this._getItems(Polymer.dom(root).getEffectiveChildNodes());
+        this._getUniqueId(prefix);
+      },
+      /**
+       * sets data based on an array
+       */
+      setData: function(data){
+        let root = this, temp = [];
+        if(data !== undefined && data.length > 0){
+          for (i in data) {
+            temp[i] = data[i];
+            let prefix = this.id+'-'+data[i].title.toString().toLowerCase().replace(/[^a-z|0-9]/g,'');
+            this.__tempid = this.__tempid === undefined ? 0 : this.__tempid + 1;
+            temp[i].controls = root.id;
+            temp[i].hasTitle = data[i].title !== undefined;
+            temp[i].id = data[i].id !== undefined ? data[i].id : prefix+'-'+root.__tempid;
+            temp[i].sizing = data[i].sizing !== undefined ? data[i].sizing : root.sizing;
+            temp[i].target = root;
+            temp[i].prev = parseInt(i) - 1 > -1 ? parseInt(i) - 1 : -1;
+            temp[i].next = parseInt(i) + 1 < data.length ? parseInt(i) + 1 : -1;
+            if (window.location.hash == '#'+temp[i].id) {
+              this.__anchor = temp[i].id;
+            }
+          }
+        }
+        this.items = [];
+        this.items.splice(0,0,...temp);
+        this.$.thumbslist.items = temp.slice(0,temp.length);
+        this.$.printlist.items = temp.slice(0,temp.length);
+        this.$.thumbslist.fire('iron-resize');
         this.goToItem(this.__anchor);
         if(this.__anchor !== 0) {
           document.getElementById(this.__anchor).scrollIntoView();
         }
-      },
-      goToItem: function(selection){
-        if (this.selected !== undefined) {
-          this.selected.setAttribute('selected',false);
-        }
-        if (typeof selection === 'string') {
-          this.selected = document.getElementById(selection);
-        } else if (typeof selection === 'number') {
-          this.selected = document.getElementById(this.items[selection].item);
-        } else {
-          this.selected = selection;
-        }
-        this.selected.setAttribute('selected',true);
-      },
-      _getItems: function(nodes){
-        let temp = [];
-        for (i in nodes) {
-          if (nodes[i].tagName !== undefined && nodes[i].tagName.toLowerCase() == 'lrndesign-gallery-image'){
-            let title = nodes[i].getAttribute('title'), src = nodes[i].getAttribute('thumbnail'), id = this._getUniqueId(nodes[i],title);
-            temp.push({
-              'controls': this.id,
-              'item': id,
-              'src': src,
-              'target': this,
-              'title': title,
-            });
-            if (window.location.hash == '#'+id) {
-              this.__anchor = id;
-            }
-          }
-        }
-        return temp;
+        console.log(this.items);
       },
       /**
-       * Gets, sets, and returns a unique ID given a text prefix.
+       * go to item by id, or index
+       */
+      goToItem: function(selection){
+        let index = typeof selection === 'string' ? this.items.findIndex(i => i.id === selection) : selection;
+        if(typeof index === 'number' && index >= 0 && index < this.items.length){
+          this.selected = this.items[index]
+        }
+      },
+      /**
+       * sets size class based on parent container and breakpoints
        */ 
-      _getUniqueId: function(obj,prefix,cntr){
-        let root = this, newid = prefix == undefined ? "item" : prefix.toString().toLowerCase().replace(/[^a-z|0-9]/g,'');
+      _onScreenResize: function(e){
+        this.screen = e.detail.screen;
+      },
+      /**
+       * gets, sets, and returns a unique ID given a text prefix
+       */ 
+      _getUniqueId: function(prefix,cntr){
+        let root = this, newid = prefix.toString().toLowerCase().replace(/[^a-z|0-9]/g,'');
         if (cntr !== undefined) {
           newid += cntr;
         } else {
           cntr = 0;
         }
-        if (document.getElementById(newid) !== null) {
+        if (document.getElementById(newid) !== null && document.getElementById(newid) !== this){
           cntr++;
-          newid = root._getUniqueId(obj,prefix,cntr);
+          newid = root._getUniqueId(prefix,cntr);
         } else {
-          obj.id = newid;
+          this.id = newid;
         }
         return newid;
       },
       /**
-       * When a thumbnail is tapped, go to that item.
+       * when a thumbnail is tapped, goes to that item
        */ 
       _thumbnailTapped: function(e){
         this.goToItem(e.detail.item);
       },
+      /** 
+      * returns true if the given attribute is not null
+      */
+      _isAttrSet: function (attr){
+        return attr !== null;
+      }
     });
   </script>
 </dom-module>
