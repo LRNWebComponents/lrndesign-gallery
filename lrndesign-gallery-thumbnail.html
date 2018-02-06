@@ -69,65 +69,67 @@ A LRN element
 
       properties: {
         /** 
-        * The gallery item's alt text
+        * gallery item's alt text
         */
         alt: {
           type: String,
           value: null,
         },
         /** 
-        * The thumbnail button
+        * thumbnail button
         */
         button: {
           type: Object,
           value: null,
         },
         /** 
-        * The id of the thumbnail button target
+        * id of the thumbnail button target
         */
         controls: {
           type: String,
           value: null,
         },
         /** 
-        * The gallery item's id
+        * gallery item's id
         */
         item: {
           type: String,
           value: null,
         },
         /** 
-        * Round the edges of the thumbnail?
+        * round the edges of the thumbnail?
         */
         roundedEdges: {
           type: Boolean,
           value: true,
         },
         /** 
-        * The target for the thumbnail button
+        * target for the thumbnail button
         */
         target: {
           type: Object,
           value: null,
         },
         /** 
-        * The path for the thumbnail image
+        * path for the thumbnail image
         */
         thumbnail: {
           type: String,
           value: null,
         },
       },
+      /**
+       * fire navigation tapped event
+       */ 
       ready: function(){
         this.button = this.$.lrnsysbutton;
       },
-      attached: function(){
-        console.log(this.item);
-      },
+      /**
+       * fire navigation tapped event
+       */ 
       _tapped: function(e){
         e.preventDefault();
-        console.log('thumbnailTap',{'item': this.item});
-        this.fire('thumbnailTap',{'item': this.item});
+        this.fire('navTap',{'item': this.item,'type': 'thumbnail'});
       },
     });
   </script>

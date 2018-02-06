@@ -149,7 +149,7 @@ A LRN element
       _tapped: function(e){
         e.preventDefault();
         if(this.disabled == false) {
-          this.fire('thumbnailTap',{'item': parseInt(this.item)});
+          this.fire('navTap',{'item': parseInt(this.item),'type': 'prevnext'});
         }
       },
     });

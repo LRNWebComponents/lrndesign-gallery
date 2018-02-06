@@ -143,6 +143,9 @@ A LRN element that renders a collection of gallery items into a carousel.
           width: 50px;
           height: 50px;
         }
+        :host lrndesign-gallery-thumbnail[selected="selected"] {
+          opacity: 0.5;
+        }
         :host[screen="xl"] #items {
           padding-top: 20%;
         }
@@ -415,6 +418,7 @@ A LRN element that renders a collection of gallery items into a carousel.
                     controls$="[[item.controls]]"
                     item$="[[item.id]]" 
                     rounded-edges="false"
+                    selected$="[[_isSelected(selected)]]"
                     thumbnail$="[[item.thumbnail]]" 
                     target$="[[item.target]]">
                   </lrndesign-gallery-thumbnail>
@@ -459,7 +463,7 @@ A LRN element that renders a collection of gallery items into a carousel.
       
       listeners: {
         'screen-resize': '_onScreenResize', 
-        'thumbnailTap': '_thumbnailTapped',
+        'navTap': '_onNavTapped',
       },
 
       properties: {
@@ -563,19 +567,24 @@ A LRN element that renders a collection of gallery items into a carousel.
         this.$.thumbslist.items = temp.slice(0,temp.length);
         this.$.printlist.items = temp.slice(0,temp.length);
         this.$.thumbslist.fire('iron-resize');
-        this.goToItem(this.__anchor);
+        this.goToItem(this.__anchor,true);
         if(this.__anchor !== 0) {
           document.getElementById(this.__anchor).scrollIntoView();
         }
-        console.log(this.items);
       },
       /**
        * go to item by id, or index
        */
-      goToItem: function(selection){
+      goToItem: function(selection,setThumbnail){
+        console.log(setThumbnail);
         let index = typeof selection === 'string' ? this.items.findIndex(i => i.id === selection) : selection;
+        setThumbnail === undefined ? false : true;
         if(typeof index === 'number' && index >= 0 && index < this.items.length){
-          this.selected = this.items[index]
+          this.selected = this.items[index];
+          console.log(setThumbnail,this.$.thumbslist.selectItem === null || setThumbnail);
+          if(this.$.thumbslist.selectItem === null || setThumbnail) {
+            this.$.thumbslist.selectItem(this.items[index]);
+          }
         }
       },
       /**
@@ -605,8 +614,14 @@ A LRN element that renders a collection of gallery items into a carousel.
       /**
        * when a thumbnail is tapped, goes to that item
        */ 
-      _thumbnailTapped: function(e){
-        this.goToItem(e.detail.item);
+      _onNavTapped: function(e){
+        this.goToItem(e.detail.item,e.detail.type !== 'thumbnail');
+      },
+      /**
+       * sets selected attribute of thumbnail
+       */ 
+      _isSelected: function(selected) {
+          return selected ? "selected": "";
       },
       /** 
       * returns true if the given attribute is not null
