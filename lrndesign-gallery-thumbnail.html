@@ -125,6 +125,7 @@ A LRN element
         console.log(this.item);
       },
       _tapped: function(e){
+        e.preventDefault();
         console.log('thumbnailTap',{'item': this.item});
         this.fire('thumbnailTap',{'item': this.item});
       },

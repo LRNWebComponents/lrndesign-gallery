@@ -147,6 +147,7 @@ A LRN element
         return item == undefined || item == null || parseInt(item) < 0;
       },
       _tapped: function(e){
+        e.preventDefault();
         if(this.disabled == false) {
           this.fire('thumbnailTap',{'item': parseInt(this.item)});
         }
