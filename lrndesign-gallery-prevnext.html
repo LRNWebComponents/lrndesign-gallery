@@ -55,7 +55,7 @@ A LRN element
     </style>
     <lrnsys-button 
       disabled$="[[disabled]]" 
-      text-color$="[[color]]"
+      text-color$="[[_getTextColor(theme)]]"
       icon$="[[chevron]]"
       id="lrnsysbutton"
       item$="[[item]]" 
@@ -98,9 +98,9 @@ A LRN element
         /** 
         * class for icon text color
         */
-        color: {
+        theme: {
           type: String,
-          value: 'white-text',
+          value: null,
         },
         /** 
         * thumbnail button's target's id
@@ -140,12 +140,27 @@ A LRN element
           value: null,
         },
       },
+      /**
+       * set iron-a11y-keys target to this
+       */ 
       ready: function(){
         this.button = this.$.lrnsysbutton;
       },
+      /**
+       * set text color based on theme
+       */ 
+      _getTextColor: function(theme){
+        return this.theme == 'dark' ? 'white-text' : 'black-text';
+      },
+      /**
+       * determine if this button should be disabled
+       */ 
       _isDisabled: function(item){
         return item == undefined || item == null || parseInt(item) < 0;
       },
+      /**
+       * fire navigation tapped event
+       */ 
       _tapped: function(e){
         e.preventDefault();
         if(this.disabled == false) {
