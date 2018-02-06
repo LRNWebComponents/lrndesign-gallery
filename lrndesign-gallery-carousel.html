@@ -287,6 +287,9 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="sm"][aspect="1:1"] #details {
           width: 60%;
         }
+        :host[screen="xs"] #thumbnails {
+          display: none;
+        }
         :host[screen="xs"] #items > .selected-image,
         :host[screen="xs"] #details {
           width: 100%;
