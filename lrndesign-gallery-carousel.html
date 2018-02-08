@@ -47,6 +47,13 @@ A LRN element that renders a collection of gallery items into a carousel.
       :host {
         display: block;
       }
+      :host .sr-only {
+        position: absolute;
+        left: -999999;
+        height: 0;
+        width: 0;
+        overflow: hidden;
+      }
       :host .print {
         display: none;
         margin-bottom: 15px;
@@ -61,6 +68,11 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host ::slotted(#items) {
           display: none;
         }
+        :host .x-of-y {
+          font-size: 85%;
+          font-style: italic;
+          text-align: right;
+        }
         :host #items {
           margin-top: 15px;
           width: 100%;
@@ -73,43 +85,21 @@ A LRN element that renders a collection of gallery items into a carousel.
           border: 1px solid black;
           color: white;
         }
-        :host #items > .selected-image {
+        :host #items > .prevnext {
           position: absolute;
           left: 0;
           top: 0;
         }
-        :host #items > .selected-image > lrndesign-gallery-prevnext {
+        :host #items > .prevnext > lrndesign-gallery-prevnext {
           position: absolute;
           left: 0;
           top: 0;
           width: 50%;
           height: 100%;
-          opacity: 0;      
-          transition: opacity 1s;   
-          background-color: white;
-          background: linear-gradient(to left, rgba(255,255,255,0) 0%,rgba(255,255,255,0.7) 50%,rgba(255,255,255,1) 70%,rgba(255,255,255,1) 100%);
         }
-        :host #items > .selected-image > lrndesign-gallery-prevnext[type="next"] {
+        :host #items > .prevnext > lrndesign-gallery-prevnext[type="next"] {
           left: 50%;
           text-align: right;
-          background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.7) 50%,rgba(255,255,255,1) 70%,rgba(255,255,255,1) 100%); 
-        }
-        :host[theme="dark"] #items > .selected-image > lrndesign-gallery-prevnext {        
-          background-color: black; 
-          background: linear-gradient(to left, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.7) 50%,rgba(0,0,0,1) 70%,rgba(0,0,0,1) 100%); 
-        }
-        :host[theme="dark"] #items > .selected-image > lrndesign-gallery-prevnext[type="next"] {        
-          background: linear-gradient(to right, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.7) 50%,rgba(0,0,0,1) 70%,rgba(0,0,0,1) 100%); 
-        }
-        :host #items > .selected-image > lrndesign-gallery-prevnext:not([disabled]):active, 
-        :host #items > .selected-image > lrndesign-gallery-prevnext:not([disabled]):focus, 
-        :host #items > .selected-image > lrndesign-gallery-prevnext:not([disabled]):hover {
-          opacity: 1;
-        }
-        :host[theme="dark"] #items > .selected-image > lrndesign-gallery-prevnext:not([disabled]):active, 
-        :host[theme="dark"] #items > .selected-image > lrndesign-gallery-prevnext:not([disabled]):focus, 
-        :host[theme="dark"] #items > .selected-image > lrndesign-gallery-prevnext:not([disabled]):hover {
-          opacity: 1;
         }
         :host #details {
           max-height: 100%;
@@ -124,17 +114,20 @@ A LRN element that renders a collection of gallery items into a carousel.
           color: white;
         }
         :host #details-inner {
-          padding: 0 20px;
+          width: 100%;
           position: absolute;
           max-height: 45%;
           left: 0;
           top: 0;
           overflow-y: scroll;
         }
+        :host #details-inner > * {
+          padding: 0 20px;
+        }
         :host #thumbnails {
           position: absolute;
+          right: 0;
           bottom: 5px;
-          width: 100%;
           max-height: 45%;
         }
         :host #thumbslist {
@@ -150,151 +143,169 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="xl"] #items {
           padding-top: 20%;
         }
-        :host[screen="xl"] #items > .selected-image,
+        :host[screen="xl"] #items > .prevnext,
         :host[screen="xl"] #details, {
           padding-bottom: 20%;
         }
-        :host[screen="xl"][aspect="16:9"] #items > .selected-image {
+        :host[screen="xl"][aspect="16:9"] #items > .prevnext {
           width: 35.56%;
         }
-        :host[screen="xl"][aspect="16:9"] #details {
+        :host[screen="xl"][aspect="16:9"] #details, 
+        :host[screen="xl"][aspect="16:9"] #thumbnails {
           width: 64.44%;
         }
-        :host[screen="xl"][aspect="3:2"] #items > .selected-image {
+        :host[screen="xl"][aspect="3:2"] #items > .prevnext {
           width: 30%;
         }
-        :host[screen="xl"][aspect="3:2"] #details {
+        :host[screen="xl"][aspect="3:2"] #details, 
+        :host[screen="xl"][aspect="3:2"] #thumbnails {
           width: 70%;
         }
-        :host[screen="xl"][aspect="4:3"] #items > .selected-image {
+        :host[screen="xl"][aspect="4:3"] #items > .prevnext {
           width: 26.27%;
         }
-        :host[screen="xl"][aspect="4:3"] #details {
+        :host[screen="xl"][aspect="4:3"] #details, 
+        :host[screen="xl"][aspect="4:3"] #thumbnails {
           width: 73.73%;
         }
-        :host[screen="xl"][aspect="5:4"] #items > .selected-image {
+        :host[screen="xl"][aspect="5:4"] #items > .prevnext {
           width: 31.25%;
         }
-        :host[screen="xl"][aspect="5:4"] #details {
+        :host[screen="xl"][aspect="5:4"] #details, 
+        :host[screen="xl"][aspect="5:4"] #thumbnails {
           width: 68.75%;
         }
-        :host[screen="xl"][aspect="1:1"] #items > .selected-image {
+        :host[screen="xl"][aspect="1:1"] #items > .prevnext {
           width: 20%;
         }
-        :host[screen="xl"][aspect="1:1"] #details {
+        :host[screen="xl"][aspect="1:1"] #details,
+        :host[screen="xl"][aspect="1:1"] #thumbnails {
           width: 80%;
         }
         :host[screen="lg"] #items {
           padding-top: 25%;
         }
-        :host[screen="lg"] #items > .selected-image,
+        :host[screen="lg"] #items > .prevnext,
         :host[screen="lg"] #details, {
           padding-bottom: 25%;
         }
-        :host[screen="lg"][aspect="16:9"] #items > .selected-image {
+        :host[screen="lg"][aspect="16:9"] #items > .prevnext {
           width: 48%;
         }
-        :host[screen="lg"][aspect="16:9"] #details {
+        :host[screen="lg"][aspect="16:9"] #details,
+        :host[screen="lg"][aspect="16:9"] #thumbnails {
           width: 52%;
         }
-        :host[screen="lg"][aspect="3:2"] #items > .selected-image {
+        :host[screen="lg"][aspect="3:2"] #items > .prevnext {
           width: 37.5%;
         }
-        :host[screen="lg"][aspect="3:2"] #details {
+        :host[screen="lg"][aspect="3:2"] #details, 
+        :host[screen="lg"][aspect="3:2"] #thumbnails {
           width: 62.5%;
         }
-        :host[screen="lg"][aspect="4:3"] #items > .selected-image {
+        :host[screen="lg"][aspect="4:3"] #items > .prevnext {
           width: 33.33%;
         }
-        :host[screen="lg"][aspect="4:3"] #details {
+        :host[screen="lg"][aspect="4:3"] #details,
+        :host[screen="lg"][aspect="4:3"] #thumbnails {
           width: 66.67%;
         }
-        :host[screen="lg"][aspect="5:4"] #items > .selected-image {
+        :host[screen="lg"][aspect="5:4"] #items > .prevnext {
           width: 31.25%;
         }
-        :host[screen="lg"][aspect="5:4"] #details {
+        :host[screen="lg"][aspect="5:4"] #details, 
+        :host[screen="lg"][aspect="5:4"] #thumbnails {
           width: 68.75%;
         }
-        :host[screen="lg"][aspect="1:1"] #items > .selected-image {
+        :host[screen="lg"][aspect="1:1"] #items > .prevnext {
           width: 25%;
         }
-        :host[screen="lg"][aspect="1:1"] #details {
+        :host[screen="lg"][aspect="1:1"] #details,
+        :host[screen="lg"][aspect="1:1"] #thumbnails {
           width: 75%;
         }
         :host[screen="md"] #items {
           padding-top: 33.33%;
         }
-        :host[screen="md"] #items > .selected-image,
-        :host[screen="md"] #details, {
+        :host[screen="md"] #items > .prevnext,
+        :host[screen="md"] #details {
           padding-bottom: 33.33%;
         }
-        :host[screen="md"][aspect="16:9"] #items > .selected-image {
+        :host[screen="md"][aspect="16:9"] #items > .prevnext {
           width: 59.25%;
         }
-        :host[screen="md"][aspect="16:9"] #details {
+        :host[screen="md"][aspect="16:9"] #details,
+        :host[screen="md"][aspect="16:9"] #thumbnails {
           width: 40.75%;
         }
-        :host[screen="md"][aspect="3:2"] #items > .selected-image, 
+        :host[screen="md"][aspect="3:2"] #items > .prevnext, 
         :host[screen="md"][aspect="3:2"] #details {
           width: 50%;
         }
-        :host[screen="md"][aspect="4:3"] #items > .selected-image {
+        :host[screen="md"][aspect="4:3"] #items > .prevnext {
           width: 44.44%;
         }
-        :host[screen="md"][aspect="4:3"] #details {
+        :host[screen="md"][aspect="4:3"] #details,
+        :host[screen="md"][aspect="4:3"] #thumbnails {
           width: 66.67%;
         }
-        :host[screen="md"][aspect="5:4"] #items > .selected-image {
+        :host[screen="md"][aspect="5:4"] #items > .prevnext {
           width: 41.66%;
         }
-        :host[screen="md"][aspect="5:4"] #details {
+        :host[screen="md"][aspect="5:4"] #details,
+        :host[screen="md"][aspect="5:4"] #thumbnails {
           width: 58.34%;
         }
-        :host[screen="md"][aspect="1:1"] #items > .selected-image {
+        :host[screen="md"][aspect="1:1"] #items > .prevnext {
           width: 33.33%;
         }
-        :host[screen="md"][aspect="1:1"] #details {
+        :host[screen="md"][aspect="1:1"] #details,
+        :host[screen="md"][aspect="1:1"] #thumbnails {
           width: 66.67%;
         }
         :host[screen="sm"] #items {
           padding-top: 40%;
         }
-        :host[screen="sm"] #items > .selected-image,
+        :host[screen="sm"] #items > .prevnext,
         :host[screen="sm"] #details, {
           padding-bottom: 40%;
         }
-        :host[screen="sm"][aspect="16:9"] #items > .selected-image {
+        :host[screen="sm"][aspect="16:9"] #items > .prevnext {
           width: 71.11%;
         }
-        :host[screen="sm"][aspect="16:9"] #details {
+        :host[screen="sm"][aspect="16:9"] #details,
+        :host[screen="sm"][aspect="16:9"] #thumbnails {
           width: 28.89%;
         }
-        :host[screen="sm"][aspect="3:2"] #items > .selected-image {
+        :host[screen="sm"][aspect="3:2"] #items > .prevnext {
           width: 60%;
         } 
-        :host[screen="sm"][aspect="3:2"] #details {
+        :host[screen="sm"][aspect="3:2"] #details, 
+        :host[screen="sm"][aspect="3:2"] #thumbnails {
           width: 40%;
         }
-        :host[screen="sm"][aspect="4:3"] #items > .selected-image {
+        :host[screen="sm"][aspect="4:3"] #items > .prevnext {
           width: 53.33%;
         }
-        :host[screen="sm"][aspect="4:3"] #details {
+        :host[screen="sm"][aspect="4:3"] #details,
+        :host[screen="sm"][aspect="4:3"] #thumbnails {
           width: 46.67%;
         }
-        :host[screen="sm"][aspect="5:4"] #items > .selected-image, 
+        :host[screen="sm"][aspect="5:4"] #items > .prevnext, 
         :host[screen="sm"][aspect="5:4"] #details {
           width: 50%;
         }
-        :host[screen="sm"][aspect="1:1"] #items > .selected-image {
+        :host[screen="sm"][aspect="1:1"] #items > .prevnext {
           width: 40%;
         }
-        :host[screen="sm"][aspect="1:1"] #details {
+        :host[screen="sm"][aspect="1:1"] #details,
+        :host[screen="sm"][aspect="1:1"] #thumbnails {
           width: 60%;
         }
         :host[screen="xs"] #thumbnails {
           display: none;
         }
-        :host[screen="xs"] #items > .selected-image,
+        :host[screen="xs"] #items > .prevnext,
         :host[screen="xs"] #details {
           width: 100%;
         }
@@ -304,7 +315,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="xs"][aspect="16:9"] #items {
           padding-top: 96.25%;
         }
-        :host[screen="xs"][aspect="16:9"] #items > .selected-image {
+        :host[screen="xs"][aspect="16:9"] #items > .prevnext {
           padding-bottom: 56.25%;
         }
         :host[screen="xs"][aspect="16:9"] #details {
@@ -313,7 +324,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="xs"][aspect="3:2"] #items {
           padding-top: 106.67%;
         }
-        :host[screen="xs"][aspect="3:2"] #items > .selected-image {
+        :host[screen="xs"][aspect="3:2"] #items > .prevnext {
           padding-bottom: 66.67%;
         }
         :host[screen="xs"][aspect="3:2"] #details {
@@ -322,7 +333,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="xs"][aspect="4:3"] #items {
           padding-top: 115%;
         }
-        :host[screen="xs"][aspect="4:3"] #items > .selected-image {
+        :host[screen="xs"][aspect="4:3"] #items > .prevnext {
           padding-bottom: 75%;
         }
         :host[screen="xs"][aspect="4:3"] #details {
@@ -331,7 +342,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="xs"][aspect="5:4"] #items {
           padding-top: 120%;
         }
-        :host[screen="xs"][aspect="5:4"] #items > .selected-image {
+        :host[screen="xs"][aspect="5:4"] #items > .prevnext {
           padding-bottom: 80%;
         }
         :host[screen="xs"][aspect="5:4"] #details {
@@ -340,7 +351,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="xs"][aspect="1:1"] #items {
           padding-top: 140%;
         }
-        :host[screen="xs"][aspect="1:1"] #items > .selected-image {
+        :host[screen="xs"][aspect="1:1"] #items > .prevnext {
           padding-bottom: 100%;
         }
         :host[screen="xs"][aspect="1:1"] #details {
@@ -375,19 +386,32 @@ A LRN element that renders a collection of gallery items into a carousel.
       <div id="carousel-description">
         <slot name="description"></slot>
       </div>
+      <p class="sr-only">A carousel of slides:</p>
       <div id="carousel">
+        <p class="sr-only">Slide [[__xOfY]] selected.</p>
         <div id="items">
           <iron-image 
             alt$="[[selected.alt]]" 
-            class="selected-image" 
+            class="prevnext" 
             fade 
             id$="[[selected.id]]" 
             placeholder$="[[selected.thumbnail]]" 
             sizing$="[[selected.sizing]]" 
             src$="[[selected.src]]" >
           </iron-image>
-          <div class="selected-image" >
-            <lrndesign-gallery-prevnext  
+          <div id="details">
+            <div id="details-inner">
+              <template is="dom-if" if="[[selected.hasTitle]]">
+                <h2 id="carousel-title">[[selected.title]]</h2>
+              </template>
+              <div><juicy-html html$="[[selected.details]]"></juicy-html></div>
+              <p class="x-of-y">
+                (<span class="sr-only">End of slide </span>[[__xOfY]]<span class="sr-only">.</span>) 
+              </p>
+            </div>
+          </div>
+          <div class="prevnext">
+            <lrndesign-gallery-prevnext 
               chevron="chevron-left" 
               controls$="[[selected.controls]]" 
               theme$="[[theme]]"
@@ -404,28 +428,21 @@ A LRN element that renders a collection of gallery items into a carousel.
               type="next">
             </lrndesign-gallery-prevnext>
           </div>
-          <div id="details">
-            <div id="details-inner">
-              <template is="dom-if" if="[[selected.hasTitle]]">
-                <h2 id="carousel-title">[[selected.title]]</h2>
+          <div id="thumbnails">
+            <p class="sr-only">Slides list:</p>
+            <iron-list id="thumbslist" items="[[items]]" as="item" grid selection-enabled>
+              <template>
+                <lrndesign-gallery-thumbnail
+                  alt$="[[item.alt]]"  
+                  controls$="[[item.controls]]"
+                  item$="[[item.id]]" 
+                  rounded-edges="false"
+                  selected$="[[_isSelected(selected)]]"
+                  thumbnail$="[[item.thumbnail]]" 
+                  target$="[[item.target]]">
+                </lrndesign-gallery-thumbnail>
               </template>
-              <juicy-html html$="[[selected.details]]"></juicy-html>
-            </div>
-            <div id="thumbnails">
-              <iron-list id="thumbslist" items="[[items]]" as="item" grid selection-enabled>
-                <template>
-                  <lrndesign-gallery-thumbnail
-                    alt$="[[item.alt]]"  
-                    controls$="[[item.controls]]"
-                    item$="[[item.id]]" 
-                    rounded-edges="false"
-                    selected$="[[_isSelected(selected)]]"
-                    thumbnail$="[[item.thumbnail]]" 
-                    target$="[[item.target]]">
-                  </lrndesign-gallery-thumbnail>
-                </template>
-              </iron-list>
-            </div>
+            </iron-list>
           </div>
         </div>
       </div>
@@ -439,22 +456,6 @@ A LRN element that renders a collection of gallery items into a carousel.
         </section>
       </template>
     </article>
-    <template is="dom-if" if="[[selected.prev]]">
-      <iron-a11y-keys 
-        id="a11y" 
-        keys="left" 
-        target$="[[__target]]"
-        on-keys-pressed$="goToItem([[selected.prev]])">
-      </iron-a11y-keys>
-    </template>
-    <template is="dom-if" if="[[selected.next]]">
-      <iron-a11y-keys 
-        id="a11y" 
-        keys="right" 
-        target$="[[__target]]"
-        on-keys-pressed$="goToItem([[selected.next]])">
-      </iron-a11y-keys>
-    </template>
   </template>
 
   <script>
@@ -584,6 +585,7 @@ A LRN element that renders a collection of gallery items into a carousel.
             this.$.thumbslist.selectItem(this.items[index]);
           }
         }
+        this.__xOfY = parseInt(index+1)+' of '+this.items.length;
       },
       /**
        * sets size class based on parent container and breakpoints
@@ -610,7 +612,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         return newid;
       },
       /**
-       * when a thumbnail is tapped, goes to that item
+       * when a thumbnail is tapped, goes to that item 
        */ 
       _onNavTapped: function(e){
         this.goToItem(e.detail.item,e.detail.type !== 'thumbnail');

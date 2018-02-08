@@ -25,6 +25,9 @@ A LRN element
       :host {
         display: inline-block;
       }
+      :host[item="-1"] {
+        display: none;
+      }
       :host #lrnsysbutton {
         height: 100%;
       }
@@ -36,7 +39,27 @@ A LRN element
       }
       :host #lrnsysbutton ::slotted(a > paper-button) {
         width: 100%;
-        height: 100%;
+        height: 100%;  
+        opacity: 0;
+        transition: opacity 1s;   
+        color: black;
+        background-color: white;
+        background: linear-gradient(to left, rgba(255,255,255,1) 0%,rgba(255,255,255,0) 50%,rgba(255,255,255,0.07) 70%,rgba(255,255,255,0) 100%);
+      }
+      :host[type="next"] #lrnsysbutton ::slotted(a > paper-button) {
+        background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.7) 50%,rgba(255,255,255,1) 70%,rgba(255,255,255,1) 100%); 
+      }
+      :host[theme="dark"] #lrnsysbutton ::slotted(a > paper-button) {
+        color: white;
+        background-color: black; 
+        background: linear-gradient(to left, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.7) 50%,rgba(0,0,0,1) 70%,rgba(0,0,0,1) 100%); 
+      }
+      :host[theme="dark"][type="next"] #lrnsysbutton ::slotted(a > paper-button) {
+        background: linear-gradient(to right, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.7) 50%,rgba(0,0,0,1) 70%,rgba(0,0,0,1) 100%); 
+      }
+      :host #lrnsysbutton ::slotted(a > paper-button):focus, 
+      :host #lrnsysbutton ::slotted(a > paper-button):hover {
+        opacity: 1;
       }
       :host #lrnsysbutton ::slotted(a > paper-button > div.inner) {
         width: 100%;
@@ -54,15 +77,13 @@ A LRN element
       }
     </style>
     <lrnsys-button 
-      disabled$="[[disabled]]" 
-      text-color$="[[_getTextColor(theme)]]"
       icon$="[[chevron]]"
       id="lrnsysbutton"
       item$="[[item]]" 
       aria-controls$="[[controls]]" 
       target$="[[target]]" 
       title$="[[type]]" 
-      tabindex="0">
+      tabindex="-1">
     </lrnsys-button>
     <iron-a11y-keys 
       id="a11y" 
@@ -76,6 +97,11 @@ A LRN element
     Polymer({
 
       is: 'lrndesign-gallery-prevnext',
+
+      hostAttributes: {
+        tabindex: '-1'
+      },
+
       listeners: {
         'tap': '_tapped',
       },
@@ -118,14 +144,6 @@ A LRN element
           reflectToAttribute: true,
         },
         /** 
-        * prev or next item's index
-        */
-        disabled: {
-          type: Boolean,
-          computed: '_isDisabled(item)',
-          reflectToAttribute: true,
-        },
-        /** 
         * target for the thumbnail button
         */
         target: {
@@ -141,6 +159,12 @@ A LRN element
         },
       },
       /**
+       * Ready.
+       */
+      attached: function() {
+        let root = this;
+      },
+      /**
        * set iron-a11y-keys target to this
        */ 
       ready: function(){
@@ -153,17 +177,11 @@ A LRN element
         return this.theme == 'dark' ? 'white-text' : 'black-text';
       },
       /**
-       * determine if this button should be disabled
-       */ 
-      _isDisabled: function(item){
-        return item == undefined || item == null || parseInt(item) < 0;
-      },
-      /**
        * fire navigation tapped event
        */ 
       _tapped: function(e){
         e.preventDefault();
-        if(this.disabled == false) {
+        if(this.disabled == '') {
           this.fire('navTap',{'item': parseInt(this.item),'type': 'prevnext'});
         }
       },
