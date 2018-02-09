@@ -51,14 +51,6 @@ A LRN element that renders a single image with caption.
         height: 400px;
       }
       @media screen {
-        :host ::slotted(#items) {
-          display: none;
-        }
-        :host .x-of-y {
-          font-size: 85%;
-          font-style: italic;
-          text-align: right;
-        }
         :host #items {
           margin-top: 15px;
           width: 100%;
@@ -70,6 +62,11 @@ A LRN element that renders a single image with caption.
           background-color: black;
           border: 1px solid black;
           color: white;
+        }
+        :host .image-and-prevnext {
+          position: absolute;
+          left: 0;
+          top: 0;
         }
         :host lrndesign-gallery-zoom-button {
           position: absolute;
@@ -92,7 +89,7 @@ A LRN element that renders a single image with caption.
         :host #details-inner {
           width: 100%;
           position: absolute;
-          max-height: 45%;
+          max-height: 100%;
           left: 0;
           top: 0;
           overflow-y: scroll;
@@ -103,20 +100,36 @@ A LRN element that renders a single image with caption.
         :host[screen="xl"] #items {
           padding-top: 20%;
         }
+        :host[screen="xl"] #items > .image-and-prevnext,
         :host[screen="xl"] #details {
           padding-bottom: 20%;
+        }
+        :host[screen="xl"][aspect="16:9"] #items > .image-and-prevnext {
+          width: 35.56%;
         }
         :host[screen="xl"][aspect="16:9"] #details {
           width: 64.44%;
         }
+        :host[screen="xl"][aspect="3:2"] #items > .image-and-prevnext {
+          width: 30%;
+        }
         :host[screen="xl"][aspect="3:2"] #details {
           width: 70%;
+        }
+        :host[screen="xl"][aspect="4:3"] #items > .image-and-prevnext {
+          width: 26.27%;
         }
         :host[screen="xl"][aspect="4:3"] #details {
           width: 73.73%;
         }
-        :host[screen="xl"][aspect="5:4"] #details{
+        :host[screen="xl"][aspect="5:4"] #items > .image-and-prevnext {
+          width: 31.25%;
+        }
+        :host[screen="xl"][aspect="5:4"] #details {
           width: 68.75%;
+        }
+        :host[screen="xl"][aspect="1:1"] #items > .image-and-prevnext {
+          width: 20%;
         }
         :host[screen="xl"][aspect="1:1"] #details {
           width: 80%;
@@ -124,20 +137,36 @@ A LRN element that renders a single image with caption.
         :host[screen="lg"] #items {
           padding-top: 25%;
         }
+        :host[screen="lg"] #items > .image-and-prevnext,
         :host[screen="lg"] #details {
           padding-bottom: 25%;
+        }
+        :host[screen="lg"][aspect="16:9"] #items > .image-and-prevnext {
+          width: 48%;
         }
         :host[screen="lg"][aspect="16:9"] #details {
           width: 52%;
         }
+        :host[screen="lg"][aspect="3:2"] #items > .image-and-prevnext {
+          width: 37.5%;
+        }
         :host[screen="lg"][aspect="3:2"] #details {
           width: 62.5%;
+        }
+        :host[screen="lg"][aspect="4:3"] #items > .image-and-prevnext {
+          width: 33.33%;
         }
         :host[screen="lg"][aspect="4:3"] #details {
           width: 66.67%;
         }
+        :host[screen="lg"][aspect="5:4"] #items > .image-and-prevnext {
+          width: 31.25%;
+        }
         :host[screen="lg"][aspect="5:4"] #details {
           width: 68.75%;
+        }
+        :host[screen="lg"][aspect="1:1"] #items > .image-and-prevnext {
+          width: 25%;
         }
         :host[screen="lg"][aspect="1:1"] #details {
           width: 75%;
@@ -145,20 +174,34 @@ A LRN element that renders a single image with caption.
         :host[screen="md"] #items {
           padding-top: 33.33%;
         }
+        :host[screen="md"] #items > .image-and-prevnext,
         :host[screen="md"] #details {
           padding-bottom: 33.33%;
+        }
+        :host[screen="md"][aspect="16:9"] #items > .image-and-prevnext {
+          width: 59.25%;
         }
         :host[screen="md"][aspect="16:9"] #details {
           width: 40.75%;
         }
+        :host[screen="md"][aspect="3:2"] #items > .image-and-prevnext, 
         :host[screen="md"][aspect="3:2"] #details {
           width: 50%;
+        }
+        :host[screen="md"][aspect="4:3"] #items > .image-and-prevnext {
+          width: 44.44%;
         }
         :host[screen="md"][aspect="4:3"] #details {
           width: 66.67%;
         }
+        :host[screen="md"][aspect="5:4"] #items > .image-and-prevnext {
+          width: 41.66%;
+        }
         :host[screen="md"][aspect="5:4"] #details {
           width: 58.34%;
+        }
+        :host[screen="md"][aspect="1:1"] #items > .image-and-prevnext {
+          width: 33.33%;
         }
         :host[screen="md"][aspect="1:1"] #details {
           width: 66.67%;
@@ -166,24 +209,39 @@ A LRN element that renders a single image with caption.
         :host[screen="sm"] #items {
           padding-top: 40%;
         }
+        :host[screen="sm"] #items > .image-and-prevnext,
         :host[screen="sm"] #details {
           padding-bottom: 40%;
+        }
+        :host[screen="sm"][aspect="16:9"] #items > .image-and-prevnext {
+          width: 71.11%;
         }
         :host[screen="sm"][aspect="16:9"] #details {
           width: 28.89%;
         }
+        :host[screen="sm"][aspect="3:2"] #items > .image-and-prevnext {
+          width: 60%;
+        } 
         :host[screen="sm"][aspect="3:2"] #details {
           width: 40%;
+        }
+        :host[screen="sm"][aspect="4:3"] #items > .image-and-prevnext {
+          width: 53.33%;
         }
         :host[screen="sm"][aspect="4:3"] #details {
           width: 46.67%;
         }
+        :host[screen="sm"][aspect="5:4"] #items > .image-and-prevnext, 
         :host[screen="sm"][aspect="5:4"] #details {
           width: 50%;
+        }
+        :host[screen="sm"][aspect="1:1"] #items > .image-and-prevnext {
+          width: 40%;
         }
         :host[screen="sm"][aspect="1:1"] #details {
           width: 60%;
         }
+        :host[screen="xs"] #items > .image-and-prevnext,
         :host[screen="xs"] #details {
           width: 100%;
         }
@@ -193,11 +251,17 @@ A LRN element that renders a single image with caption.
         :host[screen="xs"][aspect="16:9"] #items {
           padding-top: 96.25%;
         }
+        :host[screen="xs"][aspect="16:9"] #items > .image-and-prevnext {
+          padding-bottom: 56.25%;
+        }
         :host[screen="xs"][aspect="16:9"] #details {
           top: 58.44%;
         }
         :host[screen="xs"][aspect="3:2"] #items {
           padding-top: 106.67%;
+        }
+        :host[screen="xs"][aspect="3:2"] #items > .image-and-prevnext {
+          padding-bottom: 66.67%;
         }
         :host[screen="xs"][aspect="3:2"] #details {
           top: 62.05%;
@@ -205,17 +269,26 @@ A LRN element that renders a single image with caption.
         :host[screen="xs"][aspect="4:3"] #items {
           padding-top: 115%;
         }
+        :host[screen="xs"][aspect="4:3"] #items > .image-and-prevnext {
+          padding-bottom: 75%;
+        }
         :host[screen="xs"][aspect="4:3"] #details {
           top: 65.22%;
         }
         :host[screen="xs"][aspect="5:4"] #items {
           padding-top: 120%;
         }
+        :host[screen="xs"][aspect="5:4"] #items > .image-and-prevnext {
+          padding-bottom: 80%;
+        }
         :host[screen="xs"][aspect="5:4"] #details {
           top: 66.67%;
         }
         :host[screen="xs"][aspect="1:1"] #items {
           padding-top: 140%;
+        }
+        :host[screen="xs"][aspect="1:1"] #items > .image-and-prevnext {
+          padding-bottom: 100%;
         }
         :host[screen="xs"][aspect="1:1"] #details {
           top: 71.43%;
@@ -238,13 +311,12 @@ A LRN element that renders a single image with caption.
         }
       }
     </style>
-    Hello
     <responsive-utility responsive-to-parent="true"></responsive-utility>
     <article id="gallery-image">
       <div id="items">
         <iron-image 
           alt$="[[alt]]" 
-          class="prevnext" 
+          class="image-and-prevnext"
           fade 
           placeholder$="[[thumbnail]]" 
           sizing$="[[sizing]]" 
@@ -268,20 +340,22 @@ A LRN element that renders a single image with caption.
         </template>
         </div>
       </div>
-    </div>
-    <lrndesign-gallery-print
-      alt$="[[alt]]" 
-      details$="[[details]]" 
-      heading$="[[heading]]" 
-      src$="[[src]]" 
-      title$="[[title]]">
-    </lrndesign-gallery-print>
-  </article>
-
+      <lrndesign-gallery-print alt$="[[alt]]" 
+        details$="[[details]]" 
+        heading$="[[heading]]" 
+        src$="[[src]]" 
+        title$="[[title]]">
+      </lrndesign-gallery-print>
+    </article>
+  </template>
   <script>
     Polymer({
 
       is: 'lrndesign-gallery-image',
+      
+      listeners: {
+        'screen-resize': '_onScreenResize', 
+      },
 
       properties: {
         /** 
@@ -317,14 +391,14 @@ A LRN element that renders a single image with caption.
          */
         heading: {
           type: String,
-          computed: '_getHeadingText(title)',
+          computed: '_getHeading(title)',
         },
         /** 
          * preload source
          */
          preload: {
           type: String,
-          computed: '_getPreloadSrc(thumbnail,src)',
+          computed: '_getPreload(thumbnail,src)',
         },
         /**
          * screen size: xs, sm, md, lg, or xl
@@ -377,7 +451,7 @@ A LRN element that renders a single image with caption.
         tooltip: {
           type: String,
           value: null,
-          computed: '_getTooltip:(title)',
+          computed: '_getTooltip(title)',
         },
         /** 
          * allow image zoom
@@ -399,19 +473,19 @@ A LRN element that renders a single image with caption.
       /** 
       * returns text for zoom button
       */
-      _getPreloadSrc: function (thumbnail,src){
+      _getPreload: function (thumbnail,src){
         return this._isAttrSet(thumbnail) ? thumbnail : src;
       },
       /** 
       * returns text for zoom button
       */
-      _getZoomText: function (title){
+      _getTooltip: function (title){
         return this._isAttrSet(title) ? 'Zoom In ('+title+')' : 'Zoom In';
       },
       /** 
       * returns heading for zoom dialog
       */
-      _getTooltip: function (title){
+      _getHeading: function (title){
         return this._isAttrSet(title) ? title : 'Image Zoom';
       },
       /** 

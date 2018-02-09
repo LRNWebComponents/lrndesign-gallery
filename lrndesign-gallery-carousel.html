@@ -87,16 +87,16 @@ A LRN element that renders a collection of gallery items into a carousel.
           border: 1px solid black;
           color: white;
         }
+        :host .image-and-prevnext {
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
         :host lrndesign-gallery-zoom-button {
           position: absolute;
           left: 0px;
           bottom: 0px;
           z-index: 2; 
-        }
-        :host .prevnext {
-          position: absolute;
-          left: 0;
-          top: 0;
         }
         :host lrndesign-gallery-prevnext {
           position: absolute;
@@ -129,6 +129,7 @@ A LRN element that renders a collection of gallery items into a carousel.
           top: 0;
           overflow-y: scroll;
         }
+        :host #thumbnails-inner, 
         :host #details-inner > * {
           padding: 0 20px;
         }
@@ -151,39 +152,39 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="xl"] #items {
           padding-top: 20%;
         }
-        :host[screen="xl"] #items > .prevnext,
+        :host[screen="xl"] #items > .image-and-prevnext,
         :host[screen="xl"] #details {
           padding-bottom: 20%;
         }
-        :host[screen="xl"][aspect="16:9"] #items > .prevnext {
+        :host[screen="xl"][aspect="16:9"] #items > .image-and-prevnext {
           width: 35.56%;
         }
         :host[screen="xl"][aspect="16:9"] #details, 
         :host[screen="xl"][aspect="16:9"] #thumbnails {
           width: 64.44%;
         }
-        :host[screen="xl"][aspect="3:2"] #items > .prevnext {
+        :host[screen="xl"][aspect="3:2"] #items > .image-and-prevnext {
           width: 30%;
         }
         :host[screen="xl"][aspect="3:2"] #details, 
         :host[screen="xl"][aspect="3:2"] #thumbnails {
           width: 70%;
         }
-        :host[screen="xl"][aspect="4:3"] #items > .prevnext {
+        :host[screen="xl"][aspect="4:3"] #items > .image-and-prevnext {
           width: 26.27%;
         }
         :host[screen="xl"][aspect="4:3"] #details, 
         :host[screen="xl"][aspect="4:3"] #thumbnails {
           width: 73.73%;
         }
-        :host[screen="xl"][aspect="5:4"] #items > .prevnext {
+        :host[screen="xl"][aspect="5:4"] #items > .image-and-prevnext {
           width: 31.25%;
         }
         :host[screen="xl"][aspect="5:4"] #details, 
         :host[screen="xl"][aspect="5:4"] #thumbnails {
           width: 68.75%;
         }
-        :host[screen="xl"][aspect="1:1"] #items > .prevnext {
+        :host[screen="xl"][aspect="1:1"] #items > .image-and-prevnext {
           width: 20%;
         }
         :host[screen="xl"][aspect="1:1"] #details,
@@ -193,39 +194,39 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="lg"] #items {
           padding-top: 25%;
         }
-        :host[screen="lg"] #items > .prevnext,
+        :host[screen="lg"] #items > .image-and-prevnext,
         :host[screen="lg"] #details {
           padding-bottom: 25%;
         }
-        :host[screen="lg"][aspect="16:9"] #items > .prevnext {
+        :host[screen="lg"][aspect="16:9"] #items > .image-and-prevnext {
           width: 48%;
         }
         :host[screen="lg"][aspect="16:9"] #details,
         :host[screen="lg"][aspect="16:9"] #thumbnails {
           width: 52%;
         }
-        :host[screen="lg"][aspect="3:2"] #items > .prevnext {
+        :host[screen="lg"][aspect="3:2"] #items > .image-and-prevnext {
           width: 37.5%;
         }
         :host[screen="lg"][aspect="3:2"] #details, 
         :host[screen="lg"][aspect="3:2"] #thumbnails {
           width: 62.5%;
         }
-        :host[screen="lg"][aspect="4:3"] #items > .prevnext {
+        :host[screen="lg"][aspect="4:3"] #items > .image-and-prevnext {
           width: 33.33%;
         }
         :host[screen="lg"][aspect="4:3"] #details,
         :host[screen="lg"][aspect="4:3"] #thumbnails {
           width: 66.67%;
         }
-        :host[screen="lg"][aspect="5:4"] #items > .prevnext {
+        :host[screen="lg"][aspect="5:4"] #items > .image-and-prevnext {
           width: 31.25%;
         }
         :host[screen="lg"][aspect="5:4"] #details, 
         :host[screen="lg"][aspect="5:4"] #thumbnails {
           width: 68.75%;
         }
-        :host[screen="lg"][aspect="1:1"] #items > .prevnext {
+        :host[screen="lg"][aspect="1:1"] #items > .image-and-prevnext {
           width: 25%;
         }
         :host[screen="lg"][aspect="1:1"] #details,
@@ -235,36 +236,36 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="md"] #items {
           padding-top: 33.33%;
         }
-        :host[screen="md"] #items > .prevnext,
+        :host[screen="md"] #items > .image-and-prevnext,
         :host[screen="md"] #details {
           padding-bottom: 33.33%;
         }
-        :host[screen="md"][aspect="16:9"] #items > .prevnext {
+        :host[screen="md"][aspect="16:9"] #items > .image-and-prevnext {
           width: 59.25%;
         }
         :host[screen="md"][aspect="16:9"] #details,
         :host[screen="md"][aspect="16:9"] #thumbnails {
           width: 40.75%;
         }
-        :host[screen="md"][aspect="3:2"] #items > .prevnext, 
+        :host[screen="md"][aspect="3:2"] #items > .image-and-prevnext, 
         :host[screen="md"][aspect="3:2"] #details {
           width: 50%;
         }
-        :host[screen="md"][aspect="4:3"] #items > .prevnext {
+        :host[screen="md"][aspect="4:3"] #items > .image-and-prevnext {
           width: 44.44%;
         }
         :host[screen="md"][aspect="4:3"] #details,
         :host[screen="md"][aspect="4:3"] #thumbnails {
           width: 66.67%;
         }
-        :host[screen="md"][aspect="5:4"] #items > .prevnext {
+        :host[screen="md"][aspect="5:4"] #items > .image-and-prevnext {
           width: 41.66%;
         }
         :host[screen="md"][aspect="5:4"] #details,
         :host[screen="md"][aspect="5:4"] #thumbnails {
           width: 58.34%;
         }
-        :host[screen="md"][aspect="1:1"] #items > .prevnext {
+        :host[screen="md"][aspect="1:1"] #items > .image-and-prevnext {
           width: 33.33%;
         }
         :host[screen="md"][aspect="1:1"] #details,
@@ -274,36 +275,36 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="sm"] #items {
           padding-top: 40%;
         }
-        :host[screen="sm"] #items > .prevnext,
+        :host[screen="sm"] #items > .image-and-prevnext,
         :host[screen="sm"] #details {
           padding-bottom: 40%;
         }
-        :host[screen="sm"][aspect="16:9"] #items > .prevnext {
+        :host[screen="sm"][aspect="16:9"] #items > .image-and-prevnext {
           width: 71.11%;
         }
         :host[screen="sm"][aspect="16:9"] #details,
         :host[screen="sm"][aspect="16:9"] #thumbnails {
           width: 28.89%;
         }
-        :host[screen="sm"][aspect="3:2"] #items > .prevnext {
+        :host[screen="sm"][aspect="3:2"] #items > .image-and-prevnext {
           width: 60%;
         } 
         :host[screen="sm"][aspect="3:2"] #details, 
         :host[screen="sm"][aspect="3:2"] #thumbnails {
           width: 40%;
         }
-        :host[screen="sm"][aspect="4:3"] #items > .prevnext {
+        :host[screen="sm"][aspect="4:3"] #items > .image-and-prevnext {
           width: 53.33%;
         }
         :host[screen="sm"][aspect="4:3"] #details,
         :host[screen="sm"][aspect="4:3"] #thumbnails {
           width: 46.67%;
         }
-        :host[screen="sm"][aspect="5:4"] #items > .prevnext, 
+        :host[screen="sm"][aspect="5:4"] #items > .image-and-prevnext, 
         :host[screen="sm"][aspect="5:4"] #details {
           width: 50%;
         }
-        :host[screen="sm"][aspect="1:1"] #items > .prevnext {
+        :host[screen="sm"][aspect="1:1"] #items > .image-and-prevnext {
           width: 40%;
         }
         :host[screen="sm"][aspect="1:1"] #details,
@@ -313,7 +314,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="xs"] #thumbnails {
           display: none;
         }
-        :host[screen="xs"] #items > .prevnext,
+        :host[screen="xs"] #items > .image-and-prevnext,
         :host[screen="xs"] #details {
           width: 100%;
         }
@@ -323,7 +324,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="xs"][aspect="16:9"] #items {
           padding-top: 96.25%;
         }
-        :host[screen="xs"][aspect="16:9"] #items > .prevnext {
+        :host[screen="xs"][aspect="16:9"] #items > .image-and-prevnext {
           padding-bottom: 56.25%;
         }
         :host[screen="xs"][aspect="16:9"] #details {
@@ -332,7 +333,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="xs"][aspect="3:2"] #items {
           padding-top: 106.67%;
         }
-        :host[screen="xs"][aspect="3:2"] #items > .prevnext {
+        :host[screen="xs"][aspect="3:2"] #items > .image-and-prevnext {
           padding-bottom: 66.67%;
         }
         :host[screen="xs"][aspect="3:2"] #details {
@@ -341,7 +342,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="xs"][aspect="4:3"] #items {
           padding-top: 115%;
         }
-        :host[screen="xs"][aspect="4:3"] #items > .prevnext {
+        :host[screen="xs"][aspect="4:3"] #items > .image-and-prevnext {
           padding-bottom: 75%;
         }
         :host[screen="xs"][aspect="4:3"] #details {
@@ -350,7 +351,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="xs"][aspect="5:4"] #items {
           padding-top: 120%;
         }
-        :host[screen="xs"][aspect="5:4"] #items > .prevnext {
+        :host[screen="xs"][aspect="5:4"] #items > .image-and-prevnext {
           padding-bottom: 80%;
         }
         :host[screen="xs"][aspect="5:4"] #details {
@@ -359,7 +360,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         :host[screen="xs"][aspect="1:1"] #items {
           padding-top: 140%;
         }
-        :host[screen="xs"][aspect="1:1"] #items > .prevnext {
+        :host[screen="xs"][aspect="1:1"] #items > .image-and-prevnext {
           padding-bottom: 100%;
         }
         :host[screen="xs"][aspect="1:1"] #details {
@@ -397,7 +398,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         <div id="items">
           <iron-image 
             alt$="[[selected.alt]]" 
-            class="prevnext" 
+            class="image-and-prevnext"
             fade 
             id$="[[selected.id]]" 
             placeholder$="[[selected.thumbnail]]" 
@@ -440,20 +441,22 @@ A LRN element that renders a collection of gallery items into a carousel.
             </lrndesign-gallery-prevnext>
           </div>
           <div id="thumbnails">
+            <div id="thumbnails-inner">
             <p class="sr-only">Slides list:</p>
-            <iron-list id="thumbslist" items="[[items]]" as="item" grid selection-enabled>
-              <template>
-                <lrndesign-gallery-thumbnail
-                  alt$="[[item.alt]]"  
-                  controls$="[[item.controls]]"
-                  item$="[[item.id]]" 
-                  rounded-edges="false"
-                  selected$="[[_isSelected(selected)]]"
-                  thumbnail$="[[item.thumbnail]]" 
-                  target$="[[item.target]]">
-                </lrndesign-gallery-thumbnail>
-              </template>
-            </iron-list>
+              <iron-list id="thumbslist" items="[[items]]" as="item" grid selection-enabled>
+                <template>
+                  <lrndesign-gallery-thumbnail
+                    alt$="[[item.alt]]"  
+                    controls$="[[item.controls]]"
+                    item$="[[item.id]]" 
+                    rounded-edges="false"
+                    selected$="[[_isSelected(selected)]]"
+                    thumbnail$="[[item.thumbnail]]" 
+                    target$="[[item.target]]">
+                  </lrndesign-gallery-thumbnail>
+                </template>
+              </iron-list>
+            </div>
           </div>
         </div>
       </div>
