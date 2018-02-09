@@ -1,0 +1,87 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../lrnsys-layout/lrnsys-dialog.html">
+<link rel="import" href="../image-inspector/image-inspector.html">
+
+<!--
+`lrndesign-gallery-zoom-button`
+A LRN element that renders the zoom feature for the gallery.
+
+@demo demo/index.html
+
+@microcopy - the mental model for this element
+  <lrndesign-gallery-zoom-button 
+    controls = "GALLERY-OR-DIALOG-ID"    //required
+    heading = "IMAGE NAME">              //required, "next" (default) or "previous"
+    item = "0"                           //required, index of the item to view
+    target = "DIALOG OBJECT"             //required
+    tooltip="ZOOM"                       //optional, text for tooltip
+  </lrndesign-gallery-zoom-button>
+-->
+
+<dom-module id="lrndesign-gallery-zoom-button">
+  <template>
+    <style>
+      :host #lrnsysdialog ::slotted(#dialogtrigger) {
+        display: inline-block;
+        text-align: center; 
+        padding: 6px;
+        min-width: 30px; 
+        color: black;
+      }
+      :host #lrnsysdialog ::slotted(#dialogtrigger > lrnsys-button-inner) {
+        width: 30px;
+        line-height: 30px;
+        transition: background-color 1s;
+        background-color: rgba(255,255,255,0.1);
+      }
+      :host #lrnsysdialog ::slotted(#dialogtrigger > lrnsys-button-inner):focus, 
+      :host #lrnsysdialog ::slotted(#dialogtrigger > lrnsys-button-inner):hover {
+        background-color: rgba(255,255,255,0.4);
+
+      }
+    </style>
+    <lrnsys-dialog id="lrnsysdialog" dynamic-images body-append title$="[[tooltip]]">
+      <span slot="button"><iron-icon icon="zoom-in"></iron-icon></span>
+      <h2 slot="header">[[heading]]</h2> 
+      <div><image-inspector alt$="[[alt]]" src$="[[src]]"></image-inspector></div>
+    </lrnsys-dialog>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'lrndesign-gallery-zoom-button',
+
+      properties: {
+        /** 
+        * gallery item's alt text
+        */
+        alt: {
+          type: String,
+          value: null,
+        },
+        /** 
+        * heading for the zoom modal
+        */
+        heading: {
+          type: String,
+          value: null,
+        },
+        /** 
+        * path for the image source
+        */
+        src: {
+          type: String,
+          value: null,
+        },
+        /** 
+        * tooltip for the zoom button
+        */
+        tooltip: {
+          type: String,
+          value: null,
+        },
+      },
+    });
+  </script>
+</dom-module>

@@ -10,47 +10,48 @@
 
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../lrndesign-gallery.html">
+    <link rel="import" href="../lrndesign-gallery-carousel.html">
+    <link rel="import" href="../lrndesign-gallery-image.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
       .vertical-section-container.centered {
         max-width: 1801px;
       }
     </style>
-          <script>
-            window.onload = function(){
-              data = [
-                {
-                  "alt": "A picture of a cat",
-                  "details": "This is a <em>cat</em> picture that is in <strong>landscape</strong>.",
-                  "src": "images/cat.jpeg",
-                  "thumbnail": "images/thumbnails/cat.jpeg",
-                  "title": "Cat"
-                },{
-                  "alt": "A picture of a dog",
-                  "details": "This is a <em>dog</em> picture that is in <strong>portrait</strong>.",
-                  "sizing": "contain",
-                  "src": "images/dog.jpg",
-                  "thumbnail": "images/thumbnails/dog.jpg",
-                  "title": "Dog"
-                },{
-                  "alt": "A picture of a bird",
-                  "details": "This is a <em>bird</em> picture that is almost a <strong>square</strong>.",
-                  "src": "images/bird.jpg",
-                  "thumbnail": "images/thumbnails/bird.jpg",
-                  "title": "Bird"
-                },{
-                  "alt": "A picture of fish",
-                  "details": "This is a <em>fish</em> picture in <strong>landscape</strong> orientation.",
-                  "src": "images/fish.jpg",
-                  "thumbnail": "images/thumbnails/fish.jpg",
-                  "title": "Fish"
-                }
-              ];
-              document.getElementById('carousel16x9').setData(data);
-              document.getElementById('carousel1x1').setData(data);
-            };
-          </script>
+    <script>
+      window.onload = function(){
+        data = [
+          {
+            "alt": "A picture of a cat",
+            "details": "This is a <em>cat</em> picture that is in <strong>landscape</strong>.",
+            "src": "images/cat.jpeg",
+            "thumbnail": "images/thumbnails/cat.jpeg",
+            "title": "Cat"
+          },{
+            "alt": "A picture of a dog",
+            "details": "This is a <em>dog</em> picture that is in <strong>portrait</strong>.",
+            "sizing": "contain",
+            "src": "images/dog.jpg",
+            "thumbnail": "images/thumbnails/dog.jpg",
+            "title": "Dog"
+          },{
+            "alt": "A picture of a bird",
+            "details": "This is a <em>bird</em> picture that is almost a <strong>square</strong>.",
+            "src": "images/bird.jpg",
+            "thumbnail": "images/thumbnails/bird.jpg",
+            "title": "Bird"
+          },{
+            "alt": "A picture of fish",
+            "details": "This is a <em>fish</em> picture in <strong>landscape</strong> orientation.",
+            "src": "images/fish.jpg",
+            "thumbnail": "images/thumbnails/fish.jpg",
+            "title": "Fish"
+          }
+        ];
+        document.getElementById('carousel16x9').setData(data);
+        document.getElementById('carousel1x1').setData(data);
+      };
+    </script>
   </head>
   <body>
     <div class="vertical-section-container centered">
@@ -233,6 +234,21 @@
               ]);
             };
           </script-->
+        </template>
+      </demo-snippet>
+      
+      <h4>Stand-Alone Images</h4>
+      <demo-snippet>
+        <template>
+          <lrndesign-gallery-image 
+            alt="A Picture of Fish" 
+            aspect="1:1" 
+            details="This is a fish picture in landscape orientation." 
+            sizing="1:1" 
+            src="images/fish.jpg" 
+            thumbnail="images/thumbnails/fish.jpg" 
+            title="Fish">
+          </lrndesign-gallery-image>
         </template>
       </demo-snippet>
     </div>

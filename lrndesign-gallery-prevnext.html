@@ -88,7 +88,7 @@ A LRN element
     <iron-a11y-keys 
       id="a11y" 
       keys="enter" 
-      target$="[[button]]"
+      target$="[[__button]]"
       on-keys-pressed="_tapped">
     </iron-a11y-keys>
   </template>
@@ -107,13 +107,6 @@ A LRN element
       },
 
       properties: {
-        /** 
-        * button object
-        */
-        button: {
-          type: Object,
-          value: null,
-        },
         /** 
         * iron-icon chevron
         */
@@ -168,22 +161,14 @@ A LRN element
        * set iron-a11y-keys target to this
        */ 
       ready: function(){
-        this.button = this.$.lrnsysbutton;
-      },
-      /**
-       * set text color based on theme
-       */ 
-      _getTextColor: function(theme){
-        return this.theme == 'dark' ? 'white-text' : 'black-text';
+        this.__button = this.$.lrnsysbutton;
       },
       /**
        * fire navigation tapped event
        */ 
       _tapped: function(e){
         e.preventDefault();
-        if(this.disabled == '') {
-          this.fire('navTap',{'item': parseInt(this.item),'type': 'prevnext'});
-        }
+        this.fire('navTap',{'item': parseInt(this.item),'type': 'prevnext'});
       },
     });
   </script>

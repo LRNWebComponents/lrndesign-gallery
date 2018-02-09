@@ -4,8 +4,10 @@
 <link rel="import" href="../iron-list/iron-list.html">
 <link rel="import" href="../juicy-html/juicy-html.html">
 <link rel="import" href="../responsive-utility/responsive-utility.html">
+<link rel="import" href="lrndesign-gallery-zoom-button.html">
 <link rel="import" href="lrndesign-gallery-prevnext.html">
 <link rel="import" href="lrndesign-gallery-thumbnail.html">
+<link rel="import" href="lrndesign-gallery-print.html">
 
 <!--
 `lrndesign-gallery-carousel`
@@ -85,19 +87,25 @@ A LRN element that renders a collection of gallery items into a carousel.
           border: 1px solid black;
           color: white;
         }
-        :host #items > .prevnext {
+        :host lrndesign-gallery-zoom-button {
+          position: absolute;
+          left: 0px;
+          bottom: 0px;
+          z-index: 2; 
+        }
+        :host .prevnext {
           position: absolute;
           left: 0;
           top: 0;
         }
-        :host #items > .prevnext > lrndesign-gallery-prevnext {
+        :host lrndesign-gallery-prevnext {
           position: absolute;
           left: 0;
           top: 0;
           width: 50%;
           height: 100%;
         }
-        :host #items > .prevnext > lrndesign-gallery-prevnext[type="next"] {
+        :host lrndesign-gallery-prevnext[type="next"] {
           left: 50%;
           text-align: right;
         }
@@ -144,7 +152,7 @@ A LRN element that renders a collection of gallery items into a carousel.
           padding-top: 20%;
         }
         :host[screen="xl"] #items > .prevnext,
-        :host[screen="xl"] #details, {
+        :host[screen="xl"] #details {
           padding-bottom: 20%;
         }
         :host[screen="xl"][aspect="16:9"] #items > .prevnext {
@@ -186,7 +194,7 @@ A LRN element that renders a collection of gallery items into a carousel.
           padding-top: 25%;
         }
         :host[screen="lg"] #items > .prevnext,
-        :host[screen="lg"] #details, {
+        :host[screen="lg"] #details {
           padding-bottom: 25%;
         }
         :host[screen="lg"][aspect="16:9"] #items > .prevnext {
@@ -267,7 +275,7 @@ A LRN element that renders a collection of gallery items into a carousel.
           padding-top: 40%;
         }
         :host[screen="sm"] #items > .prevnext,
-        :host[screen="sm"] #details, {
+        :host[screen="sm"] #details {
           padding-bottom: 40%;
         }
         :host[screen="sm"][aspect="16:9"] #items > .prevnext {
@@ -367,18 +375,15 @@ A LRN element that renders a collection of gallery items into a carousel.
           display: block;
         }
         :host .print-image {
-          max-width: 100%;
+          max-width: 400px;
+          max-height: 400px;
+          display:block;
           border: 1px solid #ddd;
+          page-break-inside: avoid;
         }
       }
     </style>
-    <responsive-utility 
-      sm$=[[sm]] 
-      md$=[[sm]] 
-      lg$=[[lg]] 
-      xl$=[[xl]] 
-      responsive-to-parent="true">
-    </responsive-utility>
+    <responsive-utility responsive-to-parent="true"></responsive-utility>
     <article>
       <template is="dom-if" if="[[hasTitle]]">
         <h1 id="carousel-title">[[title]]</h1>
@@ -387,7 +392,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         <slot name="description"></slot>
       </div>
       <p class="sr-only">A carousel of slides:</p>
-      <div id="carousel">
+      <div id="carousel" tabindex="-1" aria-live="polite">
         <p class="sr-only">Slide [[__xOfY]] selected.</p>
         <div id="items">
           <iron-image 
@@ -410,6 +415,12 @@ A LRN element that renders a collection of gallery items into a carousel.
               </p>
             </div>
           </div>
+          <lrndesign-gallery-zoom-button 
+            alt$="[[selected.alt]]"
+            heading$="[[selected.heading]]"
+            src$="[[selected.src]]" 
+            tooltip$="[[selected.tooltip]]">
+          </lrndesign-gallery-zoom-button>
           <div class="prevnext">
             <lrndesign-gallery-prevnext 
               chevron="chevron-left" 
@@ -447,13 +458,13 @@ A LRN element that renders a collection of gallery items into a carousel.
         </div>
       </div>
       <template id="printlist" is="dom-repeat" items="[[items]]" as="item">
-        <section class="print">
-          <template is="dom-if" if="[[item.hasTitle]]">
-            <h2>[[items.title]]</h2>
-          </template>
-          <juicy-html html$="[[item.details]]"></juicy-html>
-          <img class="print-image" alt$="[[item.alt]]" src$="[[item.src]]"/>
-        </section>
+        <lrndesign-gallery-print
+          alt$="[[item.alt]]" 
+          details$="[[item.details]]" 
+          heading$="[[item.heading]]" 
+          src$="[[item.src]]" 
+          title$="[[item.title]]">
+        </lrndesign-gallery-print>
       </template>
     </article>
   </template>
@@ -466,6 +477,7 @@ A LRN element that renders a collection of gallery items into a carousel.
       listeners: {
         'screen-resize': '_onScreenResize', 
         'navTap': '_onNavTapped',
+        'zoomTap': '_onZoomTapped',
       },
 
       properties: {
@@ -482,7 +494,6 @@ A LRN element that renders a collection of gallery items into a carousel.
         hasTitle: {
           type: Boolean,
           computed: '_isAttrSet(title)',
-          reflectToAttribute: true,
         },
         /** 
          * array of carousel items
@@ -499,6 +510,8 @@ A LRN element that renders a collection of gallery items into a carousel.
         selected: {
           type: Object,
           value: {},
+          notify: true,
+          reflectToAttribute: true,
         },
         /**
          * screen size: xs, sm, md, lg, or xl
@@ -538,6 +551,7 @@ A LRN element that renders a collection of gallery items into a carousel.
       attached: function(){
         let root = this, prefix = this.id !== undefined ? this.id : this.title;
         this.__target = this.$.carousel;
+        this.__dialog = this.$.dialog;
         this.__anchor = 0;
         this._getUniqueId(prefix);
       },
@@ -551,11 +565,14 @@ A LRN element that renders a collection of gallery items into a carousel.
             temp[i] = data[i];
             let prefix = this.id+'-'+data[i].title.toString().toLowerCase().replace(/[^a-z|0-9]/g,'');
             this.__tempid = this.__tempid === undefined ? 0 : this.__tempid + 1;
-            temp[i].controls = root.id;
+            temp[i].controls = 'carousel';
             temp[i].hasTitle = data[i].title !== undefined;
             temp[i].id = data[i].id !== undefined ? data[i].id : prefix+'-'+root.__tempid;
             temp[i].sizing = data[i].sizing !== undefined ? data[i].sizing : root.sizing;
             temp[i].target = root;
+            temp[i].index = parseInt(i);
+            temp[i].tooltip = data[i].title !== undefined ? 'Zoom In ('+data[i].title+')' : 'Zoom In';
+            temp[i].heading = data[i].title !== undefined ? data[i].title : 'Image Zoom';
             temp[i].prev = parseInt(i) - 1 > -1 ? parseInt(i) - 1 : -1;
             temp[i].next = parseInt(i) + 1 < data.length ? parseInt(i) + 1 : -1;
             if (window.location.hash == '#'+temp[i].id) {
@@ -583,9 +600,10 @@ A LRN element that renders a collection of gallery items into a carousel.
           this.selected = this.items[index];
           if(this.$.thumbslist.selectItem === null || setThumbnail) {
             this.$.thumbslist.selectItem(this.items[index]);
+            this.__xOfY = parseInt(index+1)+' of '+this.items.length;
+            this.$.carousel.focus();
           }
         }
-        this.__xOfY = parseInt(index+1)+' of '+this.items.length;
       },
       /**
        * sets size class based on parent container and breakpoints
