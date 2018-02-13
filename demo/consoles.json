@@ -1,0 +1,36 @@
+[{
+	"alt": "A picture of an Atari console",
+	"details": "This console was made by <em>Atari</em>.",
+  "id": "atari",
+  "src": "images/atari.jpg",
+	"thumbnail": "images/thumbnails/atari.jpg",
+	"title": "Atari"
+}, {
+	"alt": "A picture of an Microsoft console",
+	"details": "This console was made by <em>Microsoft</em>.",
+  "id": "microsoft",
+  "src": "images/xbox.png",
+	"thumbnail": "images/thumbnails/xbox.png",
+	"title": "Microsoft"
+}, {
+	"alt": "A picture of an Nintendo console",
+	"details": "This console was made by <em>Nintendo</em>.",
+  "id": "nintendo",
+  "src": "images/nintendo.png",
+	"thumbnail": "images/thumbnails/nintendo.png",
+	"title": "Nintendo"
+}, {
+	"alt": "A picture of an Sega console",
+	"details": "This console was made by <em>Sega</em>.",
+  "id": "sega",
+  "src": "images/sega.jpg",
+	"thumbnail": "images/thumbnails/sega.jpg",
+	"title": "Sega"
+}, {
+	"alt": "A picture of an Sony console",
+	"details": "This console was made by <em>Sony</em>.",
+  "id": "sony",
+  "src": "images/ps4.jpg",
+	"thumbnail": "images/thumbnails/ps4.jpg",
+	"title": "Sony"
+}]

@@ -10,114 +10,31 @@
 
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../lrndesign-gallery-carousel.html">
-    <link rel="import" href="../lrndesign-gallery-image.html">
+    <link rel="import" href="../lrndesign-gallery.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
       .vertical-section-container.centered {
         max-width: 1801px;
       }
     </style>
-    <script>
-      window.onload = function(){
-        data = [
-          {
-            "alt": "A picture of a cat",
-            "details": "This is a <em>cat</em> picture that is in <strong>landscape</strong>.",
-            "src": "images/cat.jpeg",
-            "thumbnail": "images/thumbnails/cat.jpeg",
-            "title": "Cat"
-          },{
-            "alt": "A picture of a dog",
-            "details": "This is a <em>dog</em> picture that is in <strong>portrait</strong>.",
-            "sizing": "contain",
-            "src": "images/dog.jpg",
-            "thumbnail": "images/thumbnails/dog.jpg",
-            "title": "Dog"
-          },{
-            "alt": "A picture of a bird",
-            "details": "This is a <em>bird</em> picture that is almost a <strong>square</strong>.",
-            "src": "images/bird.jpg",
-            "thumbnail": "images/thumbnails/bird.jpg",
-            "title": "Bird"
-          },{
-            "alt": "A picture of fish",
-            "details": "This is a <em>fish</em> picture in <strong>landscape</strong> orientation.",
-            "src": "images/fish.jpg",
-            "thumbnail": "images/thumbnails/fish.jpg",
-            "title": "Fish"
-          }
-        ];
-        document.getElementById('carousel16x9').setData(data);
-        document.getElementById('carousel1x1').setData(data);
-      };
-    </script>
   </head>
   <body>
     <div class="vertical-section-container centered">
       <h3>Basic lrndesign-gallery demo</h3>
-      <!--h4>Thumbnail Grids</h4>
+      <h4>Thumbnail Grids</h4>
       <demo-snippet>
         <template>
-          <lrndesign-gallery-grid id="grid" title="Grid">
+          <lrndesign-gallery title="Grid (3:2)" aspect="3:2" data-src="foods.json" grid="true">
             <div slot="description">This is a <em>regular</em> <strong>grid</strong>.</div>
-            <lrndesign-gallery-image 
-              src="images/dog.jpg" 
-              thumbnail="images/thumbnails/dog.jpg" 
-              alt="A Picture of Dog" title="Dog">
-              This is a <em>dog</em> picture in <strong>portrait</strong> orientation.
-            </lrndesign-gallery-image>
-            <lrndesign-gallery-image 
-              src="images/cat.jpeg" 
-              thumbnail="images/thumbnails/cat.jpeg" 
-              alt="A Picture of Cat" title="Cat">
-              This is a <em>cat</em> picture in <strong>landscape</strong> orientation.
-            </lrndesign-gallery-image>
-            <lrndesign-gallery-image 
-              src="images/bird.jpg" 
-              thumbnail="images/thumbnails/bird.jpg" 
-              alt="A Picture of Bird" title="Bird">
-              This is a <em>bird</em> picture that is almost a <strong>square</strong>.
-            </lrndesign-gallery-image>
-            <lrndesign-gallery-image 
-              src="images/fish.jpg" 
-              thumbnail="images/thumbnails/fish.jpg" 
-              alt="A Picture of Fish" title="Fish">
-              This is a <em>fish</em> picture in <strong>landscape</strong> orientation.
-            </lrndesign-gallery-image>
-          </lrndesign-gallery-grid>
+          </lrndesign-gallery>
         </template>
       </demo-snippet>
 
-      <demo-snippet>
+      <!--demo-snippet>
         <template>
           <div style="width: 400px; margin: 0 auto;">
-            <lrndesign-gallery-grid id="grid" title="Grid with Small, Rounded Thumbnails" thumbnail-size="small" rounded-edges="true">
+            <lrndesign-gallery-grid id="gridsmall" title="Grid with Small, Rounded Thumbnails" thumbnail-size="small" rounded-edges="true">
               <div slot="description">This is a <em>regular</em> <strong>grid</strong>.</div>
-              <lrndesign-gallery-image 
-                src="images/dog.jpg" 
-                thumbnail="images/thumbnails/dog.jpg" 
-                alt="A Picture of Dog" title="Dog">
-                This is a <em>dog</em> picture in <strong>portrait</strong> orientation.
-              </lrndesign-gallery-image>
-              <lrndesign-gallery-image 
-                src="images/cat.jpeg" 
-                thumbnail="images/thumbnails/cat.jpeg" 
-                alt="A Picture of Cat" title="Cat">
-                This is a <em>cat</em> picture in <strong>landscape</strong> orientation.
-              </lrndesign-gallery-image>
-              <lrndesign-gallery-image 
-                src="images/bird.jpg" 
-                thumbnail="images/thumbnails/bird.jpg" 
-                alt="A Picture of Bird" title="Bird">
-                This is a <em>bird</em> picture that is almost a <strong>square</strong>.
-              </lrndesign-gallery-image>
-              <lrndesign-gallery-image 
-                src="images/fish.jpg" 
-                thumbnail="images/thumbnails/fish.jpg" 
-                alt="A Picture of Fish" title="Fish">
-                This is a <em>fish</em> picture in <strong>landscape</strong> orientation.
-              </lrndesign-gallery-image>
             </lrndesign-gallery-grid>
           </div>
         </template>
@@ -125,129 +42,32 @@
 
       <demo-snippet>
         <template>
-          <lrndesign-gallery-grid id="grid" title="Grid with Large Thumbnails" thumbnail-size="large">
+          <lrndesign-gallery-grid id="gridlarge" title="Grid with Large Thumbnails" thumbnail-size="large">
             <div slot="description">This is a <em>regular</em> <strong>grid</strong>.</div>
-            <lrndesign-gallery-image 
-              src="images/dog.jpg" 
-              thumbnail="images/thumbnails/large/dog.jpg" 
-              alt="A Picture of Dog" title="Dog">
-              This is a <em>dog</em> picture in <strong>portrait</strong> orientation.
-            </lrndesign-gallery-image>
-            <lrndesign-gallery-image 
-              src="images/cat.jpeg" 
-              thumbnail="images/thumbnails/large/cat.jpeg" 
-              alt="A Picture of Cat" title="Cat">
-              This is a <em>cat</em> picture in <strong>landscape</strong> orientation.
-            </lrndesign-gallery-image>
-            <lrndesign-gallery-image 
-              src="images/bird.jpg" 
-              thumbnail="images/thumbnails/large/bird.jpg" 
-              alt="A Picture of Bird" title="Bird">
-              This is a <em>bird</em> picture that is almost a <strong>square</strong>.
-            </lrndesign-gallery-image>
-            <lrndesign-gallery-image 
-              src="images/fish.jpg" 
-              thumbnail="images/thumbnails/large/fish.jpg" 
-              alt="A Picture of Fish" title="Fish">
-              This is a <em>fish</em> picture in <strong>landscape</strong> orientation.
-            </lrndesign-gallery-image>
           </lrndesign-gallery-grid>
         </template>
       </demo-snippet-->
       <h4>Carousels</h4>
       <demo-snippet>
         <template>
-          <lrndesign-gallery-carousel id="carousel16x9" title="Carousel (16:9)" aspect="16:9">
+          <lrndesign-gallery title="Carousel (16:9)" aspect="16:9" data-src="consoles.json">
             <div slot="description">This is a <em>regular</em> <strong>carousel</strong>.</div>
-          </lrndesign-gallery-carousel>
-          <!-- To load data into carousel
-          <script>
-            window.onload = function(){
-              document.getElementById('carousel16x9').setData([
-                {
-                  "alt": "A picture of a cat",
-                  "details": "This is a <em>cat</em> picture that is in <strong>landscape</strong>.",
-                  "src": "images/cat.jpeg",
-                  "thumbnail": "images/thumbnails/cat.jpeg",
-                  "title": "Cat"
-                },{
-                  "alt": "A picture of a dog",
-                  "details": "This is a <em>dog</em> picture that is in <strong>portrait</strong>.",
-                  "sizing": "contain",
-                  "src": "images/dog.jpg",
-                  "thumbnail": "images/thumbnails/dog.jpg",
-                  "title": "Dog"
-                },{
-                  "alt": "A picture of a bird",
-                  "details": "This is a <em>bird</em> picture that is almost a <strong>square</strong>.",
-                  "src": "images/bird.jpg",
-                  "thumbnail": "images/thumbnails/bird.jpg",
-                  "title": "Bird"
-                },{
-                  "alt": "A picture of fish",
-                  "details": "This is a <em>fish</em> picture in <strong>landscape</strong> orientation.",
-                  "src": "images/fish.jpg",
-                  "thumbnail": "images/thumbnails/fish.jpg",
-                  "title": "Fish"
-                }
-              ]);
-            };
-          </script> -->
+          </lrndesign-gallery>
         </template>
       </demo-snippet>
 
       <demo-snippet>
         <template>
-          <lrndesign-gallery-carousel id="carousel1x1" title="Dark Carousel (1:1)" aspect="1:1" theme="dark">
+          <lrndesign-gallery title="Dark Carousel (1:1)" aspect="1:1" theme="dark" data-src="animals.json">
             <div slot="description">This is an <em>extra-wide</em> <strong>carousel</strong> with the <em>dark</em> theme.</div>
-          </lrndesign-gallery-carousel>
-          <!-- To load data into carousel
-          <script>
-            window.onload = function(){
-              document.getElementById('carousel1x1').setData([
-                {
-                  "alt": "A picture of a cat",
-                  "details": "This is a <em>cat</em> picture that is in <strong>landscape</strong>.",
-                  "src": "images/cat.jpeg",
-                  "thumbnail": "images/thumbnails/cat.jpeg",
-                  "title": "Cat"
-                },{
-                  "alt": "A picture of a dog",
-                  "details": "This is a <em>dog</em> picture that is in <strong>portrait</strong>.",
-                  "sizing": "contain",
-                  "src": "images/dog.jpg",
-                  "thumbnail": "images/thumbnails/dog.jpg",
-                  "title": "Dog"
-                },{
-                  "alt": "A picture of a bird",
-                  "details": "This is a <em>bird</em> picture that is almost a <strong>square</strong>.",
-                  "src": "images/bird.jpg",
-                  "thumbnail": "images/thumbnails/bird.jpg",
-                  "title": "Bird"
-                },{
-                  "alt": "A picture of fish",
-                  "details": "This is a <em>fish</em> picture in <strong>landscape</strong> orientation.",
-                  "src": "images/fish.jpg",
-                  "thumbnail": "images/thumbnails/fish.jpg",
-                  "title": "Fish"
-                }
-              ]);
-            };
-          </script-->
+          </lrndesign-gallery>
         </template>
       </demo-snippet>
       
       <h4>Stand-Alone Images</h4>
       <demo-snippet>
         <template>
-          <lrndesign-gallery-image 
-            alt="A Picture of Fish" 
-            aspect="1:1" 
-            details="This is a fish picture in landscape orientation." 
-            src="images/fish.jpg" 
-            thumbnail="images/thumbnails/fish.jpg" 
-            title="Fish">
-          </lrndesign-gallery-image>
+          <lrndesign-gallery data-src="dice.json"></lrndesign-gallery>
         </template>
       </demo-snippet>
     </div>

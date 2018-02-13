@@ -22,7 +22,6 @@ A LRN element that renders the zoom feature for the gallery.
   <template>
     <style>
       :host #lrnsysdialog ::slotted(#dialogtrigger) {
-        display: inline-block;
         text-align: center; 
         padding: 6px;
         min-width: 30px; 
@@ -41,8 +40,9 @@ A LRN element that renders the zoom feature for the gallery.
       }
     </style>
     <lrnsys-dialog id="lrnsysdialog" dynamic-images body-append title$="[[tooltip]]">
-      <span slot="button"><iron-icon icon="zoom-in"></iron-icon></span>
+      <span slot="button"><slot name="button-image"></slot></span>
       <h2 slot="header">[[heading]]</h2> 
+      <slot name="details"></slot>
       <div><image-inspector alt$="[[alt]]" src$="[[src]]"></image-inspector></div>
     </lrnsys-dialog>
   </template>
@@ -65,6 +65,13 @@ A LRN element that renders the zoom feature for the gallery.
         */
         heading: {
           type: String,
+          computed: '_getHeading(itemTitle)',
+        },
+        /** 
+        * title of the item
+        */
+        itemTitle: {
+          type: String,
           value: null,
         },
         /** 
@@ -79,9 +86,27 @@ A LRN element that renders the zoom feature for the gallery.
         */
         tooltip: {
           type: String,
-          value: null,
+          computed: '_getTooltip(itemTitle)',
         },
       },
+      /** 
+      * returns true if the given attribute is not null
+      */
+      _getHeading: function (itemTitle){
+        return this._isAttrSet(itemTitle) ? itemTitle : 'Image Zoom';
+      },
+      /** 
+      * returns true if the given attribute is not null
+      */
+      _getTooltip: function (itemTitle){
+        return this._isAttrSet(itemTitle) ? 'Zoom In ('+itemTitle+')' : 'Zoom In';
+      },
+      /** 
+      * returns true if the given attribute is not null
+      */
+      _isAttrSet: function (attr){
+        return attr !== null && attr !== undefined;
+      }
     });
   </script>
 </dom-module>

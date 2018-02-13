@@ -1,0 +1,162 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="lrndesign-gallery-carousel.html">
+<link rel="import" href="lrndesign-gallery-grid.html">
+
+<!--
+`lrndesign-gallery`
+A LRN element that renders a collection of gallery items into a carousel or a single media item into a layout.
+
+@demo demo/index.html
+
+@microcopy - the mental model for this element
+  <lrndesign-gallery 
+    aspect = "1:1"                    //optional, can be 1:1, 5:4, 4:3 (default), 3:2, 16:9.
+    data-src = "PATH/TO/DATA.JSON"    //required
+    sizing = "contain"                //optional, "cover" for cropping (default) or "contain" for letterboxing
+    theme = "dark"                    //optional, dark or default
+    title = "My Carousel">            //optional
+    OPTIONAL TEXT ABOUT THE CAROUSEL HERE.
+  </lrndesign-gallery>
+
+  To load data into carousel:
+  <script>
+    [{
+      "alt": "IMAGE ALT TEXT",                          //required
+      "details": "TEXT ABOUT IMAGE HERE",               //optional   
+      "id": ""                                          //required, unique id
+      "sizing": "contain",                              //optional, "cover" for cropping (default) or "contain" for letterboxing, default is parent's sizing
+      "src": "PATH/TO/FULL/IMAGE/HERE.JPG",             //required
+      "thumbnail": "PATH/TO/THUMBAIL/IMAGE/HERE.JPG",   //required
+      "title": "IMAGE TITLE HERE",                      //optional
+      "type": "image",                                  //required, "image", "video", "audio", etc.
+      "zoom": false                                     //optional, false item should have no zoom option, default is true 
+    }]
+
+-->
+
+<dom-module id="lrndesign-gallery">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <iron-ajax
+     auto
+     url="[[dataSrc]]"
+     handle-as="json"
+     last-response="{{items}}"></iron-ajax>
+    <article>
+      <template is="dom-if" if="[[_isAttrSet(title)]]">
+        <h1 id="gallery-title">[[title]]</h1>
+      </template>
+      <div id="gallery-description">
+        <slot name="description"></slot>
+      </div>
+      <template is="dom-if" if="[[grid]]">
+        <lrndesign-gallery-grid
+          aspect$="[[aspect]]"
+          items$="[[items]]"
+          sizing$="[[sizing]]"
+          theme$="[[theme]]">
+        </lrndesign-gallery-grid>
+      </template>
+      <template is="dom-if" if="[[!grid]]">
+        <lrndesign-gallery-carousel
+          aspect$="[[aspect]]"
+          items$="[[items]]"
+          sizing$="[[sizing]]"
+          theme$="[[theme]]">
+        </lrndesign-gallery-carousel>
+      </template>
+      
+      <template id="printlist" is="dom-repeat" items="[[items]]" as="item">
+        <lrndesign-gallery-print
+          alt$="[[item.alt]]" 
+          details$="[[item.details]]" 
+          heading$="[[item.heading]]" 
+          src$="[[item.src]]" 
+          title$="[[item.title]]">
+        </lrndesign-gallery-print>
+      </template>
+    </article>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'lrndesign-gallery',
+
+      properties: {
+        /** 
+        * aspect ratio of media: 1:1, 5:4, 4:3, 3:2, or 16:9
+        */
+        aspect: {
+          type: String,
+          value: '4:3'
+        },
+        /**
+         * Source to pull the gallery items from
+         */
+        dataSrc: {
+          type: String,
+          notify: true,
+          reflectToAttribute: true
+        },
+        /** 
+         * thumbnail grid layout, default is false (carousel layout)
+         */
+        grid: {
+          type: Boolean,
+          value: false
+        },
+        /** 
+         * array of carousel items
+         */
+        items: {
+          type: Array,
+          value: [],
+          notify: true
+        },
+        /*
+         * data for the selected item
+         */
+        selected: {
+          type: Object,
+          value: {},
+          notify: true,
+          reflectToAttribute: true
+        },
+        /**
+         * default sizing: fit screen by cropping (cover) 
+         * or with letterboxing (contain)
+         */
+        sizing: {
+          type: String,
+          value: 'cover'
+        },
+        /** 
+         * theme of the carousel: default or dark
+         */
+        theme: {
+          type: String,
+          value: 'default'
+        },
+        /** 
+         * carousel's title
+         */
+        title: {
+          type: String,
+          value: null
+        },
+      },
+      /** 
+      * returns true if the given attribute is not null
+      */
+      _isAttrSet: function (attr){
+        return attr !== null && attr !== undefined;
+      }
+    });
+  </script>
+</dom-module>

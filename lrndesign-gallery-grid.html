@@ -1,21 +1,36 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../juicy-html/juicy-html.html">
 <link rel="import" href="../iron-image/iron-image.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-list/iron-list.html">
-<link rel="import" href="../paper-dialog/paper-dialog.html">
-<link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
-<link rel="import" href="../responsive-utility/responsive-utility.html">
-<link rel="import" href="lrndesign-gallery-thumbnail.html">
+<link rel="import" href="lrndesign-gallery-zoom-button.html">
 
 <!--
 `lrndesign-gallery-grid`
-A LRN element
+A LRN element that renders a collection of gallery items into a carousel or a single media item into a layout.
 
 @demo demo/index.html
 
 @microcopy - the mental model for this element
-  title = "My Carousel"            //required
-  thumbnail-size = "small"         //optional, small or larger
+  <lrndesign-gallery-grid 
+    aspect = "1:1"                    //optional, can be 1:1, 5:4, 4:3 (default), 3:2, 16:9.
+    items = "[]"                      //required, array of items
+    sizing = "contain"                //optional, "cover" for cropping (default) or "contain" for letterboxing
+    theme = "dark">                   //optional, dark or default
+  </lrndesign-gallery-grid>
+
+  To load data into carousel:
+  <script>
+    [{
+      "alt": "IMAGE ALT TEXT",                          //required
+      "details": "TEXT ABOUT IMAGE HERE",               //optional 
+      "id": "123"                                       //required, unique id  
+      "sizing": "contain",                              //optional, "cover" for cropping (default) or "contain" for letterboxing, default is parent's sizing
+      "src": "PATH/TO/FULL/IMAGE/HERE.JPG",             //required
+      "thumbnail": "PATH/TO/THUMBAIL/IMAGE/HERE.JPG",   //required
+      "title": "IMAGE TITLE HERE",                      //optional
+      "type": "image",                                  //required, "image", "video", "audio", etc.
+      "zoom": false                                     //optional, false item should have no zoom option, default is true 
+    }]
 
 -->
 
@@ -24,222 +39,153 @@ A LRN element
     <style>
       :host {
         display: block;
-        border: 1px solid #ddd; 
-        padding: 10px;
+        margin: 15px 0 0;
+        padding: 0;
       }
-      :host #items {
-        margin-top: 15px;
-        width: 100%;
-        position: relative;
+      :host .sr-only {
+        position: absolute;
+        left: -999999;
+        height: 0;
+        width: 0;
+        overflow: hidden;
       }
-      :host ::slotted(*) #image {
-        margin-top: 15px;
-        width: 600px;
-        height: 450px;
+      lrndesign-gallery-grid-thumbnail {
+        width: 100px;
+        height: 100px;
       }
-      :host #thumbnails lrndesign-gallery-thumbnail {
-        padding: 7.5px;
-        width: 150px;
-        height: 150px;
-      }
-      :host[thumbnail-size="small"] #thumbnails lrndesign-gallery-thumbnail {
-        padding: 5px;
-        width: 75px;
-        height: 75px;
-      }
-      :host[thumbnail-size="large"] #thumbnails lrndesign-gallery-thumbnail {
-        padding: 10px;
-        width: 300px;
-        height: 300px;
-      }
-      :host #modal > * {
-        padding: 0 20px 20px;
-      }
+      
       @media print {
-        :host #thumbnails {
+        :host #gallery {
           display: none;
         }
       }
     </style>
-    <responsive-utility 
-      sm$=[[sm]] 
-      md$=[[sm]] 
-      lg$=[[lg]] 
-      xl$=[[xl]] 
-      responsive-to-parent="true">
-    </responsive-utility>
-    <article screen$="[[screen]]">
-      <h1>[[title]]</h1>
-      <slot id="description" name="description"></slot>
-      <div id="items">
-        <slot></slot>
-      </div>
-      <div id="thumbnails" name="thumbnails">
-        <iron-list id="thumbnails-inner" items="{{items}}" as="item" grid selection-enabled>
-          <template>
-            <lrndesign-gallery-thumbnail
-              anchor$="[[item.anchor]]"  
-              controls$="[[item.controls]]"
-              item$="[[item.item]]" 
-              rounded-edges$="[[item.roundedEdges]]" 
-              src$="[[item.src]]" 
-              title$="[[item.title]]" 
-              target$="[[item.target]]">
-            </lrndesign-gallery-thumbnail>
-          </template>
-        </iron-list>
-      </div>
-      <paper-dialog id="modal" aria-labelledby="modalid">
-        <h2 id="modalid"></h2>
-        <paper-dialog-scrollable id="modalcontent">
-        </paper-dialog-scrollable>
-        <div class="buttons">
-          <paper-button dialog-confirm autofocus>OK</paper-button>
-        </div>
-      </paper-dialog>
-    </article>
+    <template is="dom-if">
+      <p class="sr-only">A collection of thumbnails:</p>
+    </template>
+    <div id="gallery" tabindex="-1" aria-live="polite">
+      <iron-list id="thumbslist" items="[[__items]]" as="item" grid selection-enabled>
+        <template>
+          <lrndesign-gallery-zoom-button 
+            alt$="[[item.alt]]" 
+            item-title$="[[item.title]]"
+            size="medium"
+            src$="[[item.src]]" height="150px" width="150px">
+            <div slot="button-image">
+              <div height="150px" width="150px">
+              <iron-image 
+                alt$="[[item.alt]]" 
+                class="lrndesign-gallery-grid-thumbnail" 
+                fade 
+                height="150px"
+                sizing="cover" 
+                src$="[[item.thumbnail]]"
+                width="150px">
+              </iron-image>
+              </div>
+            </div>
+            <div slot="details">
+              <juicy-html html$="[[item.details]]"></juicy-html>
+            </div>
+          </lrndesign-gallery-zoom-button>
+        </template>
+      </iron-list>
+    </div>
   </template>
 
   <script>
     Polymer({
 
       is: 'lrndesign-gallery-grid',
+      
       listeners: {
-        'screen-resize': '_onScreenResize', 
-        'thumbnailTap': '_thumbnailTapped',
+        'navTap': '_onNavTapped',
       },
 
       properties: {
         /** 
-        * An array of grid items
+        * aspect ratio of media: 1:1, 5:4, 4:3, 3:2, or 16:9
         */
-        nodes: {
+        aspect: {
+          type: String,
+          value: '4:3'
+        },
+        /** 
+         * array of carousel items
+         */
+        items: {
           type: Array,
           value: [],
+          notify: true,
+          observer: '_itemsLoaded'
         },
         /** 
-        * Round the edges of the thumbnail?
-        */
-        roundedEdges: {
-          type: Boolean,
-          value: false,
-        },
-        /** 
-        * An array of grid item thumbnails
-        */
-        thumbnails: {
-          type: Array,
-          value: [],
-        },
-        /** 
-        * The grid's title'
-        */
-        title: {
-          type: String,
-          value: 'Default Title',
-        },
-        /** 
-        * The grid's thumbnail size: small-medium or large
-        */
-        thumbnailSize: {
-          type: String,
-          value: 'default',
+         * the parent item
+         */
+        parent: {
+          type: Object,
+          value: {}
         },
         /*
-         * screen size: xs, sm, md, lg, or xl
+         * data for the selected item
          */
-        screen: {
-          type: String,
-          value: 'xs',
+        selected: {
+          type: Object,
+          value: {},
           notify: true,
-          reflectToAttribute: true,
+          reflectToAttribute: true
+        },
+        /**
+         * default sizing: fit screen by cropping (cover) 
+         * or with letterboxing (contain)
+         */
+        sizing: {
+          type: String,
+          value: 'cover'
+        },
+        /** 
+         * theme of the carousel: default or dark
+         */
+        theme: {
+          type: String,
+          value: 'default'
+        },
+        /** 
+         * carousel's title
+         */
+        title: {
+          type: String,
+          value: null
         },
       },
-      ready: function(){
-      },
-      attached: function(){
-        let root = this;
-        this.__anchor = 0;
-        this._getUniqueId(this,root.title);
-        this.modalId = this.id + '-modal';
-        this.items = this._getItems(Polymer.dom(root).getEffectiveChildNodes());
-        console.log(this.items);
-        if(this.__anchor !== 0) {
-          this.goToItem(this.__anchor);
-          document.getElementById(this.__anchor).scrollIntoView();
-        }
-      },
       /**
-       * Navigates to specified item.
-       */ 
-      goToItem: function(selection){
-        console.log(selection,typeof selection,document.getElementById(selection));
-        
-        if (typeof selection === 'string') {
-          this.selected = document.getElementById(selection);
-        } else if (typeof selection === 'number') {
-          this.selected = document.getElementById(this.items[selection].item);
-        } else {
-          this.selected = selection;
-        }
-
-        if (this.selected !== undefined) {
-          this.$.modalid.innerHTML = this.selected.getAttribute('title');
-          this.$.modalcontent.innerHTML = '<div>'+this.selected.querySelector('#details-body').innerHTML+'</div>';
-          this.$.modalcontent.appendChild(this.selected.querySelector('#image'));
-          this.$.modal.open();
-        }
-      },
-      _onScreenResize: function(e){
-        this.screen = e.detail.screen;
-      },
-      /**
-       * Gets all the gallery items and creates a thumbnail.
-       */ 
-      _getItems: function(nodes){
-        let temp = [];
-        for (i in nodes) {
-          if (nodes[i].tagName !== undefined && nodes[i].tagName.toLowerCase() == 'lrndesign-gallery-image'){
-            let title = nodes[i].getAttribute('title'), src = nodes[i].getAttribute('thumbnail'), id = this._getUniqueId(nodes[i],title);
-            temp.push({
-              'controls': 'modal',
-              'item': id,
-              'roundedEdges': this.roundedEdges, 
-              'src': src,
-              'target': this.$.modal,
-              'title': title,
-            });
-            if (window.location.hash == '#'+id) {
-              this.__anchor = id;
-            }
-          }
-        }
-        return temp;
-      },
-      /**
-       * Gets, sets, and returns a unique ID given a text prefix.
-       */ 
-      _getUniqueId: function(obj,prefix,cntr){
-        let root = this, newid = prefix == undefined ? "item" : prefix.toString().toLowerCase().replace(/[^a-z|0-9]/g,'');
-        if (cntr !== undefined) {
-          newid += cntr;
-        } else {
-          cntr = 0;
-        }
-        if (document.getElementById(newid) !== null) {
-          cntr++;
-          newid = root._getUniqueId(obj,prefix,cntr);
-        } else {
-          obj.id = newid;
-        }
-        return newid;
-      },
-      /**
-       * When a thumbnail is tapped, go to that item.
+       * gets unique id for carousel and sets it as a target
        */
-      _thumbnailTapped: function(e){
-        this.goToItem(e.detail.item);
+      attached: function(){
+        this.__gallery = this.$.gallery;
       },
+      /**
+       * gets unique id for carousel and sets it as a target
+       */
+      _itemsLoaded: function(){
+        let temp = [];
+        if(this.items !== undefined && this.items !== null && this.items.length > 0){
+          for (i in this.items) {
+            temp[i] = this.items[i];
+            temp[i].sizing = temp[i].sizing !== undefined ? temp[i].sizing : this.sizing;
+          }
+          this.items = [];
+          this.items.splice(0,0, ...temp);
+          this.__items = temp;
+          this.$.thumbslist.fire('iron-resize');
+        }
+      },
+      /** 
+      * returns true if the given attribute is not null
+      */
+      _isAttrSet: function (attr){
+        return attr !== null && attr !== undefined;
+      }
     });
   </script>
 </dom-module>

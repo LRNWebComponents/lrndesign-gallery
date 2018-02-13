@@ -1,0 +1,22 @@
+[{
+	"alt": "A picture of an apple",
+	"details": "This is an <em>apple</em> picture.",
+  "id": "apple",
+  "src": "images/apple.jpg",
+	"thumbnail": "images/thumbnails/apple.jpg",
+	"title": "Apple"
+}, {
+	"alt": "A picture of bananas",
+	"details": "This is a picture of <em>bananas</em>.",
+	"id": "bananas",
+	"src": "images/banana.jpg",
+	"thumbnail": "images/thumbnails/banana.jpg",
+	"title": "Bananas"
+}, {
+	"alt": "A picture of carrots",
+	"details": "This is a picture of <em>carrots</em>.",
+	"id": "carrots",
+  "src": "images/carrot.jpeg",
+	"thumbnail": "images/thumbnails/carrot.jpeg",
+	"title": "Carrots"
+}]

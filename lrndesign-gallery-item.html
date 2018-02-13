@@ -1,0 +1,439 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../juicy-html/juicy-html.html">
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="lrndesign-gallery-zoom-button.html">
+
+<!--
+`lrndesign-gallery-item`
+A LRN element that renders a collection of gallery items into a carousel.
+
+@demo demo/index.html
+
+@microcopy - the mental model for this element
+  <lrndesign-gallery-item 
+    aspect = "1:1"                    //optional, can be 1:1, 5:4, 4:3 (default), 3:2, 16:9.
+    item = "{}                        //required, the currently selected item
+    theme = "dark">                   //optional, dark or default
+    <div slot="item"></slot>          //optional, the rendered selected item
+    <div slot="xy-start"></slot>      //optional, "slide x of y"
+    <div slot="xy-end"></slot>        //optional, "end of slide x of y"
+    <div slot="prevnextnav"></slot>   //optional, previous and next item navigation
+    <div slot="thumbnails"></slot>    //optional, thumbnail navigation
+  </lrndesign-gallery-item>
+
+  Item data:
+  <script>
+    {
+      "alt": "IMAGE ALT TEXT",                          //required
+      "details": "TEXT ABOUT IMAGE HERE",               //optional   
+      "sizing": "contain",                              //optional, "cover" for cropping (default) or "contain" for letterboxing, default is parent's sizing
+      "src": "PATH/TO/FULL/IMAGE/HERE.JPG",             //required
+      "thumbnail": "PATH/TO/THUMBAIL/IMAGE/HERE.JPG",   //required
+      "title": "IMAGE TITLE HERE",                      //optional
+      "zoom": false                                     //optional, false item should have no zoom option, default is true 
+    }
+
+-->
+
+<dom-module id="lrndesign-gallery-item">
+  <template>
+    <style>
+      :host {
+        width: 100%;
+      }
+      :host > #gallery-item {
+        position: relative;
+        border: 1px solid #eee;
+      }
+      :host[theme="dark"] > #gallery-item {
+        border: 1px solid black;
+        color: white;
+      }
+      :host .gallery-image {
+        margin-bottom: -3px;
+      }
+      :host #details, 
+      :host #details-inner, 
+      :host lrndesign-gallery-zoom-button, 
+      :host #prevnext,
+      :host #thumbnails {
+        position: absolute;
+      }
+      :host #prevnext {
+        left: 0;
+        top: 0;
+      }
+      :host lrndesign-gallery-zoom-button {
+        left: 0;
+        bottom: 0px;
+        z-index: 2; 
+      }
+      :host #details {
+        right: 0;
+        top: 0;
+        max-height: 100%;
+        color: black;
+        background-color: #f8f8f8;
+      }
+      :host[theme="dark"] #details {
+        background-color: #222;
+        color: white;
+      }
+      :host #details-inner {
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-height: 45%;
+        overflow-y: scroll;
+      } 
+      :host #details-inner > * {
+        padding: 0 20px;
+      }
+      :host #details-inner > #item-title {
+        padding-right: 100px;
+      }
+      :host #thumbnails {
+        right: 0;
+        bottom: 5px;
+        max-height: 45%;
+      }
+      :host #thumbnails-inner {
+        padding: 0 20px;
+      }
+      :host[screen="xl"] {
+        padding-top: 20%;
+      }
+      :host[screen="xl"] .gallery-image,  
+      :host[screen="xl"] #prevnext,
+      :host[screen="xl"] #details {
+        padding-bottom: 20%;
+      }
+      :host[screen="xl"][aspect="16:9"] .gallery-image, 
+      :host[screen="xl"][aspect="16:9"] #prevnext {
+        width: 35.56%;
+      }
+      :host[screen="xl"][aspect="16:9"] .item-info {
+        width: 64.44%;
+      }
+      :host[screen="xl"][aspect="3:2"] .gallery-image, 
+      :host[screen="xl"][aspect="3:2"] #prevnext {
+        width: 30%;
+      }
+      :host[screen="xl"][aspect="3:2"] .item-info {
+        width: 70%;
+      }
+      :host[screen="xl"][aspect="4:3"] .gallery-image, 
+      :host[screen="xl"][aspect="4:3"] #prevnext {
+        width: 26.27%;
+      }
+      :host[screen="xl"][aspect="4:3"] .item-info {
+        width: 73.73%;
+      }
+      :host[screen="xl"][aspect="5:4"] .gallery-image, 
+      :host[screen="xl"][aspect="5:4"] #prevnext {
+        width: 31.25%;
+      }
+      :host[screen="xl"][aspect="5:4"] .item-info {
+        width: 68.75%;
+      }
+      :host[screen="xl"][aspect="1:1"] .gallery-image, 
+      :host[screen="xl"][aspect="1:1"] #prevnext {
+        width: 20%;
+      }
+      :host[screen="xl"][aspect="1:1"] .item-info {
+        width: 80%;
+      }
+      :host[screen="lg"] {
+        padding-top: 25%;
+      }
+      :host[screen="lg"] .gallery-image, 
+      :host[screen="lg"] #prevnext,
+      :host[screen="lg"] #details {
+        padding-bottom: 25%;
+      }
+      :host[screen="lg"][aspect="16:9"] .gallery-image, 
+      :host[screen="lg"][aspect="16:9"] #prevnext {
+        width: 48%;
+      }
+      :host[screen="lg"][aspect="16:9"] .item-info {
+        width: 52%;
+      }
+      :host[screen="lg"][aspect="3:2"] .gallery-image, 
+      :host[screen="lg"][aspect="3:2"] #prevnext {
+        width: 37.5%;
+      }
+      :host[screen="lg"][aspect="3:2"] .item-info {
+        width: 62.5%;
+      }
+      :host[screen="lg"][aspect="4:3"] .gallery-image, 
+      :host[screen="lg"][aspect="4:3"] #prevnext {
+        width: 33.33%;
+      }
+      :host[screen="lg"][aspect="4:3"] .item-info {
+        width: 66.67%;
+      }
+      :host[screen="lg"][aspect="5:4"] .gallery-image, 
+      :host[screen="lg"][aspect="5:4"] #prevnext {
+        width: 31.25%;
+      }
+      :host[screen="lg"][aspect="5:4"] .item-info {
+        width: 68.75%;
+      }
+      :host[screen="lg"][aspect="1:1"] .gallery-image, 
+      :host[screen="lg"][aspect="1:1"] #prevnext {
+        width: 25%;
+      }
+      :host[screen="lg"][aspect="1:1"] .item-info {
+        width: 75%;
+      }
+      :host[screen="md"] {
+        padding-top: 33.33%;
+      }
+      :host[screen="md"] .gallery-image, 
+      :host[screen="md"] #prevnext,
+      :host[screen="md"] #details {
+        padding-bottom: 33.33%;
+      }
+      :host[screen="md"][aspect="16:9"] .gallery-image, 
+      :host[screen="md"][aspect="16:9"] #prevnext {
+        width: 59.25%;
+      }
+      :host[screen="md"][aspect="16:9"] .item-info {
+        width: 40.75%;
+      }
+      :host[screen="md"][aspect="3:2"] .gallery-image, 
+      :host[screen="md"][aspect="3:2"] .item-info {
+        width: 50%;
+      }
+      :host[screen="md"][aspect="4:3"] .gallery-image, 
+      :host[screen="md"][aspect="4:3"] #prevnext {
+        width: 44.44%;
+      }
+      :host[screen="md"][aspect="4:3"] .item-info {
+        width: 56.67%;
+      }
+      :host[screen="md"][aspect="5:4"] .gallery-image, 
+      :host[screen="md"][aspect="5:4"] #prevnext {
+        width: 41.66%;
+      }
+      :host[screen="md"][aspect="5:4"] .item-info {
+        width: 58.34%;
+      }
+      :host[screen="md"][aspect="1:1"] .gallery-image, 
+      :host[screen="md"][aspect="1:1"] #prevnext {
+        width: 33.33%;
+      }
+      :host[screen="md"][aspect="1:1"] .item-info {
+        width: 66.67%;
+      }
+      :host[screen="sm"] {
+        padding-top: 40%;
+      }
+      :host[screen="sm"] #thumbnails, 
+      :host[screen="xs"] #thumbnails {
+        display: none;
+      }
+      :host[screen="sm"] .gallery-image,
+      :host[screen="sm"] #prevnext,
+      :host[screen="sm"] #details {
+        padding-bottom: 40%;
+      }
+      :host[screen="sm"][aspect="16:9"] .gallery-image,
+      :host[screen="sm"][aspect="16:9"] #prevnext {
+        width: 71.11%;
+      }
+      :host[screen="sm"][aspect="16:9"] .item-info {
+        width: 28.89%;
+      }
+      :host[screen="sm"][aspect="3:2"] .gallery-image,
+      :host[screen="sm"][aspect="3:2"] #prevnext {
+        width: 60%;
+      } 
+      :host[screen="sm"][aspect="3:2"] .item-info {
+        width: 40%;
+      }
+      :host[screen="sm"][aspect="4:3"] .gallery-image,
+      :host[screen="sm"][aspect="4:3"] #prevnext {
+        width: 53.33%;
+      }
+      :host[screen="sm"][aspect="4:3"] .item-info {
+        width: 46.67%;
+      }
+      :host[screen="sm"][aspect="5:4"] .gallery-image,
+      :host[screen="sm"][aspect="5:4"] #prevnext, 
+      :host[screen="sm"][aspect="5:4"] #details {
+        width: 50%;
+      }
+      :host[screen="sm"][aspect="1:1"] .gallery-image,
+      :host[screen="sm"][aspect="1:1"] #prevnext {
+        width: 40%;
+      }
+      :host[screen="sm"][aspect="1:1"] .item-info {
+        width: 60%;
+      }
+      :host[screen="xs"] lrndesign-gallery-zoom-button {
+        margin-top: -45px;
+      }
+      :host[screen="xs"] .gallery-image,
+      :host[screen="xs"] #prevnext,
+      :host[screen="xs"] #details {
+        width: 100%;
+      }
+      :host[screen="xs"] #gallery-item, 
+      :host[screen="xs"] #details {
+        padding-bottom: 40%;
+      }
+      :host[screen="xs"][aspect="16:9"] {
+        padding-top: 96.25%;
+      }
+      :host[screen="xs"][aspect="16:9"] .gallery-image,
+      :host[screen="xs"][aspect="16:9"] #prevnext {
+        padding-bottom: 56.25%;
+      }
+      :host[screen="xs"][aspect="16:9"] #details, 
+      :host[screen="xs"][aspect="16:9"] lrndesign-gallery-zoom-button {
+        top: 58.44%;
+      }
+      :host[screen="xs"][aspect="3:2"] {
+        padding-top: 106.67%;
+      }
+      :host[screen="xs"][aspect="3:2"] .gallery-image,
+      :host[screen="xs"][aspect="3:2"] #prevnext {
+        padding-bottom: 66.67%;
+      }
+      :host[screen="xs"][aspect="3:2"] #details, 
+      :host[screen="xs"][aspect="3:2"] lrndesign-gallery-zoom-button {
+        top: 62.05%;
+      }
+      :host[screen="xs"][aspect="4:3"] {
+        padding-top: 115%;
+      }
+      :host[screen="xs"][aspect="4:3"] .gallery-image {
+        padding-bottom: 75%;
+      }
+      :host[screen="xs"][aspect="4:3"] #details,
+      :host[screen="xs"][aspect="4:3"] lrndesign-gallery-zoom-button {
+        top: 65.22%;
+      }
+      :host[screen="xs"][aspect="5:4"] {
+        padding-top: 120%;
+      }
+      :host[screen="xs"][aspect="5:4"] .gallery-image,
+      :host[screen="xs"][aspect="5:4"] #prevnext {
+        padding-bottom: 80%;
+      }
+      :host[screen="xs"][aspect="5:4"] #details,
+      :host[screen="xs"][aspect="5:4"] lrndesign-gallery-zoom-button {
+        top: 66.67%;
+      }
+      :host[screen="xs"][aspect="1:1"] {
+        padding-top: 140%;
+      }
+      :host[screen="xs"][aspect="1:1"] .gallery-image,
+      :host[screen="xs"][aspect="1:1"] #prevnext {
+        padding-bottom: 100%;
+      } 
+      :host[screen="xs"][aspect="1:1"] #details, 
+      :host[screen="xs"][aspect="1:1"] lrndesign-gallery-zoom-button {
+        top: 71.43%;
+      }
+    </style>
+      <div id="gallery-item">
+        <slot name="xy-start"></slot>
+        <iron-image 
+          alt$="[[item.alt]]" 
+          class="gallery-image"
+          fade 
+          id$="[[item.id]]" 
+          placeholder$="[[item.thumbnail]]" 
+          sizing$="[[item.sizing]]"  
+          src$="[[item.src]]">
+        </iron-image>
+        <div id="details" class="item-info">
+          <div id="details-inner">
+            <template is="dom-if" if="[[_isAttrSet(item.title)]]">
+              <h2 id="item-title">[[item.title]]</h2>
+            </template>
+            <div><juicy-html html$="[[item.details]]"></juicy-html></div>
+            <slot name="xy-end"></slot>
+          </div>
+        </div>
+        <template is="dom-if" if="[[item.zoom]]">
+          <lrndesign-gallery-zoom-button 
+            alt$="[[item.alt]]" 
+            item-title$="[[item.title]]"
+            src$="[[item.src]]">
+            <div slot="button-image">
+              <iron-icon icon="zoom-in">
+            </iron-icon></div>
+          </lrndesign-gallery-zoom-button>
+        </template>
+        <div id="prevnext">
+            <slot name="prevnextnav"></slot>
+        </div>
+        <div id="thumbnails" class="item-info">
+          <div id="thumbnails-inner">
+            <slot name="thumbnails"></slot>
+          </div>
+        </div>
+      </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'lrndesign-gallery-item',
+
+      properties: {
+        /** 
+        * aspect ratio of media: 1:1, 5:4, 4:3, 3:2, or 16:9
+        */
+        aspect: {
+          type: String,
+          value: '4:3',
+        },
+        /*
+         * selected item's data
+         */
+        item: {
+          type: Object,
+          value: {},
+          notify: true,
+          reflectToAttribute: true,
+        },
+        /** 
+         * theme of the gallery: default or dark
+         */
+        theme: {
+          type: String,
+          value: 'default',
+        },
+      },
+      /** 
+      * returns index of the previous or next item
+      */
+      _getIndex: function (index,step){
+        return index + step;
+      },
+      /** 
+      * returns true if the given attribute is not null
+      */
+      _getHeading: function (heading){
+        return this._isAttrSet(heading) ? heading : 'Image Zoom';
+      },
+      /** 
+      * returns true if the given attribute is not null
+      */
+      _getTooltip: function (title){
+        return this._isAttrSet(title) ? 'Zoom In ('+title+')' : 'Zoom In';
+      },
+      /** 
+      * returns true if the given attribute is not null
+      */
+      _isAttrSet: function (attr){
+        return attr !== null && attr !== undefined;
+      }
+    });
+  </script>
+</dom-module>
