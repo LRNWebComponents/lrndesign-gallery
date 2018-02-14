@@ -1,5 +1,4 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../responsive-utility/responsive-utility.html">
 <link rel="import" href="../juicy-html/juicy-html.html">
 <link rel="import" href="../iron-list/iron-list.html">
 <link rel="import" href="lrndesign-gallery-thumb.html">
@@ -14,6 +13,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
 @microcopy - the mental model for this element
   <lrndesign-gallery-grid 
     aspect = "1:1"                    //optional, can be 1:1, 5:4, 4:3 (default), 3:2, 16:9.
+    grid-size = "small"               //optional, can be small, medium, or large.
     items = "[]"                      //required, array of items
     sizing = "contain"                //optional, "cover" for cropping (default) or "contain" for letterboxing
     theme = "dark">                   //optional, dark or default
@@ -51,13 +51,53 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         width: 0;
         overflow: hidden;
       }
-      :host [hide-navigation] .navigation {
-        display: none;
+      :host[grid-size="large"] lrndesign-gallery-thumb {
+        width: 204px;
       }
-      :host lrndesign-gallery-thumb {
+      :host[grid-size="medium"] lrndesign-gallery-thumb,
+      :host[grid-size="large"][screen="sm"] lrndesign-gallery-thumb {
         width: 154px;
-        height: 154px;
-        padding: 2px;
+      }
+      :host[grid-size="small"] lrndesign-gallery-thumb,
+      :host[grid-size="medium"][screen="sm"] lrndesign-gallery-thumb, 
+      :host[grid-size="large"][screen="xs"] lrndesign-gallery-thumb {
+        width: 104px;
+      }
+      :host[grid-size="medium"][screen="xs"] lrndesign-gallery-thumb {
+        width: 79px;
+      }
+      :host[grid-size="small"][screen="sm"] lrndesign-gallery-thumb, 
+      :host[grid-size="small"][screen="xs"] lrndesign-gallery-thumb {
+        width: 54px;
+      }
+      :host lrndesign-gallery-thumb ::slotted(*) {
+        position: relative;
+        padding-top: 75%;
+      }
+      :host lrndesign-gallery-thumb ::slotted(* > iron-image) {
+        padding-bottom: 75%;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: auto;
+      }
+      :host[aspect="1:1"] lrndesign-gallery-thumb ::slotted(*) {
+        padding-top: 100%;
+      }
+      :host[aspect="1:1"] lrndesign-gallery-thumb ::slotted(* > iron-image) {
+        padding-bottom: 100%;
+      }
+      :host[aspect="5:4"] lrndesign-gallery-thumb ::slotted(*) {
+        padding-top: 80%;
+      }
+      :host[aspect="5:4"] lrndesign-gallery-thumb ::slotted(* > iron-image) {
+        padding-bottom: 80%;
+      }
+      :host[aspect="16:9"] lrndesign-gallery-thumb ::slotted(*) {
+        padding-top: 56.25%;
+      }
+      :host[aspect="16:9"] lrndesign-gallery-thumb ::slotted(* > iron-image) {
+        padding-bottom: 56.25%;
       }
       :host lrndesign-gallery-thumb:focus ::slotted(*),
       :host lrndesign-gallery-thumb:hover ::slotted(*) {
@@ -74,20 +114,20 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         }
       }
     </style>
-    <responsive-utility responsive-to-parent="true"></responsive-utility>
     <template is="dom-if">
       <p class="sr-only navigation">A list of thumbnail buttons items:</p>
     </template>
-    <div id="gallery" tabindex="-1" aria-live="polite" hide-navigation$="[[__hideNav]]">
+    <div id="gallery" tabindex="-1" aria-live="polite">
       <iron-list id="thumbslist" items="[[__items]]" as="item" grid selection-enabled>
         <template>
           <lrndesign-gallery-thumb 
             alt$="[[item.alt]]"  
             class="navigation" 
-            controls$="[[item.controls]]"
+            controls="zoom"
             item="[[item.id]]" 
             rounded-edges="false"
             selected$="[[_isSelected(selected)]]"
+            theme$="[[theme]]"
             thumbnail="[[item.thumbnail]]" 
             target$="[[item.target]]">
           </lrndesign-gallery-thumb>
@@ -99,7 +139,8 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       heading$="[[selected.title]]" 
       id="zoom" 
       tooltip$="[[selected.tooltip]]" 
-      zoom-src$="[[selected.large]]">
+      zoom-src$="[[selected.large]]"
+      zoom$="[[selected.zoom]]">
       <div slot="details"><juicy-html html$="[[selected.details]]"></juicy-html></div>
     </lrndesign-gallery-zoom>
   </template>
@@ -183,11 +224,17 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         if(this.items !== undefined && this.items !== null && this.items.length > 0){
           for (i in this.items) {
             temp[i] = this.items[i];
-            temp[i].heading = temp[i].title !== undefined ? 'Image Zoom' : temp[i].title+' (Image Zoom)';
             temp[i].index = parseInt(i);
             temp[i].large = temp[i].large !== undefined ? temp[i].large : temp[i].src;
-            temp[i].tooltip = temp[i].title !== undefined ? 'Zoom In' : temp[i].title+' Zoom';
             temp[i].thumbnail = temp[i].thumbnail !== undefined ? temp[i].thumbnail : temp[i].src;
+            temp[i].zoom = temp[i].zoom !== undefined ? temp[i].zoom : true;
+            if (!temp[i].zoom) {
+              temp[i].heading = temp[i].title !== undefined ? 'Image Information' : temp[i].title;
+              temp[i].tooltip = temp[i].title !== undefined ? 'View Image Information' : temp[i].title+' Information';
+            } else {
+              temp[i].heading = temp[i].title !== undefined ? 'Image Zoom' : temp[i].title+' (Image Zoom)';
+              temp[i].tooltip = temp[i].title !== undefined ? 'Zoom In' : temp[i].title+' Zoom';
+            }
           }
           this.items = [];
           this.items.splice(0,0, ...temp);
@@ -209,16 +256,10 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         }
       },
       /**
-       * sets size class based on parent container and breakpoints
-       */ 
-      _onScreenResize: function(e){
-        this.__screen = e.detail.screen;
-      },
-      /**
        * when a thumbnail is tapped, goes to that item 
        */ 
       _onNavTapped: function(e){
-        this.goToItem(e.detail.item,e.detail.type !== 'thumbnail');
+        this.goToItem(e.detail.item);
       },
       /**
        * sets selected attribute of thumbnail

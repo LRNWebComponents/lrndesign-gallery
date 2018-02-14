@@ -1,6 +1,7 @@
 [{
 	"alt": "A picture of dice",
 	"details": "This is a  picture of <em>dice</em> with a caption.",
+	"id": "dice", 
 	"src": "images/dice.jpg",
 	"thumbnail": "images/thumbnails/dice.jpg",
 	"title": "Dice"

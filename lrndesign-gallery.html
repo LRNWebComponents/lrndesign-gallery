@@ -2,6 +2,7 @@
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="lrndesign-gallery-carousel.html">
 <link rel="import" href="lrndesign-gallery-grid.html">
+<link rel="import" href="../responsive-utility/responsive-utility.html">
 
 <!--
 `lrndesign-gallery`
@@ -58,7 +59,9 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       <template is="dom-if" if="[[grid]]">
         <lrndesign-gallery-grid
           aspect$="[[aspect]]"
+          grid-size$="[[gridSize]]"
           items$="[[items]]"
+          screen$="[[__screen]]"
           sizing$="[[sizing]]"
           theme$="[[theme]]">
         </lrndesign-gallery-grid>
@@ -67,6 +70,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         <lrndesign-gallery-carousel
           aspect$="[[aspect]]"
           items$="[[items]]"
+          screen$="[[__screen]]"
           sizing$="[[sizing]]"
           theme$="[[theme]]">
         </lrndesign-gallery-carousel>
@@ -82,12 +86,17 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         </lrndesign-gallery-print>
       </template>
     </article>
+    <responsive-utility responsive-to-parent="true"></responsive-utility>
   </template>
 
   <script>
     Polymer({
 
       is: 'lrndesign-gallery',
+      
+      listeners: {
+        'screen-resize': '_onScreenResize'
+      },
 
       properties: {
         /** 
@@ -133,6 +142,14 @@ A LRN element that renders a collection of gallery items into a carousel or a si
          * default sizing: fit screen by cropping (cover) 
          * or with letterboxing (contain)
          */
+        gridSize: {
+          type: String,
+          value: 'medium'
+        },
+        /**
+         * default sizing: fit screen by cropping (cover) 
+         * or with letterboxing (contain)
+         */
         sizing: {
           type: String,
           value: 'cover'
@@ -151,6 +168,12 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           type: String,
           value: null
         },
+      },
+      /**
+       * sets size class based on parent container and breakpoints
+       */ 
+      _onScreenResize: function(e){
+        this.__screen = e.detail.screen;
       },
       /** 
       * returns true if the given attribute is not null

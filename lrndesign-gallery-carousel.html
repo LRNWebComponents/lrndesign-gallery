@@ -1,5 +1,4 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../responsive-utility/responsive-utility.html">
 <link rel="import" href="../juicy-html/juicy-html.html">
 <link rel="import" href="../iron-list/iron-list.html">
 <link rel="import" href="lrndesign-gallery-thumb.html">
@@ -82,18 +81,8 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           overflow-y: auto !important;
         }
         :host lrndesign-gallery-thumb {
-          width: 54px;
-          height: 54px;
-          padding: 2px;
-        }
-        :host lrndesign-gallery-thumb:focus ::slotted(*),
-        :host lrndesign-gallery-thumb:hover ::slotted(*) {
-          opacity: 0.7;
-          outline: 1px solid black;
-        }
-        :host[theme="dark"] lrndesign-gallery-thumb:focus ::slotted(*),
-        :host[theme="dark"] lrndesign-gallery-thumb:hover ::slotted(*) {
-          outline: 1px solid white;
+          width: 50px;
+          height: 50px;
         }
         :host lrndesign-gallery-thumb[selected="selected"] {
           opacity: 0.5;
@@ -106,14 +95,13 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         }
       }
     </style>
-    <responsive-utility responsive-to-parent="true"></responsive-utility>
     <template is="dom-if">
       <p class="sr-only navigation">A carousel of items:</p>
     </template>
     <div id="gallery" tabindex="-1" aria-live="polite" hide-navigation$="[[__hideNav]]">
       <lrndesign-gallery-carousel-item
         aspect$="[[aspect]]"
-        screen$="[[__screen]]"
+        screen$="[[screen]]"
         item="[[selected]]"
         theme$="[[theme]]">
         <div id="xy-start" slot="xy-start">
@@ -152,10 +140,11 @@ A LRN element that renders a collection of gallery items into a carousel or a si
               <lrndesign-gallery-thumb 
                 alt$="[[item.alt]]"  
                 class="navigation" 
-                controls$="[[item.controls]]"
+                controls$="[[__gallery]]"
                 item="[[item.id]]" 
                 rounded-edges="false"
                 selected$="[[_isSelected(selected)]]"
+                theme$="[[theme]]"
                 thumbnail="[[item.thumbnail]]" 
                 target$="[[item.target]]">
               </lrndesign-gallery-thumb>
@@ -172,8 +161,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       is: 'lrndesign-gallery-carousel',
       
       listeners: {
-        'navTap': '_onNavTapped',
-        'screen-resize': '_onScreenResize'
+        'navTap': '_onNavTapped'
       },
 
       properties: {
@@ -199,6 +187,14 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         parent: {
           type: Object,
           value: {}
+        },
+        /*
+         * responsive size
+         */
+        screen: {
+          type: String,
+          notify: true,
+          reflectToAttribute: true
         },
         /*
          * data for the selected item
@@ -283,12 +279,6 @@ A LRN element that renders a collection of gallery items into a carousel or a si
             this.__gallery.parentNode.scrollIntoView();
           }
         }
-      },
-      /**
-       * sets size class based on parent container and breakpoints
-       */ 
-      _onScreenResize: function(e){
-        this.__screen = e.detail.screen;
       },
       /**
        * when a thumbnail is tapped, goes to that item 
