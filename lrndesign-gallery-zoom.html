@@ -1,24 +1,27 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/image-icons.html">
+<link rel="import" href="../lrnsys-button/lrnsys-button.html">
 <link rel="import" href="../lrnsys-layout/lrnsys-dialog.html">
-<link rel="import" href="../image-inspector/image-inspector.html">
+<link rel="import" href="../img-pan-zoom/img-pan-zoom.html">
 
 <!--
-`lrndesign-gallery-zoom-button`
+`lrndesign-gallery-zoom`
 A LRN element that renders the zoom feature for the gallery.
 
 @demo demo/index.html
 
 @microcopy - the mental model for this element
-  <lrndesign-gallery-zoom-button 
+  <lrndesign-gallery-zoom 
     controls = "GALLERY-OR-DIALOG-ID"    //required
     heading = "IMAGE NAME">              //required, "next" (default) or "previous"
     item = "0"                           //required, index of the item to view
     target = "DIALOG OBJECT"             //required
     tooltip="ZOOM"                       //optional, text for tooltip
-  </lrndesign-gallery-zoom-button>
+  </lrndesign-gallery-zoom>
 -->
 
-<dom-module id="lrndesign-gallery-zoom-button">
+<dom-module id="lrndesign-gallery-zoom">
   <template>
     <style>
       :host #lrnsysdialog ::slotted(#dialogtrigger) {
@@ -26,6 +29,10 @@ A LRN element that renders the zoom feature for the gallery.
         padding: 6px;
         min-width: 30px; 
         color: black;
+      }
+      :host #inspector ::slotted(app-toolbar) {
+        padding: 0;
+        margin: 0;
       }
       :host #lrnsysdialog ::slotted(#dialogtrigger > lrnsys-button-inner) {
         width: 30px;
@@ -36,21 +43,35 @@ A LRN element that renders the zoom feature for the gallery.
       :host #lrnsysdialog ::slotted(#dialogtrigger > lrnsys-button-inner):focus, 
       :host #lrnsysdialog ::slotted(#dialogtrigger > lrnsys-button-inner):hover {
         background-color: rgba(255,255,255,0.3);
-
       }
     </style>
     <lrnsys-dialog id="lrnsysdialog" dynamic-images body-append title$="[[tooltip]]">
       <span slot="button"><slot name="button-image"></slot></span>
-      <h2 slot="header">[[heading]]</h2> 
-      <slot name="details"></slot>
-      <div><image-inspector alt$="[[alt]]" src$="[[src]]"></image-inspector></div>
+      <div slot="toolbar-primary"><span aria-hidden="true">[[heading]]</span></div>
+      <span slot="toolbar-secondary">
+        <lrnsys-dialog-toolbar-button title="Zoom In" icon="zoom-in" id="in"></lrnsys-dialog-toolbar-button>
+        <lrnsys-dialog-toolbar-button title="Zoom Out" icon="zoom-out" id="out"></lrnsys-dialog-toolbar-button>
+      </span>
+      <div slot="header">
+        <div>
+          <h1 style="position: absolute; left: -99999px; top:-1px; height: 0; width: 0; overflow: auto;">
+            [[heading]]
+          </h1>
+          <slot name="details"></slot>
+        </div>
+      </div>
+      <div><img-pan-zoom id="img" alt$="[[alt]]" src$="[[zoomSrc]]"></img-pan-zoom></div>
     </lrnsys-dialog>
   </template>
 
   <script>
     Polymer({
 
-      is: 'lrndesign-gallery-zoom-button',
+      is: 'lrndesign-gallery-zoom',
+      
+      listeners: {
+        'navTap': '_onNavTapped'
+      },
 
       properties: {
         /** 
@@ -65,19 +86,12 @@ A LRN element that renders the zoom feature for the gallery.
         */
         heading: {
           type: String,
-          computed: '_getHeading(itemTitle)',
-        },
-        /** 
-        * title of the item
-        */
-        itemTitle: {
-          type: String,
-          value: null,
+          value: 'Image Zoom',
         },
         /** 
         * path for the image source
         */
-        src: {
+        zoomSrc: {
           type: String,
           value: null,
         },
@@ -86,27 +100,44 @@ A LRN element that renders the zoom feature for the gallery.
         */
         tooltip: {
           type: String,
-          computed: '_getTooltip(itemTitle)',
+          value: 'Zoom In',
+        },
+        /**
+         * Image source.
+         */
+        src: {
+          type: String,
+          reflectToAttribute: true,
         },
       },
       /** 
-      * returns true if the given attribute is not null
+      * attached
       */
-      _getHeading: function (itemTitle){
-        return this._isAttrSet(itemTitle) ? itemTitle : 'Image Zoom';
-      },
-      /** 
-      * returns true if the given attribute is not null
-      */
-      _getTooltip: function (itemTitle){
-        return this._isAttrSet(itemTitle) ? 'Zoom In ('+itemTitle+')' : 'Zoom In';
+      attached: function (){
+        //document.body.addEventListener('dialog-toolbar-button-tapped', this.zoom.bind(this));
       },
       /** 
       * returns true if the given attribute is not null
       */
       _isAttrSet: function (attr){
         return attr !== null && attr !== undefined;
-      }
+      },
+      /**
+       * Zoom in by calling  downstream function.
+       */
+      imgZoom: function (e) {
+        if (e.detail.id == 'in') {
+          this.$.img.zoomIn();
+        } else {
+          this.$.img.zoomOut();
+        }
+      },
+      /**
+       * Toggles the dialog.
+       */
+       toggleDialog: function () {
+        this.$.lrnsysdialog.toggleDialog();
+      },
     });
   </script>
 </dom-module>

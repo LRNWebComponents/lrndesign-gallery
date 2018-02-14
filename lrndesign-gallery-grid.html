@@ -1,8 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../responsive-utility/responsive-utility.html">
 <link rel="import" href="../juicy-html/juicy-html.html">
-<link rel="import" href="../iron-image/iron-image.html">
 <link rel="import" href="../iron-list/iron-list.html">
-<link rel="import" href="lrndesign-gallery-zoom-button.html">
+<link rel="import" href="lrndesign-gallery-thumb.html">
+<link rel="import" href="lrndesign-gallery-zoom.html">
 
 <!--
 `lrndesign-gallery-grid`
@@ -25,6 +26,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       "details": "TEXT ABOUT IMAGE HERE",               //optional 
       "id": "123"                                       //required, unique id  
       "sizing": "contain",                              //optional, "cover" for cropping (default) or "contain" for letterboxing, default is parent's sizing
+      "large": "PATH/TO/LARGE/IMAGE/HERE.JPG",          //optional, larger image for zoom instead of src 
       "src": "PATH/TO/FULL/IMAGE/HERE.JPG",             //required
       "thumbnail": "PATH/TO/THUMBAIL/IMAGE/HERE.JPG",   //required
       "title": "IMAGE TITLE HERE",                      //optional
@@ -49,48 +51,57 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         width: 0;
         overflow: hidden;
       }
-      lrndesign-gallery-grid-thumbnail {
-        width: 100px;
-        height: 100px;
+      :host [hide-navigation] .navigation {
+        display: none;
       }
-      
+      :host lrndesign-gallery-thumb {
+        width: 154px;
+        height: 154px;
+        padding: 2px;
+      }
+      :host lrndesign-gallery-thumb:focus ::slotted(*),
+      :host lrndesign-gallery-thumb:hover ::slotted(*) {
+        opacity: 0.7;
+        outline: 1px solid black;
+      }
+      :host[theme="dark"] lrndesign-gallery-thumb:focus ::slotted(*),
+      :host[theme="dark"] lrndesign-gallery-thumb:hover ::slotted(*) {
+        outline: 1px solid white;
+      }
       @media print {
         :host #gallery {
           display: none;
         }
       }
     </style>
+    <responsive-utility responsive-to-parent="true"></responsive-utility>
     <template is="dom-if">
-      <p class="sr-only">A collection of thumbnails:</p>
+      <p class="sr-only navigation">A list of thumbnail buttons items:</p>
     </template>
-    <div id="gallery" tabindex="-1" aria-live="polite">
+    <div id="gallery" tabindex="-1" aria-live="polite" hide-navigation$="[[__hideNav]]">
       <iron-list id="thumbslist" items="[[__items]]" as="item" grid selection-enabled>
         <template>
-          <lrndesign-gallery-zoom-button 
-            alt$="[[item.alt]]" 
-            item-title$="[[item.title]]"
-            size="medium"
-            src$="[[item.src]]" height="150px" width="150px">
-            <div slot="button-image">
-              <div height="150px" width="150px">
-              <iron-image 
-                alt$="[[item.alt]]" 
-                class="lrndesign-gallery-grid-thumbnail" 
-                fade 
-                height="150px"
-                sizing="cover" 
-                src$="[[item.thumbnail]]"
-                width="150px">
-              </iron-image>
-              </div>
-            </div>
-            <div slot="details">
-              <juicy-html html$="[[item.details]]"></juicy-html>
-            </div>
-          </lrndesign-gallery-zoom-button>
+          <lrndesign-gallery-thumb 
+            alt$="[[item.alt]]"  
+            class="navigation" 
+            controls$="[[item.controls]]"
+            item="[[item.id]]" 
+            rounded-edges="false"
+            selected$="[[_isSelected(selected)]]"
+            thumbnail="[[item.thumbnail]]" 
+            target$="[[item.target]]">
+          </lrndesign-gallery-thumb>
         </template>
       </iron-list>
     </div>
+    <lrndesign-gallery-zoom 
+      alt$="[[selected.alt]]" 
+      heading$="[[selected.title]]" 
+      id="zoom" 
+      tooltip$="[[selected.tooltip]]" 
+      zoom-src$="[[selected.large]]">
+      <div slot="details"><juicy-html html$="[[selected.details]]"></juicy-html></div>
+    </lrndesign-gallery-zoom>
   </template>
 
   <script>
@@ -99,7 +110,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       is: 'lrndesign-gallery-grid',
       
       listeners: {
-        'navTap': '_onNavTapped',
+        'navTap': '_onNavTapped'
       },
 
       properties: {
@@ -172,13 +183,48 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         if(this.items !== undefined && this.items !== null && this.items.length > 0){
           for (i in this.items) {
             temp[i] = this.items[i];
-            temp[i].sizing = temp[i].sizing !== undefined ? temp[i].sizing : this.sizing;
+            temp[i].heading = temp[i].title !== undefined ? 'Image Zoom' : temp[i].title+' (Image Zoom)';
+            temp[i].index = parseInt(i);
+            temp[i].large = temp[i].large !== undefined ? temp[i].large : temp[i].src;
+            temp[i].tooltip = temp[i].title !== undefined ? 'Zoom In' : temp[i].title+' Zoom';
+            temp[i].thumbnail = temp[i].thumbnail !== undefined ? temp[i].thumbnail : temp[i].src;
           }
           this.items = [];
           this.items.splice(0,0, ...temp);
           this.__items = temp;
           this.$.thumbslist.fire('iron-resize');
         }
+        this.__hideNav = this.items === undefined || this.items === null || this.items.length < 2; 
+        this.__anchor = Math.max(this.items.findIndex(i => '#'+i.id === window.location.hash),0);
+      },
+      /**
+       * go to item by id, or index
+       */
+      goToItem: function(selection){
+        let index = typeof selection === 'string' ? this.items.findIndex(i => i.id === selection) : selection;
+        if(typeof index === 'number' && index >= 0 && index < this.items.length){
+          this.selected = this.items[index];
+          this.$.thumbslist.selectItem(this.items[index]);
+          this.$.zoom.toggleDialog();
+        }
+      },
+      /**
+       * sets size class based on parent container and breakpoints
+       */ 
+      _onScreenResize: function(e){
+        this.__screen = e.detail.screen;
+      },
+      /**
+       * when a thumbnail is tapped, goes to that item 
+       */ 
+      _onNavTapped: function(e){
+        this.goToItem(e.detail.item,e.detail.type !== 'thumbnail');
+      },
+      /**
+       * sets selected attribute of thumbnail
+       */ 
+      _isSelected: function(selected) {
+        return selected ? "selected": "";
       },
       /** 
       * returns true if the given attribute is not null

@@ -2,16 +2,16 @@
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../juicy-html/juicy-html.html">
 <link rel="import" href="../iron-image/iron-image.html">
-<link rel="import" href="lrndesign-gallery-zoom-button.html">
+<link rel="import" href="lrndesign-gallery-zoom.html">
 
 <!--
-`lrndesign-gallery-item`
+`lrndesign-gallery-carousel-item`
 A LRN element that renders a collection of gallery items into a carousel.
 
 @demo demo/index.html
 
 @microcopy - the mental model for this element
-  <lrndesign-gallery-item 
+  <lrndesign-gallery-carousel-item 
     aspect = "1:1"                    //optional, can be 1:1, 5:4, 4:3 (default), 3:2, 16:9.
     item = "{}                        //required, the currently selected item
     theme = "dark">                   //optional, dark or default
@@ -20,23 +20,26 @@ A LRN element that renders a collection of gallery items into a carousel.
     <div slot="xy-end"></slot>        //optional, "end of slide x of y"
     <div slot="prevnextnav"></slot>   //optional, previous and next item navigation
     <div slot="thumbnails"></slot>    //optional, thumbnail navigation
-  </lrndesign-gallery-item>
+  </lrndesign-gallery-carousel-item>
 
   Item data:
   <script>
     {
       "alt": "IMAGE ALT TEXT",                          //required
-      "details": "TEXT ABOUT IMAGE HERE",               //optional   
+      "details": "TEXT ABOUT IMAGE HERE",               //optional  
+      "heading": "IMAGENAME (Image Zoom)",              //required
+      "large": "PATH/TO/LARGE/IMAGE/HERE.JPG",          //optional, larger image for zoom instead of src 
       "sizing": "contain",                              //optional, "cover" for cropping (default) or "contain" for letterboxing, default is parent's sizing
       "src": "PATH/TO/FULL/IMAGE/HERE.JPG",             //required
       "thumbnail": "PATH/TO/THUMBAIL/IMAGE/HERE.JPG",   //required
       "title": "IMAGE TITLE HERE",                      //optional
+      "tooltip": "IMAGENAME Zoom",                      //required
       "zoom": false                                     //optional, false item should have no zoom option, default is true 
     }
 
 -->
 
-<dom-module id="lrndesign-gallery-item">
+<dom-module id="lrndesign-gallery-carousel-item">
   <template>
     <style>
       :host {
@@ -55,7 +58,7 @@ A LRN element that renders a collection of gallery items into a carousel.
       }
       :host #details, 
       :host #details-inner, 
-      :host lrndesign-gallery-zoom-button, 
+      :host lrndesign-gallery-zoom, 
       :host #prevnext,
       :host #thumbnails {
         position: absolute;
@@ -64,7 +67,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         left: 0;
         top: 0;
       }
-      :host lrndesign-gallery-zoom-button {
+      :host lrndesign-gallery-zoom {
         left: 0;
         bottom: 0px;
         z-index: 2; 
@@ -272,7 +275,7 @@ A LRN element that renders a collection of gallery items into a carousel.
       :host[screen="sm"][aspect="1:1"] .item-info {
         width: 60%;
       }
-      :host[screen="xs"] lrndesign-gallery-zoom-button {
+      :host[screen="xs"] lrndesign-gallery-zoom {
         margin-top: -45px;
       }
       :host[screen="xs"] .gallery-image,
@@ -292,7 +295,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         padding-bottom: 56.25%;
       }
       :host[screen="xs"][aspect="16:9"] #details, 
-      :host[screen="xs"][aspect="16:9"] lrndesign-gallery-zoom-button {
+      :host[screen="xs"][aspect="16:9"] lrndesign-gallery-zoom {
         top: 58.44%;
       }
       :host[screen="xs"][aspect="3:2"] {
@@ -303,7 +306,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         padding-bottom: 66.67%;
       }
       :host[screen="xs"][aspect="3:2"] #details, 
-      :host[screen="xs"][aspect="3:2"] lrndesign-gallery-zoom-button {
+      :host[screen="xs"][aspect="3:2"] lrndesign-gallery-zoom {
         top: 62.05%;
       }
       :host[screen="xs"][aspect="4:3"] {
@@ -313,7 +316,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         padding-bottom: 75%;
       }
       :host[screen="xs"][aspect="4:3"] #details,
-      :host[screen="xs"][aspect="4:3"] lrndesign-gallery-zoom-button {
+      :host[screen="xs"][aspect="4:3"] lrndesign-gallery-zoom {
         top: 65.22%;
       }
       :host[screen="xs"][aspect="5:4"] {
@@ -324,7 +327,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         padding-bottom: 80%;
       }
       :host[screen="xs"][aspect="5:4"] #details,
-      :host[screen="xs"][aspect="5:4"] lrndesign-gallery-zoom-button {
+      :host[screen="xs"][aspect="5:4"] lrndesign-gallery-zoom {
         top: 66.67%;
       }
       :host[screen="xs"][aspect="1:1"] {
@@ -335,7 +338,7 @@ A LRN element that renders a collection of gallery items into a carousel.
         padding-bottom: 100%;
       } 
       :host[screen="xs"][aspect="1:1"] #details, 
-      :host[screen="xs"][aspect="1:1"] lrndesign-gallery-zoom-button {
+      :host[screen="xs"][aspect="1:1"] lrndesign-gallery-zoom {
         top: 71.43%;
       }
     </style>
@@ -360,14 +363,15 @@ A LRN element that renders a collection of gallery items into a carousel.
           </div>
         </div>
         <template is="dom-if" if="[[item.zoom]]">
-          <lrndesign-gallery-zoom-button 
+          <lrndesign-gallery-zoom 
             alt$="[[item.alt]]" 
-            item-title$="[[item.title]]"
-            src$="[[item.src]]">
+            heading$="[[item.heading]]" 
+            tooltip$="[[item.tooltip]]" 
+            zoom-src$="[[item.large]]">
             <div slot="button-image">
               <iron-icon icon="zoom-in">
             </iron-icon></div>
-          </lrndesign-gallery-zoom-button>
+          </lrndesign-gallery-zoom>
         </template>
         <div id="prevnext">
             <slot name="prevnextnav"></slot>
@@ -383,7 +387,7 @@ A LRN element that renders a collection of gallery items into a carousel.
   <script>
     Polymer({
 
-      is: 'lrndesign-gallery-item',
+      is: 'lrndesign-gallery-carousel-item',
 
       properties: {
         /** 
@@ -415,18 +419,6 @@ A LRN element that renders a collection of gallery items into a carousel.
       */
       _getIndex: function (index,step){
         return index + step;
-      },
-      /** 
-      * returns true if the given attribute is not null
-      */
-      _getHeading: function (heading){
-        return this._isAttrSet(heading) ? heading : 'Image Zoom';
-      },
-      /** 
-      * returns true if the given attribute is not null
-      */
-      _getTooltip: function (title){
-        return this._isAttrSet(title) ? 'Zoom In ('+title+')' : 'Zoom In';
       },
       /** 
       * returns true if the given attribute is not null

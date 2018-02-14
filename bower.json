@@ -6,7 +6,7 @@
     "polymer": "Polymer/polymer#^1.10.1",
     "iron-image": "PolymerElements/iron-image#^2.1.2",
     "paper-card": "PolymerElements/paper-card#^2.0.0",
-    "lrnsys-button": "LRNWebComponents/lrnsys-button#^1.2.0",
+    "lrnsys-button": "LRNWebComponents/lrnsys-button#^1.3.1",
     "iron-a11y-keys": "PolymerElements/iron-a11y-keys#^2.0.0",
     "iron-icons": "PolymerElements/iron-icons#^2.0.1",
     "iron-list": "PolymerElements/iron-list#^2.0.12",
@@ -14,7 +14,8 @@
     "juicy-html": "Juicy/juicy-html#^3.0.0",
     "image-inspector": "LRNWebComponents/image-inspector#^1.1.0",
     "lrnsys-layout": "LRNWebComponents/lrnsys-layout#^1.4.3",
-    "iron-ajax": "PolymerElements/iron-ajax#^2.1.0"
+    "iron-ajax": "PolymerElements/iron-ajax#^2.1.0",
+    "img-pan-zoom": "ryanburns23/img-pan-zoom#^2.0.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

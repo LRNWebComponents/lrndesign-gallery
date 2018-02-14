@@ -2,9 +2,9 @@
 <link rel="import" href="../responsive-utility/responsive-utility.html">
 <link rel="import" href="../juicy-html/juicy-html.html">
 <link rel="import" href="../iron-list/iron-list.html">
-<link rel="import" href="lrndesign-gallery-item.html">
-<link rel="import" href="lrndesign-gallery-prevnext.html">
-<link rel="import" href="lrndesign-gallery-thumbnail.html">
+<link rel="import" href="lrndesign-gallery-thumb.html">
+<link rel="import" href="lrndesign-gallery-carousel-item.html">
+<link rel="import" href="lrndesign-gallery-carousel-prevnext.html">
 
 <!--
 `lrndesign-gallery-carousel`
@@ -27,6 +27,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       "details": "TEXT ABOUT IMAGE HERE",               //optional 
       "id": "123"                                       //required, unique id  
       "sizing": "contain",                              //optional, "cover" for cropping (default) or "contain" for letterboxing, default is parent's sizing
+      "large": "PATH/TO/LARGE/IMAGE/HERE.JPG",          //optional, larger image for zoom instead of src 
       "src": "PATH/TO/FULL/IMAGE/HERE.JPG",             //required
       "thumbnail": "PATH/TO/THUMBAIL/IMAGE/HERE.JPG",   //required
       "title": "IMAGE TITLE HERE",                      //optional
@@ -66,26 +67,37 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           right: 20px;
           top: 15px;
         }
-        :host lrndesign-gallery-prevnext {
+        :host lrndesign-gallery-carousel-prevnext {
           position: absolute;
           left: 0;
           top: 0;
           width: 50%;
           height: 100%;
         }
-        :host lrndesign-gallery-prevnext[type="next"] {
+        :host lrndesign-gallery-carousel-prevnext[type="next"] {
           left: 50%;
           text-align: right;
         }
         :host #thumbslist {
           overflow-y: auto !important;
         }
-        :host lrndesign-gallery-thumbnail {
-          width: 50px;
-          height: 50px;
+        :host lrndesign-gallery-thumb {
+          width: 54px;
+          height: 54px;
+          padding: 2px;
         }
-        :host lrndesign-gallery-thumbnail[selected="selected"] {
+        :host lrndesign-gallery-thumb:focus ::slotted(*),
+        :host lrndesign-gallery-thumb:hover ::slotted(*) {
+          opacity: 0.7;
+          outline: 1px solid black;
+        }
+        :host[theme="dark"] lrndesign-gallery-thumb:focus ::slotted(*),
+        :host[theme="dark"] lrndesign-gallery-thumb:hover ::slotted(*) {
+          outline: 1px solid white;
+        }
+        :host lrndesign-gallery-thumb[selected="selected"] {
           opacity: 0.5;
+          cursor: default;
         }
       }
       @media print {
@@ -99,7 +111,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       <p class="sr-only navigation">A carousel of items:</p>
     </template>
     <div id="gallery" tabindex="-1" aria-live="polite" hide-navigation$="[[__hideNav]]">
-      <lrndesign-gallery-item
+      <lrndesign-gallery-carousel-item
         aspect$="[[aspect]]"
         screen$="[[__screen]]"
         item="[[selected]]"
@@ -115,7 +127,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           </p>
         </div>
         <div slot="prevnextnav">
-          <lrndesign-gallery-prevnext 
+          <lrndesign-gallery-carousel-prevnext 
             chevron="chevron-left" 
             class="navigation"
             controls$="[[__gallery.id]]" 
@@ -123,21 +135,21 @@ A LRN element that renders a collection of gallery items into a carousel or a si
             target$="[[__gallery]]" 
             theme$="[[theme]]"
             type="previous">
-          </lrndesign-gallery-prevnext>
-          <lrndesign-gallery-prevnext class="navigation" 
+          </lrndesign-gallery-carousel-prevnext>
+          <lrndesign-gallery-carousel-prevnext class="navigation" 
             chevron="chevron-right" 
             controls="[[__gallery.id]]" 
             item$="[[selected.next]]" 
             target$="[[__gallery]]" 
             theme$="[[theme]]"
             type="next">
-          </lrndesign-gallery-prevnext>
+          </lrndesign-gallery-carousel-prevnext>
         </div>
         <div slot="thumbnails">
           <p class="sr-only navigation">Slides list:</p>
           <iron-list id="thumbslist" items="[[__items]]" as="item" grid selection-enabled>
             <template>
-              <lrndesign-gallery-thumbnail 
+              <lrndesign-gallery-thumb 
                 alt$="[[item.alt]]"  
                 class="navigation" 
                 controls$="[[item.controls]]"
@@ -146,11 +158,11 @@ A LRN element that renders a collection of gallery items into a carousel or a si
                 selected$="[[_isSelected(selected)]]"
                 thumbnail="[[item.thumbnail]]" 
                 target$="[[item.target]]">
-              </lrndesign-gallery-thumbnail>
+              </lrndesign-gallery-thumb>
             </template>
           </iron-list>
         </div>
-      </lrndesign-gallery-item>
+      </lrndesign-gallery-carousel-item>
     </div>
   </template>
 
@@ -234,10 +246,14 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         if(this.items !== undefined && this.items !== null && this.items.length > 0){
           for (i in this.items) {
             temp[i] = this.items[i];
-            temp[i].sizing = temp[i].sizing !== undefined ? temp[i].sizing : this.sizing;
+            temp[i].heading = temp[i].title !== undefined ? 'Image Zoom' : temp[i].title+' (Image Zoom)';
             temp[i].index = parseInt(i);
-            temp[i].prev = parseInt(i) - 1 > -1 ? parseInt(i) - 1 : -1;
+            temp[i].large = temp[i].large !== undefined ? temp[i].large : temp[i].src;
             temp[i].next = parseInt(i) + 1 < this.items.length ? parseInt(i) + 1 : -1;
+            temp[i].prev = parseInt(i) - 1 > -1 ? parseInt(i) - 1 : -1;
+            temp[i].sizing = temp[i].sizing !== undefined ? temp[i].sizing : this.sizing;
+            temp[i].tooltip = temp[i].title !== undefined ? 'Zoom In' : temp[i].title+' Zoom';
+            temp[i].thumbnail = temp[i].thumbnail !== undefined ? temp[i].thumbnail : temp[i].src;
             temp[i].zoom = temp[i].zoom !== undefined ? temp[i].zoom : true;
           }
           this.items = [];

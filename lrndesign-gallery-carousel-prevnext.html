@@ -3,23 +3,23 @@
 <link rel="import" href="../iron-a11y-keys/iron-a11y-keys.html">
 
 <!--
-`lrndesign-gallery-prevnext`
+`lrndesign-gallery-carousel-prevnext`
 A LRN element
 
 @demo demo/index.html
 
 @microcopy - the mental model for this element
-  <lrndesign-gallery-prevnext 
+  <lrndesign-gallery-carousel-prevnext 
     chevron = "chevron-left"             //required, "chevron-right" for next (default), or "chevron-left" for prev
     color = "white-text"                 //required, "black-text" for default theme or "white-text" for dark theme
     controls = "GALLERY-OR-DIALOG-ID"    //required
     item = "0"                           //required, index of prev/next item
     target = "GALLERY OR DIALOG OBJECT"  //required
     title = "previous">                  //required, "next" (default) or "previous"
-  </lrndesign-gallery-prevnext>
+  </lrndesign-gallery-carousel-prevnext>
 -->
 
-<dom-module id="lrndesign-gallery-prevnext">
+<dom-module id="lrndesign-gallery-carousel-prevnext">
   <template>
     <style>
       :host {
@@ -96,7 +96,7 @@ A LRN element
   <script>
     Polymer({
 
-      is: 'lrndesign-gallery-prevnext',
+      is: 'lrndesign-gallery-carousel-prevnext',
 
       hostAttributes: {
         tabindex: '-1'
