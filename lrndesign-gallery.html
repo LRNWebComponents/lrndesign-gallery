@@ -57,20 +57,28 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         <slot name="description"></slot>
       </div>
       <template is="dom-if" if="[[grid]]">
-        <lrndesign-gallery-grid
+        <lrndesign-gallery-grid 
           aspect$="[[aspect]]"
+          class="gallery-type"
           grid-size$="[[gridSize]]"
-          items$="[[items]]"
-          screen$="[[__screen]]"
+          id="gallery-grid" 
+          items$="[[__items]]"
+          responsive-size$="[[__responsiveSize]]"
+          selected$="[[selected]]"
           sizing$="[[sizing]]"
           theme$="[[theme]]">
         </lrndesign-gallery-grid>
       </template>
       <template is="dom-if" if="[[!grid]]">
-        <lrndesign-gallery-carousel
-          aspect$="[[aspect]]"
-          items$="[[items]]"
-          screen$="[[__screen]]"
+        <lrndesign-gallery-carousel  
+          zoom$="[[__anchoredZoom]]" 
+          aspect$="[[aspect]]" 
+          class="gallery-type"
+          hide-navigation$="[[__hideNav]]" 
+          id="gallery-carousel" 
+          items$="[[__items]]"
+          responsive-size$="[[__responsiveSize]]"
+          selected$="[[selected]]" 
           sizing$="[[sizing]]"
           theme$="[[theme]]">
         </lrndesign-gallery-carousel>
@@ -81,6 +89,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           alt$="[[item.alt]]" 
           details$="[[item.details]]" 
           heading$="[[item.heading]]" 
+          id="gallery-print" 
           src$="[[item.src]]" 
           title$="[[item.title]]">
         </lrndesign-gallery-print>
@@ -95,7 +104,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       is: 'lrndesign-gallery',
       
       listeners: {
-        'screen-resize': '_onScreenResize'
+        'screen-resize': '_onResponsiveResize'
       },
 
       properties: {
@@ -127,7 +136,8 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         items: {
           type: Array,
           value: [],
-          notify: true
+          notify: true,
+          observer: '_itemsLoaded'
         },
         /*
          * data for the selected item
@@ -169,11 +179,41 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           value: null
         },
       },
+      /*
+       * adds additional properties to gallery
+       */
+      _itemsLoaded: function(){
+        let temp = [], anchor = window.location.hash, index = this.items.findIndex(i => '#'+i.id === anchor.replace('-zoom',''));
+        if(this.items !== undefined && this.items !== null && this.items.length > 0){
+          for (i in this.items) {
+            temp[i] = this.items[i];
+            temp[i].heading = temp[i].title !== undefined ? 'Image Zoom' : temp[i].title+' (Image Zoom)';
+            temp[i].index = parseInt(i);
+            temp[i].large = temp[i].large !== undefined ? temp[i].large : temp[i].src;
+            temp[i].next = parseInt(i) + 1 < this.items.length ? parseInt(i) + 1 : -1;
+            temp[i].prev = parseInt(i) - 1 > -1 ? parseInt(i) - 1 : -1;
+            temp[i].sizing = temp[i].sizing !== undefined ? temp[i].sizing : this.sizing;
+            temp[i].tooltip = temp[i].title !== undefined ? 'Zoom In' : temp[i].title+' Zoom';
+            temp[i].thumbnail = temp[i].thumbnail !== undefined ? temp[i].thumbnail : temp[i].src;
+            temp[i].zoom = temp[i].zoom !== undefined ? temp[i].zoom : true;
+            if (!temp[i].zoom) {
+              temp[i].heading = temp[i].title !== undefined ? 'Image Information' : temp[i].title;
+              temp[i].tooltip = temp[i].title !== undefined ? 'View Image Information' : temp[i].title+' Information';
+            } else {
+              temp[i].heading = temp[i].title !== undefined ? 'Image Zoom' : temp[i].title+' (Image Zoom)';
+              temp[i].tooltip = temp[i].title !== undefined ? 'Zoom In' : temp[i].title+' Zoom';
+            }
+          }
+          this.__items = temp;
+          this.selected = index > -1 ? this.__items[index] : this.__items[0];
+        }
+        this.__hideNav = this.items === undefined || this.items === null || this.items.length < 2; 
+      },
       /**
        * sets size class based on parent container and breakpoints
        */ 
-      _onScreenResize: function(e){
-        this.__screen = e.detail.screen;
+      _onResponsiveResize: function(e){
+        this.__responsiveSize = e.detail.screen;
       },
       /** 
       * returns true if the given attribute is not null

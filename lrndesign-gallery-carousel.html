@@ -99,9 +99,10 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       <p class="sr-only navigation">A carousel of items:</p>
     </template>
     <div id="gallery" tabindex="-1" aria-live="polite" hide-navigation$="[[__hideNav]]">
-      <lrndesign-gallery-carousel-item
+      <lrndesign-gallery-carousel-item 
         aspect$="[[aspect]]"
-        screen$="[[screen]]"
+        id="carousel-item"
+        responsive-size$="[[responsiveSize]]"
         item="[[selected]]"
         theme$="[[theme]]">
         <div id="xy-start" slot="xy-start">
@@ -116,17 +117,17 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         </div>
         <div slot="prevnextnav">
           <lrndesign-gallery-carousel-prevnext 
-            chevron="chevron-left" 
             class="navigation"
             controls$="[[__gallery.id]]" 
+            id="carousel-prev"
             item="[[selected.prev]]" 
             target$="[[__gallery]]" 
             theme$="[[theme]]"
             type="previous">
           </lrndesign-gallery-carousel-prevnext>
           <lrndesign-gallery-carousel-prevnext class="navigation" 
-            chevron="chevron-right" 
             controls="[[__gallery.id]]" 
+            id="carousel-next"
             item$="[[selected.next]]" 
             target$="[[__gallery]]" 
             theme$="[[theme]]"
@@ -142,6 +143,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
                 class="navigation" 
                 controls$="[[__gallery]]"
                 item="[[item.id]]" 
+                id="gallery-thumb" 
                 rounded-edges="false"
                 selected$="[[_isSelected(selected)]]"
                 theme$="[[theme]]"
@@ -191,7 +193,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         /*
          * responsive size
          */
-        screen: {
+        responsiveSize: {
           type: String,
           notify: true,
           reflectToAttribute: true
@@ -206,7 +208,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           reflectToAttribute: true
         },
         /**
-         * default sizing: fit screen by cropping (cover) 
+         * default sizing: fit parent by cropping (cover) 
          * or with letterboxing (contain)
          */
         sizing: {
@@ -238,28 +240,8 @@ A LRN element that renders a collection of gallery items into a carousel or a si
        * gets unique id for carousel and sets it as a target
        */
       _itemsLoaded: function(){
-        let temp = [];
-        if(this.items !== undefined && this.items !== null && this.items.length > 0){
-          for (i in this.items) {
-            temp[i] = this.items[i];
-            temp[i].heading = temp[i].title !== undefined ? 'Image Zoom' : temp[i].title+' (Image Zoom)';
-            temp[i].index = parseInt(i);
-            temp[i].large = temp[i].large !== undefined ? temp[i].large : temp[i].src;
-            temp[i].next = parseInt(i) + 1 < this.items.length ? parseInt(i) + 1 : -1;
-            temp[i].prev = parseInt(i) - 1 > -1 ? parseInt(i) - 1 : -1;
-            temp[i].sizing = temp[i].sizing !== undefined ? temp[i].sizing : this.sizing;
-            temp[i].tooltip = temp[i].title !== undefined ? 'Zoom In' : temp[i].title+' Zoom';
-            temp[i].thumbnail = temp[i].thumbnail !== undefined ? temp[i].thumbnail : temp[i].src;
-            temp[i].zoom = temp[i].zoom !== undefined ? temp[i].zoom : true;
-          }
-          this.items = [];
-          this.items.splice(0,0, ...temp);
-          this.__items = temp;
-          this.$.thumbslist.fire('iron-resize');
-        }
-        this.__hideNav = this.items === undefined || this.items === null || this.items.length < 2; 
-        this.__anchor = Math.max(this.items.findIndex(i => '#'+i.id === window.location.hash),0);
-        this.goToItem(this.__anchor,true,this.__anchor !== 0);
+        this.__items = this.items;
+        this.goToItem(this.selected,true,this.selected !== 0);
       },
       /**
        * go to item by id, or index
@@ -272,7 +254,6 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           this.selected = this.items[index];
           if(this.$.thumbslist.selectItem === null || setThumbnail) {
             this.$.thumbslist.selectItem(this.items[index]);
-            this.$.gallery.focus();
             this.__xOfY = parseInt(this.selected.index+1)+' of '+this.items.length;
           }
           if (setScroll) {
@@ -285,6 +266,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
        */ 
       _onNavTapped: function(e){
         this.goToItem(e.detail.item,e.detail.type !== 'thumbnail');
+        this.$.gallery.focus();
       },
       /**
        * sets selected attribute of thumbnail

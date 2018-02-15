@@ -60,7 +60,17 @@ A LRN element that renders the zoom feature for the gallery.
           <slot name="details"></slot>
         </div>
       </div>
-      <div><img-pan-zoom id="img" alt$="[[alt]]" src$="[[zoomSrc]]"></img-pan-zoom></div>
+      <div>
+        <img-pan-zoom 
+          id="img" 
+          alt$="[[alt]]" 
+          src$="[[zoomSrc]]" 
+          max-zoom-pixel-ratio="1.5" 
+          min-zoom-image-ratio="0.5" 
+          zoom-per-click="1.2"  
+          zoom-per-scroll="0.6">
+        </img-pan-zoom>
+      </div>
     </lrnsys-dialog>
   </template>
 
@@ -70,7 +80,8 @@ A LRN element that renders the zoom feature for the gallery.
       is: 'lrndesign-gallery-zoom',
       
       listeners: {
-        'navTap': '_onNavTapped'
+        'navTap': '_onNavTapped',
+        //'lrnsys-dialog-modal-changed': '_dialogChanged'
       },
 
       properties: {
@@ -114,7 +125,7 @@ A LRN element that renders the zoom feature for the gallery.
       * attached
       */
       attached: function (){
-        //document.body.addEventListener('dialog-toolbar-button-tapped', this.zoom.bind(this));
+        document.body.addEventListener('lrnsys-dialog-changed', this._dialogChanged.bind(this));
       },
       /** 
       * returns true if the given attribute is not null
@@ -137,6 +148,18 @@ A LRN element that renders the zoom feature for the gallery.
        */
        toggleDialog: function () {
         this.$.lrnsysdialog.toggleDialog();
+      },
+      /**
+       * Toggles the dialog.
+       */
+       _dialogChanged: function (e) {
+        if (e.detail === this.$.lrnsysdialog) {
+          if (e.detail.$.modal.opened) {
+            document.body.addEventListener('dialog-toolbar-button-tapped', this.imgZoom.bind(this));
+          } else {
+            document.body.removeEventListener('dialog-toolbar-button-tapped');
+          }
+        }
       },
     });
   </script>

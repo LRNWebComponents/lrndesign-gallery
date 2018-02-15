@@ -112,7 +112,7 @@ A LRN element
         */
         chevron: {
           type: String,
-          value: 'chevron-right',
+          value: function(type){ return type == 'next' ? 'chevron-right' : 'chevron-left'; },
         },
         /** 
         * class for icon text color

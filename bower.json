@@ -13,7 +13,7 @@
     "responsive-utility": "LRNWebComponents/responsive-utility",
     "juicy-html": "Juicy/juicy-html#^3.0.0",
     "image-inspector": "LRNWebComponents/image-inspector#^1.1.0",
-    "lrnsys-layout": "LRNWebComponents/lrnsys-layout#^1.4.3",
+    "lrnsys-layout": "LRNWebComponents/lrnsys-layout#^1.4.4",
     "iron-ajax": "PolymerElements/iron-ajax#^2.1.0",
     "img-pan-zoom": "ryanburns23/img-pan-zoom#^2.0.0"
   },
