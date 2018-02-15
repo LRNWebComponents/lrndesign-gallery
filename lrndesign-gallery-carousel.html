@@ -180,7 +180,6 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         items: {
           type: Array,
           value: [],
-          notify: true,
           observer: '_itemsLoaded'
         },
         /** 
@@ -195,17 +194,14 @@ A LRN element that renders a collection of gallery items into a carousel or a si
          */
         responsiveSize: {
           type: String,
-          notify: true,
-          reflectToAttribute: true
+          notify: true
         },
         /*
          * data for the selected item
          */
         selected: {
           type: Object,
-          value: {},
-          notify: true,
-          reflectToAttribute: true
+          value: {}
         },
         /**
          * default sizing: fit parent by cropping (cover) 

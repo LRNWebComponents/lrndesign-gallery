@@ -366,10 +366,10 @@ A LRN element that renders a collection of gallery items into a carousel.
           <lrndesign-gallery-zoom 
             alt$="[[item.alt]]" 
             heading$="[[item.heading]]" 
-            id="gallery-zoom"
-            tooltip$="[[item.tooltip]]" 
-            zoom-src$="[[item.large]]" 
-            zoom$="[[item.zoom]]">
+            id="gallery-zoom" 
+            item="[[item.id]]" 
+            src$="[[item.large]]"
+            tooltip$="[[item.tooltip]]">
             <div slot="button-image">
               <iron-icon icon="zoom-in">
             </iron-icon></div>

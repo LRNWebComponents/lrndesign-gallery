@@ -64,7 +64,7 @@ A LRN element that renders the zoom feature for the gallery.
         <img-pan-zoom 
           id="img" 
           alt$="[[alt]]" 
-          src$="[[zoomSrc]]" 
+          src$="[[src]]" 
           max-zoom-pixel-ratio="1.5" 
           min-zoom-image-ratio="0.5" 
           zoom-per-click="1.2"  
@@ -100,11 +100,12 @@ A LRN element that renders the zoom feature for the gallery.
           value: 'Image Zoom',
         },
         /** 
-        * path for the image source
+        * heading for the zoom modal
         */
-        zoomSrc: {
+        item: {
           type: String,
           value: null,
+          observer: '_itemChanged'
         },
         /** 
         * tooltip for the zoom button
@@ -119,6 +120,13 @@ A LRN element that renders the zoom feature for the gallery.
         src: {
           type: String,
           reflectToAttribute: true,
+        },
+        /**
+         * Carousel or grid
+         */
+        type: {
+          type: String,
+          value: 'carousel'
         },
       },
       /** 
@@ -158,6 +166,18 @@ A LRN element that renders the zoom feature for the gallery.
             document.body.addEventListener('dialog-toolbar-button-tapped', this.imgZoom.bind(this));
           } else {
             document.body.removeEventListener('dialog-toolbar-button-tapped');
+          }
+        }
+      },
+      /**
+       * Toggles dialog based on anchor
+       */
+       _itemChanged: function () {
+        if (this.__init !== true) {
+          let anchor = window.location.hash.replace('#',''), item = anchor.replace('-zoom',''), zoom = anchor.endsWith('-zoom');
+          if(this.item == item && zoom){
+            this.__init = true;
+            this.toggleDialog();
           }
         }
       },

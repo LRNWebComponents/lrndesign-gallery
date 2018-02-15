@@ -63,6 +63,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           grid-size$="[[gridSize]]"
           id="gallery-grid" 
           items$="[[__items]]"
+          modal-open$="[[__modalOpen]]"
           responsive-size$="[[__responsiveSize]]"
           selected$="[[selected]]"
           sizing$="[[sizing]]"
@@ -71,12 +72,12 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       </template>
       <template is="dom-if" if="[[!grid]]">
         <lrndesign-gallery-carousel  
-          zoom$="[[__anchoredZoom]]" 
           aspect$="[[aspect]]" 
           class="gallery-type"
           hide-navigation$="[[__hideNav]]" 
           id="gallery-carousel" 
           items$="[[__items]]"
+          modal-open$="[[__modalOpen]]"
           responsive-size$="[[__responsiveSize]]"
           selected$="[[selected]]" 
           sizing$="[[sizing]]"
@@ -177,6 +178,13 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         title: {
           type: String,
           value: null
+        },
+        /*
+         * open modal based on anchor
+         */
+        __modalOpen: {
+          type: Boolean,
+          value: false
         },
       },
       /*

@@ -138,9 +138,10 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       alt$="[[selected.alt]]" 
       heading$="[[selected.title]]" 
       id="gallery-zoom" 
+      item="[[item.id]]" 
+      src$="[[selected.large]]"
       tooltip$="[[selected.tooltip]]" 
-      zoom-src$="[[selected.large]]"
-      zoom$="[[selected.zoom]]">
+      type="grid">
       <div slot="details"><juicy-html html$="[[selected.details]]"></juicy-html></div>
     </lrndesign-gallery-zoom>
   </template>
@@ -183,9 +184,9 @@ A LRN element that renders a collection of gallery items into a carousel or a si
          */
         selected: {
           type: Object,
-          value: {},
           notify: true,
-          reflectToAttribute: true
+          value: {},
+          observer: '_selectionChanged'
         },
         /**
          * default sizing: fit container by cropping (cover) 
@@ -244,6 +245,18 @@ A LRN element that renders a collection of gallery items into a carousel or a si
        */ 
       _isSelected: function(selected) {
         return selected ? "selected": "";
+      },
+      /**
+       * allows a grid item to be opened based on an anchor
+       */ 
+      _selectionChanged: function() {
+        if (this.__init !== true) {
+          let anchor = window.location.hash.replace('#',''), item = anchor.replace('-zoom','');
+          if(this.selected && this.selected.id == item){
+            this.__init = true;
+            this.$$('#gallery-zoom').toggleDialog();
+          }
+        }
       },
       /** 
       * returns true if the given attribute is not null
