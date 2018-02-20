@@ -114,9 +114,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         }
       }
     </style>
-    <template is="dom-if">
-      <p class="sr-only navigation">A list of thumbnail buttons items:</p>
-    </template>
+    <p class="sr-only navigation">A list of thumbnail buttons items:</p>
     <div id="gallery" tabindex="-1" aria-live="polite">
       <iron-list id="thumbslist" items="[[__items]]" as="item" grid selection-enabled>
         <template>

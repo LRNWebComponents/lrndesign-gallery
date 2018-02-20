@@ -95,9 +95,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         }
       }
     </style>
-    <template is="dom-if">
-      <p class="sr-only navigation">A carousel of items:</p>
-    </template>
+    <p class="sr-only navigation">A carousel of items:</p>
     <div id="gallery" tabindex="-1" aria-live="polite" hide-navigation$="[[__hideNav]]">
       <lrndesign-gallery-carousel-item 
         aspect$="[[aspect]]"
