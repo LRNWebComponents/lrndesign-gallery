@@ -112,7 +112,7 @@ A LRN element
         */
         chevron: {
           type: String,
-          value: function(type){ return type == 'next' ? 'chevron-right' : 'chevron-left'; },
+          computed: '_getIcon(type)',
         },
         /** 
         * class for icon text color
@@ -134,7 +134,7 @@ A LRN element
         item: {
           type: Number,
           value: null,
-          reflectToAttribute: true,
+          reflectToAttribute: true
         },
         /** 
         * target for the thumbnail button
@@ -162,6 +162,12 @@ A LRN element
        */ 
       ready: function(){
         this.__button = this.$.lrnsysbutton;
+      },
+      /**
+       * get the icon
+       */ 
+      _getIcon: function(type){
+        return type == 'next' ? 'chevron-right' : 'chevron-left';
       },
       /**
        * fire navigation tapped event

@@ -165,7 +165,7 @@ A LRN element that renders the zoom feature for the gallery.
           if (e.detail.$.modal.opened) {
             document.body.addEventListener('dialog-toolbar-button-tapped', this.imgZoom.bind(this));
           } else {
-            document.body.removeEventListener('dialog-toolbar-button-tapped');
+            document.body.removeEventListener('dialog-toolbar-button-tapped', this.imgZoom.bind(this));
           }
         }
       },

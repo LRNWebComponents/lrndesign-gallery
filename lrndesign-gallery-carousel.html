@@ -51,7 +51,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         width: 0;
         overflow: hidden;
       }
-      :host [hide-navigation] .navigation {
+      :host #gallery[hide-navigation] .navigation {
         display: none;
       }
       @media screen {
@@ -105,12 +105,17 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         theme$="[[theme]]">
         <div id="xy-start" slot="xy-start">
           <p class="x-of-y navigation">
-            <p class="sr-only">Slide [[__xOfY]] selected.</p> 
-          </p>
+            <p class="sr-only">Slide 
+              <juicy-html html$="[[__xOfY]]"></juicy-html> selected.</p> 
+            </p>
         </div>
         <div id="xy-end" slot="xy-end">
           <p class="x-of-y navigation">
-            (<span class="sr-only">End of slide </span>[[__xOfY]]<span class="sr-only">.</span>) 
+            (<span class="sr-only">
+              End of slide </span>
+              <juicy-html html$="[[__xOfY]]"></juicy-html>
+              <span class="sr-only">.
+            </span>) 
           </p>
         </div>
         <div slot="prevnextnav">
@@ -235,24 +240,27 @@ A LRN element that renders a collection of gallery items into a carousel or a si
        */
       _itemsLoaded: function(){
         this.__items = this.items;
-        this.goToItem(this.selected,true,this.selected !== 0);
+        this.__hideNav = this.items !== undefined ? this.items.length < 2 : true;
+        let anchor = window.location.hash.replace('#',''), item = this.items.findIndex(i => i.id === anchor.replace('-zoom',''));
+        let index = item !== undefined && item > 0 ? item : 0;
+        this.goToItem(index,true,index !== 0);
       },
       /**
        * go to item by id, or index
        */
       goToItem: function(selection,setThumbnail,setScroll){
-        let index = typeof selection === 'string' ? this.items.findIndex(i => i.id === selection) : selection;
+        let index = typeof selection == 'number' ? selection : this.items.findIndex(i => i.id === selection);
         setThumbnail !== undefined ? setThumbnail : false;
         setScroll !== undefined ? setScroll : false;
         if(typeof index === 'number' && index >= 0 && index < this.items.length){
           this.selected = this.items[index];
           if(this.$.thumbslist.selectItem === null || setThumbnail) {
             this.$.thumbslist.selectItem(this.items[index]);
-            this.__xOfY = parseInt(this.selected.index+1)+' of '+this.items.length;
           }
           if (setScroll) {
             this.__gallery.parentNode.scrollIntoView();
           }
+          this.__xOfY = parseInt(this.selected.index+1)+' of '+this.items.length;
         }
       },
       /**
