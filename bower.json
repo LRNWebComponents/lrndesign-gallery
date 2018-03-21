@@ -16,7 +16,8 @@
     "lrnsys-layout": "LRNWebComponents/lrnsys-layout#^1.4.4",
     "iron-ajax": "PolymerElements/iron-ajax#^2.1.0",
     "img-pan-zoom": "ryanburns23/img-pan-zoom#^2.0.0",
-    "neon-animation": "PolymerElements/neon-animation#1.2.5"
+    "neon-animation": "PolymerElements/neon-animation#1.2.5",
+    "web-animations-js": "web-animations/web-animations-js#^2.3.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

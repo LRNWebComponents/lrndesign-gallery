@@ -1,9 +1,10 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../neon-animation/neon-animation.html">
+<link rel="import" href="../web-animations-js/web-animations-next-lite.min.html">
+<link rel="import" href="../responsive-utility/responsive-utility.html">
 <link rel="import" href="lrndesign-gallery-carousel.html">
 <link rel="import" href="lrndesign-gallery-grid.html">
-<link rel="import" href="../neon-animation/neon-animation.html">
-<link rel="import" href="../responsive-utility/responsive-utility.html">
 
 <!--
 `lrndesign-gallery`
@@ -65,7 +66,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           id="gallery-grid" 
           items$="[[__items]]"
           modal-open$="[[__modalOpen]]"
-          responsive-size$="[[__responsiveSize]]"
+          responsive-size$="[[responsiveSize]]"
           selected$="[[selected]]"
           sizing$="[[sizing]]"
           theme$="[[theme]]">
@@ -79,7 +80,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           id="gallery-carousel" 
           items$="[[__items]]"
           modal-open$="[[__modalOpen]]"
-          responsive-size$="[[__responsiveSize]]"
+          responsive-size$="[[responsiveSize]]"
           selected$="[[selected]]" 
           sizing$="[[sizing]]"
           theme$="[[theme]]">
@@ -144,6 +145,14 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         /*
          * data for the selected item
          */
+        responsiveSize: {
+          type: String,
+          value: 'xs',
+          reflectToAttribute: true
+        },
+        /*
+         * data for the selected item
+         */
         selected: {
           type: Object,
           value: {},
@@ -188,6 +197,14 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           value: false
         },
       },
+      attached: function(){
+        let root = this;
+        Polymer.ResponsiveUtility.requestAvailability();
+        root.fire('responsive-element',{
+          "element": root,
+          "attribute": "responsive-size"
+        });
+      },
       /*
        * adds additional properties to gallery
        */
@@ -216,12 +233,6 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           this.__items = temp;
           this.selected = index > -1 ? this.__items[index] : this.__items[0];
         }
-      },
-      /**
-       * sets size class based on parent container and breakpoints
-       */ 
-      _onResponsiveResize: function(e){
-        this.__responsiveSize = e.detail.screen;
       },
       /** 
       * returns true if the given attribute is not null
