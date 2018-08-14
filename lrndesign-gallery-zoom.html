@@ -28,7 +28,7 @@ A LRN element that renders the zoom feature for the gallery.
         text-align: center; 
         padding: 6px;
         min-width: 30px; 
-        color: black;
+        color: var(--lrndesign-gallery-color);
       }
       :host #inspector ::slotted(app-toolbar) {
         padding: 0;
@@ -38,11 +38,14 @@ A LRN element that renders the zoom feature for the gallery.
         width: 30px;
         line-height: 30px;
         transition: background-color 1s;
-        background-color: rgba(255,255,255,0.5);
+        color: var(--lrndesign-gallery-color);
+        background-color: var(--lrndesign-gallery-rgba-low);
+        border-radius: 3px;
       }
       :host #lrnsysdialog ::slotted(#dialogtrigger > lrnsys-button-inner):focus, 
       :host #lrnsysdialog ::slotted(#dialogtrigger > lrnsys-button-inner):hover {
-        background-color: rgba(255,255,255,0.3);
+        color: var(--lrndesign-gallery-focus-color);
+        background-color: var(--lrndesign-gallery-background-color);
       }
     </style>
     <lrnsys-dialog id="lrnsysdialog" dynamic-images body-append title$="[[tooltip]]">
@@ -57,7 +60,6 @@ A LRN element that renders the zoom feature for the gallery.
           <h1 style="position: absolute; left: -99999px; top:-1px; height: 0; width: 0; overflow: auto;">
             [[heading]]
           </h1>
-          <slot name="details"></slot>
         </div>
       </div>
       <div>
@@ -70,6 +72,7 @@ A LRN element that renders the zoom feature for the gallery.
           zoom-per-click="1.2"  
           zoom-per-scroll="0.6">
         </img-pan-zoom>
+        <slot name="details"></slot>
       </div>
     </lrnsys-dialog>
   </template>

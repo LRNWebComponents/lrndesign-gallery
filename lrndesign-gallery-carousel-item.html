@@ -1,6 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
-<link rel="import" href="../juicy-html/juicy-html.html">
 <link rel="import" href="../iron-image/iron-image.html">
 <link rel="import" href="lrndesign-gallery-zoom.html">
 
@@ -45,323 +44,84 @@ A LRN element that renders a collection of gallery items into a carousel.
       :host {
         width: 100%;
       }
-      :host > #gallery-item {
+      :host #gallery-item {
+        width: 100%;
+        color: var(--lrndesign-gallery-color);
+        background-color: var(--lrndesign-gallery-background-color);
+      }
+      :host:not([responsive-size="xs"]):not([extra-wide]) #gallery-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch;
+      }
+      :host #gallery-image {
         position: relative;
-        border: 1px solid #eee;
       }
-      :host[theme="dark"] > #gallery-item {
-        border: 1px solid black;
-        color: white;
-      }
-      :host .gallery-image {
-        margin-bottom: -3px;
-      }
-      :host #details, 
-      :host #details-inner, 
-      :host lrndesign-gallery-zoom, 
-      :host #prevnext,
-      :host #thumbnails {
-        position: absolute;
+      :host #gallery-image iron-image {
+        width: 100%;
+        height: 100%;
       }
       :host #prevnext {
         left: 0;
         top: 0;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+      }
+      :host[responsive-size="sm"]:not([extra-wide]) #prevnext{
+        height: 200px;
+      }
+      :host[responsive-size="md"]:not([extra-wide]) #prevnext{
+        height: 300px;
+      }
+      :host[responsive-size="lg"]:not([extra-wide]) #prevnext{
+        height: 400px;
+      }
+      :host[responsive-size="xl"]:not([extra-wide]) #prevnext{
+        height: 500px;
       }
       :host lrndesign-gallery-zoom {
         left: 0;
         bottom: 0px;
         z-index: 2; 
-      }
-      :host #details {
-        right: 0;
-        top: 0;
-        max-height: 100%;
-        color: black;
-        background-color: #f8f8f8;
-      }
-      :host[theme="dark"] #details {
-        background-color: #222;
-        color: white;
+        position: absolute;
       }
       :host #details-inner {
-        left: 0;
-        top: 0;
-        width: 100%;
-        max-height: 45%;
-        overflow-y: scroll;
-      } 
-      :host #details-inner > * {
-        padding: 0 20px;
+        height: 100%;
+        display: flex;
+        position: relative;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        align-items: stretch;
+        align-content: stretch;
       }
-      :host #details-inner > #item-title {
-        padding-right: 100px;
-      }
+      :host #itemdetails, 
       :host #thumbnails {
-        right: 0;
-        bottom: 5px;
-        max-height: 45%;
+        padding: 20px;
+        flex-basis: 100%;
       }
-      :host #thumbnails-inner {
-        padding: 0 20px;
+      :host #itemdetails {
+        align-self: flex-start;
       }
-      :host[responsive-size="xl"] {
-        padding-top: 20%;
+      :host #itemtitle {
+        margin-top: 0;
       }
-      :host[responsive-size="xl"] .gallery-image,  
-      :host[responsive-size="xl"] #prevnext,
-      :host[responsive-size="xl"] #details {
-        padding-bottom: 20%;
-      }
-      :host[responsive-size="xl"][aspect="16:9"] .gallery-image, 
-      :host[responsive-size="xl"][aspect="16:9"] #prevnext {
-        width: 35.56%;
-      }
-      :host[responsive-size="xl"][aspect="16:9"] .item-info {
-        width: 64.44%;
-      }
-      :host[responsive-size="xl"][aspect="3:2"] .gallery-image, 
-      :host[responsive-size="xl"][aspect="3:2"] #prevnext {
-        width: 30%;
-      }
-      :host[responsive-size="xl"][aspect="3:2"] .item-info {
-        width: 70%;
-      }
-      :host[responsive-size="xl"][aspect="4:3"] .gallery-image, 
-      :host[responsive-size="xl"][aspect="4:3"] #prevnext {
-        width: 26.27%;
-      }
-      :host[responsive-size="xl"][aspect="4:3"] .item-info {
-        width: 73.73%;
-      }
-      :host[responsive-size="xl"][aspect="5:4"] .gallery-image, 
-      :host[responsive-size="xl"][aspect="5:4"] #prevnext {
-        width: 31.25%;
-      }
-      :host[responsive-size="xl"][aspect="5:4"] .item-info {
-        width: 68.75%;
-      }
-      :host[responsive-size="xl"][aspect="1:1"] .gallery-image, 
-      :host[responsive-size="xl"][aspect="1:1"] #prevnext {
-        width: 20%;
-      }
-      :host[responsive-size="xl"][aspect="1:1"] .item-info {
-        width: 80%;
-      }
-      :host[responsive-size="lg"] {
-        padding-top: 25%;
-      }
-      :host[responsive-size="lg"] .gallery-image, 
-      :host[responsive-size="lg"] #prevnext,
-      :host[responsive-size="lg"] #details {
-        padding-bottom: 25%;
-      }
-      :host[responsive-size="lg"][aspect="16:9"] .gallery-image, 
-      :host[responsive-size="lg"][aspect="16:9"] #prevnext {
-        width: 48%;
-      }
-      :host[responsive-size="lg"][aspect="16:9"] .item-info {
-        width: 52%;
-      }
-      :host[responsive-size="lg"][aspect="3:2"] .gallery-image, 
-      :host[responsive-size="lg"][aspect="3:2"] #prevnext {
-        width: 37.5%;
-      }
-      :host[responsive-size="lg"][aspect="3:2"] .item-info {
-        width: 62.5%;
-      }
-      :host[responsive-size="lg"][aspect="4:3"] .gallery-image, 
-      :host[responsive-size="lg"][aspect="4:3"] #prevnext {
-        width: 33.33%;
-      }
-      :host[responsive-size="lg"][aspect="4:3"] .item-info {
-        width: 66.67%;
-      }
-      :host[responsive-size="lg"][aspect="5:4"] .gallery-image, 
-      :host[responsive-size="lg"][aspect="5:4"] #prevnext {
-        width: 31.25%;
-      }
-      :host[responsive-size="lg"][aspect="5:4"] .item-info {
-        width: 68.75%;
-      }
-      :host[responsive-size="lg"][aspect="1:1"] .gallery-image, 
-      :host[responsive-size="lg"][aspect="1:1"] #prevnext {
-        width: 25%;
-      }
-      :host[responsive-size="lg"][aspect="1:1"] .item-info {
-        width: 75%;
-      }
-      :host[responsive-size="md"] {
-        padding-top: 33.33%;
-      }
-      :host[responsive-size="md"] .gallery-image, 
-      :host[responsive-size="md"] #prevnext,
-      :host[responsive-size="md"] #details {
-        padding-bottom: 33.33%;
-      }
-      :host[responsive-size="md"][aspect="16:9"] .gallery-image, 
-      :host[responsive-size="md"][aspect="16:9"] #prevnext {
-        width: 59.25%;
-      }
-      :host[responsive-size="md"][aspect="16:9"] .item-info {
-        width: 40.75%;
-      }
-      :host[responsive-size="md"][aspect="3:2"] .gallery-image, 
-      :host[responsive-size="md"][aspect="3:2"] .item-info {
-        width: 50%;
-      }
-      :host[responsive-size="md"][aspect="4:3"] .gallery-image, 
-      :host[responsive-size="md"][aspect="4:3"] #prevnext {
-        width: 44.44%;
-      }
-      :host[responsive-size="md"][aspect="4:3"] .item-info {
-        width: 56.67%;
-      }
-      :host[responsive-size="md"][aspect="5:4"] .gallery-image, 
-      :host[responsive-size="md"][aspect="5:4"] #prevnext {
-        width: 41.66%;
-      }
-      :host[responsive-size="md"][aspect="5:4"] .item-info {
-        width: 58.34%;
-      }
-      :host[responsive-size="md"][aspect="1:1"] .gallery-image, 
-      :host[responsive-size="md"][aspect="1:1"] #prevnext {
-        width: 33.33%;
-      }
-      :host[responsive-size="md"][aspect="1:1"] .item-info {
-        width: 66.67%;
-      }
-      :host[responsive-size="sm"] {
-        padding-top: 40%;
-      }
-      :host[responsive-size="sm"] #thumbnails, 
-      :host[responsive-size="xs"] #thumbnails {
-        display: none;
-      }
-      :host[responsive-size="sm"] .gallery-image,
-      :host[responsive-size="sm"] #prevnext,
-      :host[responsive-size="sm"] #details {
-        padding-bottom: 40%;
-      }
-      :host[responsive-size="sm"][aspect="16:9"] .gallery-image,
-      :host[responsive-size="sm"][aspect="16:9"] #prevnext {
-        width: 71.11%;
-      }
-      :host[responsive-size="sm"][aspect="16:9"] .item-info {
-        width: 28.89%;
-      }
-      :host[responsive-size="sm"][aspect="3:2"] .gallery-image,
-      :host[responsive-size="sm"][aspect="3:2"] #prevnext {
-        width: 60%;
-      } 
-      :host[responsive-size="sm"][aspect="3:2"] .item-info {
-        width: 40%;
-      }
-      :host[responsive-size="sm"][aspect="4:3"] .gallery-image,
-      :host[responsive-size="sm"][aspect="4:3"] #prevnext {
-        width: 53.33%;
-      }
-      :host[responsive-size="sm"][aspect="4:3"] .item-info {
-        width: 46.67%;
-      }
-      :host[responsive-size="sm"][aspect="5:4"] .gallery-image,
-      :host[responsive-size="sm"][aspect="5:4"] #prevnext, 
-      :host[responsive-size="sm"][aspect="5:4"] #details {
-        width: 50%;
-      }
-      :host[responsive-size="sm"][aspect="1:1"] .gallery-image,
-      :host[responsive-size="sm"][aspect="1:1"] #prevnext {
-        width: 40%;
-      }
-      :host[responsive-size="sm"][aspect="1:1"] .item-info {
-        width: 60%;
-      }
-      :host[responsive-size="xs"] lrndesign-gallery-zoom {
-        margin-top: -45px;
-      }
-      :host[responsive-size="xs"] .gallery-image,
-      :host[responsive-size="xs"] #prevnext,
-      :host[responsive-size="xs"] #details {
-        width: 100%;
-      }
-      :host[responsive-size="xs"] #gallery-item, 
-      :host[responsive-size="xs"] #details {
-        padding-bottom: 40%;
-      }
-      :host[responsive-size="xs"][aspect="16:9"] {
-        padding-top: 96.25%;
-      }
-      :host[responsive-size="xs"][aspect="16:9"] .gallery-image,
-      :host[responsive-size="xs"][aspect="16:9"] #prevnext {
-        padding-bottom: 56.25%;
-      }
-      :host[responsive-size="xs"][aspect="16:9"] #details, 
-      :host[responsive-size="xs"][aspect="16:9"] lrndesign-gallery-zoom {
-        top: 58.44%;
-      }
-      :host[responsive-size="xs"][aspect="3:2"] {
-        padding-top: 106.67%;
-      }
-      :host[responsive-size="xs"][aspect="3:2"] .gallery-image,
-      :host[responsive-size="xs"][aspect="3:2"] #prevnext {
-        padding-bottom: 66.67%;
-      }
-      :host[responsive-size="xs"][aspect="3:2"] #details, 
-      :host[responsive-size="xs"][aspect="3:2"] lrndesign-gallery-zoom {
-        top: 62.05%;
-      }
-      :host[responsive-size="xs"][aspect="4:3"] {
-        padding-top: 115%;
-      }
-      :host[responsive-size="xs"][aspect="4:3"] .gallery-image {
-        padding-bottom: 75%;
-      }
-      :host[responsive-size="xs"][aspect="4:3"] #details,
-      :host[responsive-size="xs"][aspect="4:3"] lrndesign-gallery-zoom {
-        top: 65.22%;
-      }
-      :host[responsive-size="xs"][aspect="5:4"] {
-        padding-top: 120%;
-      }
-      :host[responsive-size="xs"][aspect="5:4"] .gallery-image,
-      :host[responsive-size="xs"][aspect="5:4"] #prevnext {
-        padding-bottom: 80%;
-      }
-      :host[responsive-size="xs"][aspect="5:4"] #details,
-      :host[responsive-size="xs"][aspect="5:4"] lrndesign-gallery-zoom {
-        top: 66.67%;
-      }
-      :host[responsive-size="xs"][aspect="1:1"] {
-        padding-top: 140%;
-      }
-      :host[responsive-size="xs"][aspect="1:1"] .gallery-image,
-      :host[responsive-size="xs"][aspect="1:1"] #prevnext {
-        padding-bottom: 100%;
-      } 
-      :host[responsive-size="xs"][aspect="1:1"] #details, 
-      :host[responsive-size="xs"][aspect="1:1"] lrndesign-gallery-zoom {
-        top: 71.43%;
+      :host #thumnails {
+        align-self: flex-end;
       }
     </style>
-      <div id="gallery-item">
-        <slot name="xy-start"></slot>
+    <div id="gallery-item">
+      <slot name="xy-start"></slot>
+      <div id="gallery-image"
+      style$="[[imageStyle]]">
         <iron-image 
           alt$="[[item.alt]]" 
-          class="gallery-image"
           fade 
           id$="[[item.id]]" 
           placeholder$="[[item.thumbnail]]" 
           sizing$="[[item.sizing]]"  
           src$="[[item.src]]">
         </iron-image>
-        <div id="details" class="item-info">
-          <div id="details-inner">
-            <template is="dom-if" if="[[_isAttrSet(item.title)]]">
-              <h2 id="item-title">[[item.title]]</h2>
-            </template>
-            <div><juicy-html html$="[[item.details]]"></juicy-html></div>
-            <slot name="xy-end"></slot>
-          </div>
-        </div>
         <template is="dom-if" if="[[item.zoom]]">
           <lrndesign-gallery-zoom 
             alt$="[[item.alt]]" 
@@ -376,14 +136,26 @@ A LRN element that renders a collection of gallery items into a carousel.
           </lrndesign-gallery-zoom>
         </template>
         <div id="prevnext">
-            <slot name="prevnextnav"></slot>
+          <slot name="prevnextnav"></slot>
         </div>
-        <div id="thumbnails" class="item-info">
-          <div id="thumbnails-inner">
-            <slot name="thumbnails"></slot>
+      </div>
+      <div id="details" class="item-info">
+        <div id="details-inner">
+          <div id="itemdetails">
+            <template is="dom-if" if="[[_isAttrSet(item.title)]]">
+              <h2 id="itemtitle">[[item.title]]</h2>
+            </template>
+            <div id="itembody"></div>
+          </div>
+          <slot id="xyend" name="xy-end"></slot>
+          <div id="thumbnails" class="item-info">
+            <div id="thumbnails-inner">
+              <slot name="thumbnails"></slot>
+            </div>
           </div>
         </div>
       </div>
+    </div>
   </template>
 
   <script>
@@ -392,12 +164,13 @@ A LRN element that renders a collection of gallery items into a carousel.
       is: 'lrndesign-gallery-carousel-item',
 
       properties: {
-        /** 
-        * aspect ratio of media: 1:1, 5:4, 4:3, 3:2, or 16:9
-        */
-        aspect: {
-          type: String,
-          value: '4:3',
+        /*
+         * size for responsive CSS
+         */
+        extraWide: {
+          type: Boolean,
+          computed: '_getExtraWide(item)',
+          reflectToAttribute: true
         },
         /*
          * selected item's data
@@ -408,6 +181,14 @@ A LRN element that renders a collection of gallery items into a carousel.
           notify: true,
           reflectToAttribute: true,
         },
+        /*
+         * size for responsive CSS
+         */
+        responsiveSize: {
+          type: String,
+          value: 'xs',
+          reflectToAttribute: true
+        },
         /** 
          * theme of the gallery: default or dark
          */
@@ -415,11 +196,47 @@ A LRN element that renders a collection of gallery items into a carousel.
           type: String,
           value: 'default',
         },
+        /** 
+         * padding-top for iron image (sets aspect ratio)
+         */
+        imageStyle: {
+          type: String,
+          computed: '_getImageStyle(extraWide,responsiveSize)',
+        },
+      },
+      /** 
+      * returns the proper padding to maintain image aspect ratio and updates 
+      */
+      _getExtraWide: function(item){
+        let img = new Image();
+        img.src = this.item.src;
+        this.$.itembody.innerHTML = item.details;
+        this.__aspectRatio = img.naturalWidth/img.naturalHeight;
+        console.log(img.src,img.naturalWidth,img.naturalHeight,this.__aspectRatio);
+        return this.__aspectRatio > 2.5;
+      },
+      /** 
+      * returns the proper padding to maintain image aspect ratio and updates 
+      */
+      _getImageStyle: function(extraWide,responsiveSize){
+        if(extraWide || responsiveSize === 'xs'){
+          return 'padding-top: '+(100/this.__aspectRatio)+'%;';
+        } else {
+          if(responsiveSize === 'xl') {
+            return 'width: '+(this.__aspectRatio*500)+'px; height: 500px;';
+          } else if(responsiveSize === 'lg') {
+            return 'width: '+(this.__aspectRatio*400)+'px; height: 400px;';
+          } else if(responsiveSize === 'md') {
+            return 'width: '+(this.__aspectRatio*300)+'px; height: 300px;';
+          } else {
+            return 'width: '+(this.__aspectRatio*200)+'px; height: 200px;';
+          }
+        }
       },
       /** 
       * returns index of the previous or next item
       */
-      _getIndex: function (index,step){
+      _getIndex: function(index,step){
         return index + step;
       },
       /** 

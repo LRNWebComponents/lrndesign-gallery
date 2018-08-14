@@ -1,10 +1,11 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../neon-animation/neon-animation.html">
 <link rel="import" href="../web-animations-js/web-animations-next-lite.min.html">
 <link rel="import" href="../responsive-utility/responsive-utility.html">
+<link rel="import" href="../simple-colors/simple-colors.html">
 <link rel="import" href="lrndesign-gallery-carousel.html">
 <link rel="import" href="lrndesign-gallery-grid.html">
+<link rel="import" href="lrndesign-gallery-print.html">
 
 <!--
 `lrndesign-gallery`
@@ -41,16 +42,25 @@ A LRN element that renders a collection of gallery items into a carousel or a si
 
 <dom-module id="lrndesign-gallery">
   <template>
-    <style>
+    <style is="custom-style" include="simple-colors">
       :host {
         display: block;
+        --lrndesign-gallery-color: var(--simple-colors-foreground1);
+        --lrndesign-gallery-background-color: var(--simple-colors-background3);
+        --lrndesign-gallery-focus-color: var(--simple-colors-accent-foreground3);
+        --lrndesign-gallery-border-color: var(--simple-colors-background1);
+        --lrndesign-gallery-rgba-high: rgba(255,255,255,0.7);
+        --lrndesign-gallery-rgba-mid: rgba(255,255,255,0.5);
+        --lrndesign-gallery-rgba-low: rgba(255,255,255,0.3);
+        --lrndesign-gallery-rgba-none: rgba(255,255,255,0);
+      } 
+      :host[dark]{
+        --lrndesign-gallery-rgba-high: rgba(0,0,0,0.7);
+        --lrndesign-gallery-rgba-mid: rgba(0,0,0,0.5);
+        --lrndesign-gallery-rgba-low: rgba(0,0,0,0.3);
+        --lrndesign-gallery-rgba-none: rgba(0,0,0,0);
       }
     </style>
-    <iron-ajax
-     auto
-     url="[[dataSrc]]"
-     handle-as="json"
-     last-response="{{items}}"></iron-ajax>
     <article>
       <template is="dom-if" if="[[_isAttrSet(title)]]">
         <h1 id="gallery-title">[[title]]</h1>
@@ -104,6 +114,8 @@ A LRN element that renders a collection of gallery items into a carousel or a si
     Polymer({
 
       is: 'lrndesign-gallery',
+      
+      behaviors: [ simpleColorsBehaviors ],
 
       properties: {
         /** 
@@ -131,11 +143,16 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         /** 
          * array of carousel items
          */
+        sources: {
+          type: Array,
+          value: []
+        },
+        /** 
+         * array of carousel items
+         */
         items: {
           type: Array,
-          value: [],
-          notify: true,
-          observer: '_itemsLoaded'
+          computed: '_itemsLoaded(sources,sizing)'
         },
         /*
          * size for responsive CSS
@@ -171,13 +188,6 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           value: 'cover'
         },
         /** 
-         * theme of the carousel: default or dark
-         */
-        theme: {
-          type: String,
-          value: 'default'
-        },
-        /** 
          * carousel's title
          */
         title: {
@@ -203,17 +213,18 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       /*
        * adds additional properties to gallery
        */
-      _itemsLoaded: function(){
-        let temp = [], anchor = window.location.hash, index = this.items.findIndex(i => '#'+i.id === anchor.replace('-zoom',''));
-        if(this.items !== undefined && this.items !== null && this.items.length > 0){
-          for (i in this.items) {
-            temp[i] = this.items[i];
+      _itemsLoaded: function(sources,sizing){
+        console.log(sources);
+        let temp = [], anchor = window.location.hash, index = sources.findIndex(i => '#'+i.id === anchor.replace('-zoom',''));
+        if(sources !== undefined && this.items !== null && sources.length > 0){
+          for (i in sources) {
+            temp[i] = sources[i];
             temp[i].heading = temp[i].title !== undefined ? 'Image Zoom' : temp[i].title+' (Image Zoom)';
             temp[i].index = parseInt(i);
             temp[i].large = temp[i].large !== undefined ? temp[i].large : temp[i].src;
-            temp[i].next = parseInt(i) + 1 < this.items.length ? parseInt(i) + 1 : -1;
+            temp[i].next = parseInt(i) + 1 < sources.length ? parseInt(i) + 1 : -1;
             temp[i].prev = parseInt(i) - 1 > -1 ? parseInt(i) - 1 : -1;
-            temp[i].sizing = temp[i].sizing !== undefined ? temp[i].sizing : this.sizing;
+            temp[i].sizing = temp[i].sizing !== undefined ? temp[i].sizing : sizing;
             temp[i].tooltip = temp[i].title !== undefined ? 'Zoom In' : temp[i].title+' Zoom';
             temp[i].thumbnail = temp[i].thumbnail !== undefined ? temp[i].thumbnail : temp[i].src;
             temp[i].zoom = temp[i].zoom !== undefined ? temp[i].zoom : true;
@@ -227,6 +238,8 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           }
           this.__items = temp;
           this.selected = index > -1 ? this.__items[index] : this.__items[0];
+          console.log(this.__items);
+          return this.__items;
         }
       },
       /** 
