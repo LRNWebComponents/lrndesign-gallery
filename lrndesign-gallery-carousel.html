@@ -1,9 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../juicy-html/juicy-html.html">
 <link rel="import" href="../iron-list/iron-list.html">
 <link rel="import" href="lrndesign-gallery-thumb.html">
 <link rel="import" href="lrndesign-gallery-carousel-item.html">
 <link rel="import" href="lrndesign-gallery-carousel-prevnext.html">
+<link rel="import" href="../simple-colors/simple-colors.html">
 
 <!--
 `lrndesign-gallery-carousel`
@@ -43,7 +43,6 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         display: block;
         margin: 15px 0 0;
         padding: 0;
-        border: 1px solid var(--lrndesign-gallery-border-color);
       }
       :host .sr-only {
         position: absolute;
@@ -84,6 +83,18 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           overflow-y: auto !important;
         }
         :host lrndesign-gallery-thumb {
+          width: 40px;
+          height: 40px;
+        }
+        :host[responsive-size="xs"] lrndesign-gallery-thumb {
+          display: none;
+        }
+        :host[responsive-size="md"] lrndesign-gallery-thumb {
+          width: 45px;
+          height: 45px;
+        }
+        :host[responsive-size="lg"] lrndesign-gallery-thumb,
+        :host[responsive-size="xl"] lrndesign-gallery-thumb {
           width: 50px;
           height: 50px;
         }
@@ -99,32 +110,31 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       }
     </style>
     <p class="sr-only navigation">A carousel of items:</p>
+    <a id$="[[__timestamp]]"></a>
     <div id="gallery" tabindex="-1" aria-live="polite" hide-navigation$="[[__hideNav]]">
-      <lrndesign-gallery-carousel-item 
-        aspect$="[[aspect]]"
-        id="carousel-item"
-        responsive-size$="[[responsiveSize]]"
+      <lrndesign-gallery-carousel-item id="carousel-item" 
+        aspectRatio$="[[aspectRatio]]"
+        dark$="[[dark]]"
+        image-height$="[[imageHeight]]"
+        image-style$="[[imageStyle]]"
         item="[[selected]]"
+        responsive-size$="[[responsiveSize]]"
         theme$="[[theme]]">
         <div id="xy-start" slot="xy-start">
-          <p class="x-of-y navigation">
-            <p class="sr-only">Slide 
-              <juicy-html html$="[[__xOfY]]"></juicy-html> selected.</p> 
+          <p class="x-of-y navigation" hidden$="[[__hideNav]">
+            <p class="sr-only">Slide [[__xOfY]] selected.</p> 
             </p>
         </div>
         <div id="xy-end" slot="xy-end">
-          <p class="x-of-y navigation">
-            (<span class="sr-only">
-              End of slide </span>
-              <juicy-html html$="[[__xOfY]]"></juicy-html>
-              <span class="sr-only">.
-            </span>) 
+          <p class="x-of-y navigation" hidden$="[[__hideNav]">
+            (<span class="sr-only"> End of slide </span> [[__xOfY]]<span class="sr-only">.</span>) 
           </p>
         </div>
-        <div slot="prevnextnav">
+        <div id="prevnextnav" slot="prevnextnav">
           <lrndesign-gallery-carousel-prevnext 
             class="navigation"
             controls$="[[__gallery.id]]" 
+            hidden$="[[__hideNav]"
             id="carousel-prev"
             item="[[selected.prev]]" 
             target$="[[__gallery]]" 
@@ -133,6 +143,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           </lrndesign-gallery-carousel-prevnext>
           <lrndesign-gallery-carousel-prevnext class="navigation" 
             controls="[[__gallery.id]]" 
+            hidden$="[[__hideNav]"
             id="carousel-next"
             item$="[[selected.next]]" 
             target$="[[__gallery]]" 
@@ -141,7 +152,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           </lrndesign-gallery-carousel-prevnext>
         </div>
         <div slot="thumbnails">
-          <p class="sr-only navigation">Slides list:</p>
+          <p class="sr-only navigation" hidden$="[[__hideNav]">Slides list:</p>
           <iron-list id="thumbslist" items="[[__items]]" as="item" grid selection-enabled>
             <template>
               <lrndesign-gallery-thumb 
@@ -168,6 +179,8 @@ A LRN element that renders a collection of gallery items into a carousel or a si
 
       is: 'lrndesign-gallery-carousel',
       
+      behaviors: [ simpleColorsBehaviors ],
+      
       listeners: {
         'navTap': '_onNavTapped'
       },
@@ -176,9 +189,31 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         /** 
         * aspect ratio of media: 1:1, 5:4, 4:3, 3:2, or 16:9
         */
-        aspect: {
+        aspectRatio: {
+          type: Number,
+          value: '1.33333333'
+        },
+        /*
+         * size for responsive CSS
+         */
+        extraWide: {
+          type: Boolean,
+          computed: '_getExtraWide(items)',
+          reflectToAttribute: true
+        },
+        /** 
+         * style css of image container (sets aspect ratio)
+         */
+        imageStyle: {
           type: String,
-          value: '4:3'
+          computed: '_getImageStyle(extraWide,responsiveSize)',
+        },
+        /** 
+         * height css of iron image (sets aspect ratio in xs or extraWide)
+         */
+        imageHeight: {
+          type: String,
+          computed: '_getImageHeight(extraWide,responsiveSize)',
         },
         /** 
          * array of carousel items
@@ -237,33 +272,78 @@ A LRN element that renders a collection of gallery items into a carousel or a si
        */
       attached: function(){
         this.__gallery = this.$.gallery;
+        //set a unique identifier so that we can scroll to the item
+        this.__timestamp = 'gallery-anchor-'+Date.now();
+        if (this.__setScroll) {
+          document.getElementById(this.__timestamp).scrollIntoView();
+        }
       },
       /**
        * gets unique id for carousel and sets it as a target
        */
       _itemsLoaded: function(){
+        let anchor, item, index;
         this.__items = this.items;
         this.__hideNav = this.items !== undefined ? this.items.length < 2 : true;
-        let anchor = window.location.hash.replace('#',''), item = this.items.findIndex(i => i.id === anchor.replace('-zoom',''));
-        let index = item !== undefined && item > 0 ? item : 0;
+        anchor = window.location.hash.replace('#','');
+        item = this.items.findIndex(i => i.id === anchor.replace('-zoom',''));
+        index = item !== undefined && item > 0 ? item : 0;
         this.goToItem(index,true,index !== 0);
+      },
+      /** 
+      * returns the proper padding to maintain image aspect ratio and updates 
+      */
+      _getExtraWide: function(items){
+        let img = new Image();
+        if(items !== undefined && items.length > 0){
+          img.src = items[0].src;
+          this.aspectRatio = img.naturalWidth > 0 && img.naturalHeight > 0 ? img.naturalWidth/img.naturalHeight : 1.33333333;
+          return this.aspectRatio > 2.5;
+        } else {
+          return false;
+        }
+      },
+      /** 
+      * returns the proper padding to maintain image aspect ratio and updates 
+      */
+      _getImageStyle: function(extraWide,responsiveSize){
+        if(extraWide || responsiveSize === 'xs'){
+          return '';
+        } else {
+          if(responsiveSize === 'xl') {
+            return 'width: '+(this.aspectRatio*500)+'px; height: 500px;';
+          } else if(responsiveSize === 'lg') {
+            return 'width: '+(this.aspectRatio*400)+'px; height: 400px;';
+          } else if(responsiveSize === 'md') {
+            return 'width: '+(this.aspectRatio*300)+'px; height: 300px;';
+          } else {
+            return 'width: '+(this.aspectRatio*200)+'px; height: 200px;';
+          }
+        }
+      },
+      /** 
+      * returns the proper padding to maintain image aspect ratio and updates 
+      */
+      _getImageHeight: function(extraWide,responsiveSize){
+        if(extraWide || responsiveSize === 'xs'){
+          return 'padding-top: '+(100/this.aspectRatio)+'%;';
+        } else {
+          return '';
+        }
       },
       /**
        * go to item by id, or index
        */
       goToItem: function(selection,setThumbnail,setScroll){
-        let index = typeof selection == 'number' ? selection : this.items.findIndex(i => i.id === selection);
-        setThumbnail !== undefined ? setThumbnail : false;
-        setScroll !== undefined ? setScroll : false;
-        if(typeof index === 'number' && index >= 0 && index < this.items.length){
-          this.selected = this.items[index];
-          if(this.$.thumbslist.selectItem === null || setThumbnail) {
-            this.$.thumbslist.selectItem(this.items[index]);
+        let root = this, index = typeof selection == 'number' ? selection : root.items.findIndex(i => i.id === selection);
+        setThumbnail = setThumbnail !== undefined ? setThumbnail : false;
+        this.__setScroll = setScroll !== undefined ? setScroll : false;
+        if(typeof index === 'number' && index >= 0 && index < root.items.length){
+          root.selected = root.items[index];
+          if(root.$.thumbslist.selectItem === null || setThumbnail) {
+            root.$.thumbslist.selectItem(root.items[index]);
           }
-          if (setScroll) {
-            this.__gallery.parentNode.scrollIntoView();
-          }
-          this.__xOfY = parseInt(this.selected.index+1)+' of '+this.items.length;
+          root.__xOfY = parseInt(root.selected.index+1)+' of '+root.items.length;
         }
       },
       /**

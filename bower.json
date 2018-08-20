@@ -13,12 +13,11 @@
     "responsive-utility": "LRNWebComponents/responsive-utility",
     "juicy-html": "Juicy/juicy-html#^4.0.0",
     "image-inspector": "LRNWebComponents/image-inspector#^1.1.0",
-    "lrnsys-layout": "LRNWebComponents/lrnsys-layout#^1.4.4",
+    "lrnsys-layout": "LRNWebComponents/lrnsys-layout#^1.5.1",
     "iron-ajax": "PolymerElements/iron-ajax#^2.1.0",
     "img-pan-zoom": "ryanburns23/img-pan-zoom#^2.0.0",
     "neon-animation": "PolymerElements/neon-animation#1.2.5",
-    "web-animations-js": "web-animations/web-animations-js#^2.3.1",
-    "simple-colors": "LRNWebComponents/simple-colors#^1.0.3"
+    "simple-colors": "LRNWebComponents/simple-colors#^1.0.4"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

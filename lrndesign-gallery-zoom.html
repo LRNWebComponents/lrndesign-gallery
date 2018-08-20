@@ -4,6 +4,7 @@
 <link rel="import" href="../lrnsys-button/lrnsys-button.html">
 <link rel="import" href="../lrnsys-layout/lrnsys-dialog.html">
 <link rel="import" href="../img-pan-zoom/img-pan-zoom.html">
+<link rel="import" href="../simple-colors/simple-colors.html">
 
 <!--
 `lrndesign-gallery-zoom`
@@ -24,6 +25,14 @@ A LRN element that renders the zoom feature for the gallery.
 <dom-module id="lrndesign-gallery-zoom">
   <template>
     <style>
+      :host #lrnsysdialog ::slotted(#dialogtrigger){
+        --app-toolbar-primary-color: var(--lrndesign-gallery-focus-color);
+        --app-toolbar-secondary-color: rgba(0, 0, 0, 0.7);
+      }
+
+      :host #lrnsysdialog ::slotted(#dialogtrigger) {
+        
+      }
       :host #lrnsysdialog ::slotted(#dialogtrigger) {
         text-align: center; 
         padding: 6px;
@@ -48,7 +57,7 @@ A LRN element that renders the zoom feature for the gallery.
         background-color: var(--lrndesign-gallery-background-color);
       }
     </style>
-    <lrnsys-dialog id="lrnsysdialog" dynamic-images body-append title$="[[tooltip]]">
+    <lrnsys-dialog id="lrnsysdialog" dark$="[[dark]]" dynamic-images body-append title$="[[tooltip]]">
       <span slot="button"><slot name="button-image"></slot></span>
       <div slot="toolbar-primary"><span aria-hidden="true">[[heading]]</span></div>
       <span slot="toolbar-secondary">
@@ -65,14 +74,14 @@ A LRN element that renders the zoom feature for the gallery.
       <div>
         <img-pan-zoom 
           id="img" 
-          alt$="[[alt]]" 
+          alt$="[[zoomAlt]]" 
           src$="[[src]]" 
           max-zoom-pixel-ratio="1.5" 
           min-zoom-image-ratio="0.5" 
           zoom-per-click="1.2"  
           zoom-per-scroll="0.6">
         </img-pan-zoom>
-        <slot name="details"></slot>
+        <div id="details"><slot name="details"></slot></div>
       </div>
     </lrnsys-dialog>
   </template>
@@ -82,19 +91,14 @@ A LRN element that renders the zoom feature for the gallery.
 
       is: 'lrndesign-gallery-zoom',
       
+      behaviors: [ simpleColorsBehaviors ],
+      
       listeners: {
         'navTap': '_onNavTapped',
         //'lrnsys-dialog-modal-changed': '_dialogChanged'
       },
 
       properties: {
-        /** 
-        * gallery item's alt text
-        */
-        alt: {
-          type: String,
-          value: null,
-        },
         /** 
         * heading for the zoom modal
         */
@@ -130,6 +134,13 @@ A LRN element that renders the zoom feature for the gallery.
         type: {
           type: String,
           value: 'carousel'
+        },
+        /** 
+        * gallery item's alt text
+        */
+        zoomAlt: {
+          type: String,
+          value: null,
         },
       },
       /** 

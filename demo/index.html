@@ -21,27 +21,17 @@
   <body>
     <div class="vertical-section-container centered">
       <h3>Basic lrndesign-gallery demo</h3>
-      <!--h4>Thumbnail Grids</h4>
-      <demo-snippet>
-        <template>
-          <lrndesign-gallery title="Grid (Medium)" grid-size="medium" data-src="foods.json" grid="true">
-            <div slot="description">This is a <em>regular</em> <strong>grid</strong>.</div>
-          </lrndesign-gallery>
-          <p>Link to this page with carrots dialog automatically open using the anchor <a href="#carrots">#carrots</a>.</p>
-        </template>
-      </demo-snippet-->
 
       <h4>Carousels</h4>
       <demo-snippet>
         <template>
           <lrndesign-gallery 
-            accent-color="pink"
-            aspect="1:1" 
-            title="Carousel (1:1)" 
-            sources='[{	"alt": "A picture of a cat", 	"details": "This is a <em>cat</em> picture that is in <strong>landscape</strong>.",   "id": "cat",   "src": "images/cat.jpeg", 	"thumbnail": "images/thumbnails/cat.jpeg", 	"title": "Cat" }, { 	"alt": "A picture of a dog", 	"details": "This is a <em>dog</em> picture that is in <strong>portrait</strong>.", 	"id": "dog",   "sizing": "contain", 	"src": "images/dog.jpg", 	"thumbnail": "images/thumbnails/dog.jpg", 	"title": "Dog" }, { 	"alt": "A picture of a bird", 	"details": "This is a <em>bird</em> picture that is almost a <strong>square</strong>.", 	"id": "bird",   "src": "images/bird.jpg", 	"thumbnail": "images/thumbnails/bird.jpg",   "title": "Bird" }, { 	"alt": "A picture of fish", 	"details": "This is a <em>fish</em> picture in <strong>landscape</strong> orientation.", 	"id": "fish",   "src": "images/fish.jpg", 	"thumbnail": "images/thumbnails/fish.jpg", 	"title": "Fish" }]'>
-            <div slot="description">This is an <em>1:1</em> (square) <strong>carousel</strong> of animal images.</div>
+            accent-color="blue"
+            title="Carousel" 
+            sources='[{ "alt": "A picture of a cat", "details": "This is a <em>cat</em> picture that is in <strong>landscape</strong>.", "id": "cat", "src": "images/cat.jpeg", "thumbnail": "images/thumbnails/cat.jpeg", "title": "Cat" }, { "alt": "A picture of a dog", "details": "This is a <em>dog</em> picture that is in <strong>portrait</strong>.", "id": "dog", "sizing": "contain", "src": "images/dog.jpg", "thumbnail": "images/thumbnails/dog.jpg", "title": "Dog" }, { "alt": "A picture of a bird", "details": "This is a <em>bird</em> picture that is almost a <strong>square</strong>.", "id": "bird", "src": "images/bird.jpg", "thumbnail": "images/thumbnails/bird.jpg", "title": "Bird" }, { "alt": "A picture of fish", "details": "This is a <em>fish</em> picture in <strong>landscape</strong> orientation.", "id": "fish", "src": "images/fish.jpg", "thumbnail": "images/thumbnails/fish.jpg", "title": "Fish" }]'>
+            <div slot="description">This is an <strong>carousel</strong> of animal images.</div>
           </lrndesign-gallery>
-          <p>Link to this page with bird automatically selected using the anchor <a href="#bird">#bird</a>.</p>
+          <p>Link to this page with bird automatically selected using the anchor <a href="#bird" target="_blank">#bird</a>.</p>
         </template>
       </demo-snippet>
       
@@ -49,29 +39,40 @@
         <template>
           <lrndesign-gallery 
             accent-color="green"
-            aspect="16:9" 
             dark 
-            title="Dark Carousel (16:9)" 
-            sources='[{ "alt": "A picture of an Atari console", 	"details": "This console was made by <em>Atari</em>.",   "id": "atari",   "src": "images/atari.jpg", 	"thumbnail": "images/thumbnails/atari.jpg", 	"title": "Atari" }, { 	"alt": "A picture of an Microsoft console", 	"details": "This console was made by <em>Microsoft</em>.",   "id": "microsoft",   "src": "images/xbox.png", 	"thumbnail": "images/thumbnails/xbox.png", 	"title": "Microsoft" }, { 	"alt": "A picture of an Nintendo console", 	"details": "This console was made by <em>Nintendo</em>.",   "id": "nintendo",   "src": "images/nintendo.png", 	"thumbnail": "images/thumbnails/nintendo.png", 	"title": "Nintendo" }, { 	"alt": "A picture of an Sega console", 	"details": "This console was made by <em>Sega</em>.",   "id": "sega",   "src": "images/sega.jpg", 	"thumbnail": "images/thumbnails/sega.jpg", 	"title": "Sega" }, { 	"alt": "A picture of an Sony console", 	"details": "This console was made by <em>Sony</em>.",   "id": "sony",   "src": "images/ps4.jpg", 	"thumbnail": "images/thumbnails/ps4.jpg", 	"title": "Sony" }]'>
-            <div slot="description">This is a <em>16:9</em> <strong>carousel</strong> of game consoles with the <em>dark</em> theme.</div>
-            <p>Link to this page with sega automatically selected and its dialog open using the anchor <a href="#atari-zoom">#atari-zoom</a>.</p>
+            title="Dark Carousel" 
+            sources='[{ "alt": "A picture of an Atari console", "details": "This console was made by <em>Atari</em>.", "id": "atari", "src": "images/atari.jpg", "thumbnail": "images/thumbnails/atari.jpg", "title": "Atari" }, { "alt": "A picture of an Microsoft console", "details": "This console was made by <em>Microsoft</em>.", "id": "microsoft", "src": "images/xbox.png", "thumbnail": "images/thumbnails/xbox.png", "title": "Microsoft" }, { "alt": "A picture of an Nintendo console", "details": "This console was made by <em>Nintendo</em>.", "id": "nintendo", "src": "images/nintendo.png", "thumbnail": "images/thumbnails/nintendo.png", "title": "Nintendo" }, { "alt": "A picture of an Sega console", "details": "This console was made by <em>Sega</em>.", "id": "sega", "src": "images/sega.jpg", "thumbnail": "images/thumbnails/sega.jpg", "title": "Sega" }, { "alt": "A picture of an Sony console", "details": "This console was made by <em>Sony</em>.", "id": "sony", "src": "images/ps4.jpg", "thumbnail": "images/thumbnails/ps4.jpg", "title": "Sony" }]'>
+            <div slot="description">This is a <strong>carousel</strong> of game consoles with the <em>dark</em> theme.</div>
           </lrndesign-gallery>
-        </template>
-      </demo-snippet>
-
-      <!--h4>Stand-Alone Thumbnail</h4>
-      <demo-snippet>
-        <template>
-          <lrndesign-gallery data-src="dice.json" aspect="1:1" grid-size="large" grid="true"></lrndesign-gallery>
+          <p>Link to this page with sega automatically selected and its dialog open using the anchor <a href="#atari-zoom" target="_blank">#atari-zoom</a>.</p>
         </template>
       </demo-snippet>
 
       <h4>Stand-Alone Image</h4>
       <demo-snippet>
         <template>
-          <lrndesign-gallery data-src="dice.json"></lrndesign-gallery>
+          <lrndesign-gallery accent-color="purple" dark sources='[{ "alt": "A picture of dice", "details": "This is a picture of <em>dice</em> with a caption.", "id": "dice", "src": "images/dice.jpg", "thumbnail": "images/thumbnails/dice.jpg", "title": "Dice" }]'></lrndesign-gallery>
         </template>
-      </demo-snippet-->
+      </demo-snippet>
+
+      <h4>Thumbnail Grids</h4>
+      <demo-snippet>
+        <template>
+          <lrndesign-gallery title="Grid (Medium)" grid-size="medium" sources='[{ "alt": "A picture of an apple", "details": "This is an <em>apple</em> picture.", "id": "apple", "src": "images/apple.jpg", "thumbnail": "images/thumbnails/apple.jpg", "title": "Apple" }, { "alt": "A picture of bananas", "details": "This is a picture of <em>bananas</em>.", "id": "bananas", "src": "images/banana.jpg", "thumbnail": "images/thumbnails/banana.jpg", "title": "Bananas" }, { "alt": "A picture of carrots", "details": "This is a picture of <em>carrots</em>.", "id": "carrots", "src": "images/carrot.jpeg", "thumbnail": "images/thumbnails/carrot.jpeg", "title": "Carrots" }]' grid="true">
+            <div slot="description">This is a <em>regular</em> <strong>grid</strong>.</div>
+          </lrndesign-gallery>
+          <p>Link to this page with carrots dialog automatically open using the anchor <a href="#carrots" target="_blank">#carrots</a>.</p>
+        </template>
+      </demo-snippet>
+
+      <!--h4>Stand-Alone Thumbnail</h4>
+      <demo-snippet>
+        <template>
+          <lrndesign-gallery data-src="dice.json" grid-size="large" grid="true"></lrndesign-gallery>
+        </template>
+      </demo-snippet>
+
+      -->
     </div>
   </body>
 </html>

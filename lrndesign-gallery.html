@@ -48,13 +48,14 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         --lrndesign-gallery-color: var(--simple-colors-foreground1);
         --lrndesign-gallery-background-color: var(--simple-colors-background3);
         --lrndesign-gallery-focus-color: var(--simple-colors-accent-foreground3);
-        --lrndesign-gallery-border-color: var(--simple-colors-background1);
+        --lrndesign-gallery-border-color: var(--simple-colors-background5);
         --lrndesign-gallery-rgba-high: rgba(255,255,255,0.7);
         --lrndesign-gallery-rgba-mid: rgba(255,255,255,0.5);
         --lrndesign-gallery-rgba-low: rgba(255,255,255,0.3);
         --lrndesign-gallery-rgba-none: rgba(255,255,255,0);
       } 
       :host[dark]{
+        --lrndesign-gallery-border-color: var(--simple-colors-background1);
         --lrndesign-gallery-rgba-high: rgba(0,0,0,0.7);
         --lrndesign-gallery-rgba-mid: rgba(0,0,0,0.5);
         --lrndesign-gallery-rgba-low: rgba(0,0,0,0.3);
@@ -70,7 +71,8 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       </div>
       <template is="dom-if" if="[[grid]]">
         <lrndesign-gallery-grid 
-          aspect$="[[aspect]]"
+          aspect$="[[aspect]]" 
+          dark$="[[dark]]"
           class="gallery-type"
           grid-size$="[[gridSize]]"
           id="gallery-grid" 
@@ -85,6 +87,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       <template is="dom-if" if="[[!grid]]">
         <lrndesign-gallery-carousel  
           aspect$="[[aspect]]" 
+          dark$="[[dark]]"
           class="gallery-type"
           hide-navigation$="[[__hideNav]]" 
           id="gallery-carousel" 
@@ -216,6 +219,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       _itemsLoaded: function(sources,sizing){
         console.log(sources);
         let temp = [], anchor = window.location.hash, index = sources.findIndex(i => '#'+i.id === anchor.replace('-zoom',''));
+        console.log(anchor,index);
         if(sources !== undefined && this.items !== null && sources.length > 0){
           for (i in sources) {
             temp[i] = sources[i];

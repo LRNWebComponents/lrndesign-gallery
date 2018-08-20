@@ -2,6 +2,7 @@
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-image/iron-image.html">
 <link rel="import" href="lrndesign-gallery-zoom.html">
+<link rel="import" href="../simple-colors/simple-colors.html">
 
 <!--
 `lrndesign-gallery-carousel-item`
@@ -48,11 +49,13 @@ A LRN element that renders a collection of gallery items into a carousel.
         width: 100%;
         color: var(--lrndesign-gallery-color);
         background-color: var(--lrndesign-gallery-background-color);
+        border: 1px solid var(--lrndesign-gallery-border-color);
       }
       :host:not([responsive-size="xs"]):not([extra-wide]) #gallery-item {
         display: flex;
         justify-content: space-between;
         align-items: stretch;
+        border-top: 4px solid var(--lrndesign-gallery-focus-color);
       }
       :host #gallery-image {
         position: relative;
@@ -68,23 +71,40 @@ A LRN element that renders a collection of gallery items into a carousel.
         width: 100%;
         position: absolute;
       }
+      :host[responsive-size="sm"]:not([extra-wide])  #gallery-item, 
       :host[responsive-size="sm"]:not([extra-wide]) #prevnext{
         height: 200px;
+        max-height: 200px;
       }
+      :host[responsive-size="md"]:not([extra-wide])  #gallery-item, 
       :host[responsive-size="md"]:not([extra-wide]) #prevnext{
         height: 300px;
+        max-height: 300px;
       }
+      :host[responsive-size="lg"]:not([extra-wide])  #gallery-item, 
       :host[responsive-size="lg"]:not([extra-wide]) #prevnext{
         height: 400px;
+        max-height: 400px;
       }
+      :host[responsive-size="xl"]:not([extra-wide])  #gallery-item, 
       :host[responsive-size="xl"]:not([extra-wide]) #prevnext{
         height: 500px;
+        max-height: 500px;
       }
       :host lrndesign-gallery-zoom {
         left: 0;
         bottom: 0px;
         z-index: 2; 
         position: absolute;
+      }
+      :host #details {
+        flex-grow: 1;
+        flex-shrink: 1;
+        overflow-y: scroll;
+      }
+      :host[responsive-size="xs"] #details,
+      :host[extra-wide] #details {
+        border-top: 4px solid var(--lrndesign-gallery-focus-color);
       }
       :host #details-inner {
         height: 100%;
@@ -102,39 +122,46 @@ A LRN element that renders a collection of gallery items into a carousel.
       }
       :host #itemdetails {
         align-self: flex-start;
+        flex-grow: 1;
+        flex-shrink: 1;
+        overflow: scroll;
       }
       :host #itemtitle {
         margin-top: 0;
       }
-      :host #thumnails {
+      :host #thumbnails {
         align-self: flex-end;
       }
     </style>
     <div id="gallery-item">
       <slot name="xy-start"></slot>
-      <div id="gallery-image"
-      style$="[[imageStyle]]">
+      <div id="gallery-image" style$="[[imageStyle]]">
         <iron-image 
           alt$="[[item.alt]]" 
           fade 
           id$="[[item.id]]" 
           placeholder$="[[item.thumbnail]]" 
           sizing$="[[item.sizing]]"  
-          src$="[[item.src]]">
+          src$="[[item.src]]"
+          style$="[[imageHeight]]">
         </iron-image>
-        <template is="dom-if" if="[[item.zoom]]">
-          <lrndesign-gallery-zoom 
-            alt$="[[item.alt]]" 
-            heading$="[[item.heading]]" 
-            id="gallery-zoom" 
-            item="[[item.id]]" 
-            src$="[[item.large]]"
-            tooltip$="[[item.tooltip]]">
-            <div slot="button-image">
-              <iron-icon icon="zoom-in">
-            </iron-icon></div>
-          </lrndesign-gallery-zoom>
-        </template>
+        <lrndesign-gallery-zoom 
+          dark$="[[dark]]" 
+          heading$="[[item.heading]]" 
+          hidden$="[[!item.zoom]]"
+          id="gallery-zoom" 
+          item="[[item.id]]" 
+          src$="[[item.large]]"
+          tooltip$="[[item.tooltip]]"
+          zoom-alt$="[[item.alt]]" >
+          <div slot="button-image">
+            <iron-icon icon="zoom-in"></iron-icon>
+          </div>
+          <div slot="details">
+            <h2 id="itemtitle">[[item.title]]</h2>
+            <div id="itembody"></div>
+          </div>
+        </lrndesign-gallery-zoom>
         <div id="prevnext">
           <slot name="prevnextnav"></slot>
         </div>
@@ -143,9 +170,9 @@ A LRN element that renders a collection of gallery items into a carousel.
         <div id="details-inner">
           <div id="itemdetails">
             <template is="dom-if" if="[[_isAttrSet(item.title)]]">
-              <h2 id="itemtitle">[[item.title]]</h2>
+              <h2 id="zoomtitle">[[item.title]]</h2>
             </template>
-            <div id="itembody"></div>
+            <div id="zoombody"></div>
           </div>
           <slot id="xyend" name="xy-end"></slot>
           <div id="thumbnails" class="item-info">
@@ -162,15 +189,23 @@ A LRN element that renders a collection of gallery items into a carousel.
     Polymer({
 
       is: 'lrndesign-gallery-carousel-item',
+      
+      behaviors: [ simpleColorsBehaviors ],
 
       properties: {
-        /*
-         * size for responsive CSS
+        /** 
+         * style css of image container (sets aspect ratio)
          */
-        extraWide: {
-          type: Boolean,
-          computed: '_getExtraWide(item)',
-          reflectToAttribute: true
+        imageStyle: {
+          type: String,
+          value: null,
+        },
+        /** 
+         * height css of iron image (sets aspect ratio in xs or extraWide)
+         */
+        imageHeight: {
+          type: String,
+          value: null,
         },
         /*
          * selected item's data
@@ -180,6 +215,7 @@ A LRN element that renders a collection of gallery items into a carousel.
           value: {},
           notify: true,
           reflectToAttribute: true,
+          observer: '_updateDetails'
         },
         /*
          * size for responsive CSS
@@ -196,42 +232,13 @@ A LRN element that renders a collection of gallery items into a carousel.
           type: String,
           value: 'default',
         },
-        /** 
-         * padding-top for iron image (sets aspect ratio)
-         */
-        imageStyle: {
-          type: String,
-          computed: '_getImageStyle(extraWide,responsiveSize)',
-        },
       },
       /** 
-      * returns the proper padding to maintain image aspect ratio and updates 
+      * updates the item details
       */
-      _getExtraWide: function(item){
-        let img = new Image();
-        img.src = this.item.src;
-        this.$.itembody.innerHTML = item.details;
-        this.__aspectRatio = img.naturalWidth/img.naturalHeight;
-        console.log(img.src,img.naturalWidth,img.naturalHeight,this.__aspectRatio);
-        return this.__aspectRatio > 2.5;
-      },
-      /** 
-      * returns the proper padding to maintain image aspect ratio and updates 
-      */
-      _getImageStyle: function(extraWide,responsiveSize){
-        if(extraWide || responsiveSize === 'xs'){
-          return 'padding-top: '+(100/this.__aspectRatio)+'%;';
-        } else {
-          if(responsiveSize === 'xl') {
-            return 'width: '+(this.__aspectRatio*500)+'px; height: 500px;';
-          } else if(responsiveSize === 'lg') {
-            return 'width: '+(this.__aspectRatio*400)+'px; height: 400px;';
-          } else if(responsiveSize === 'md') {
-            return 'width: '+(this.__aspectRatio*300)+'px; height: 300px;';
-          } else {
-            return 'width: '+(this.__aspectRatio*200)+'px; height: 200px;';
-          }
-        }
+      _updateDetails: function(){
+        this.$.itembody.innerHTML = this.item.details;
+        this.$.zoombody.innerHTML = this.item.details;
       },
       /** 
       * returns index of the previous or next item
