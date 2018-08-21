@@ -147,20 +147,15 @@ A LRN element that renders a collection of gallery items into a carousel.
         </iron-image>
         <lrndesign-gallery-zoom 
           dark$="[[dark]]" 
+          details$="[[item.details]]" 
           heading$="[[item.heading]]" 
           hidden$="[[!item.zoom]]"
+          icon="zoom-in"
           id="gallery-zoom" 
-          item="[[item.id]]" 
+          item-id="[[item.id]]" 
           src$="[[item.large]]"
           tooltip$="[[item.tooltip]]"
           zoom-alt$="[[item.alt]]" >
-          <div slot="button-image">
-            <iron-icon icon="zoom-in"></iron-icon>
-          </div>
-          <div slot="details">
-            <h2 id="itemtitle">[[item.title]]</h2>
-            <div id="itembody"></div>
-          </div>
         </lrndesign-gallery-zoom>
         <div id="prevnext">
           <slot name="prevnextnav"></slot>
@@ -169,10 +164,8 @@ A LRN element that renders a collection of gallery items into a carousel.
       <div id="details" class="item-info">
         <div id="details-inner">
           <div id="itemdetails">
-            <template is="dom-if" if="[[_isAttrSet(item.title)]]">
-              <h2 id="zoomtitle">[[item.title]]</h2>
-            </template>
-            <div id="zoombody"></div>
+            <h2 id="itemtitle" hidden="[[!_isAttrSet(item.title)]]">[[item.title]]</h2>
+            <div id="itembody"></div>
           </div>
           <slot id="xyend" name="xy-end"></slot>
           <div id="thumbnails" class="item-info">
@@ -238,7 +231,6 @@ A LRN element that renders a collection of gallery items into a carousel.
       */
       _updateDetails: function(){
         this.$.itembody.innerHTML = this.item.details;
-        this.$.zoombody.innerHTML = this.item.details;
       },
       /** 
       * returns index of the previous or next item

@@ -53,6 +53,11 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         --lrndesign-gallery-rgba-mid: rgba(255,255,255,0.5);
         --lrndesign-gallery-rgba-low: rgba(255,255,255,0.3);
         --lrndesign-gallery-rgba-none: rgba(255,255,255,0);
+        --lrndesign-gallery-thumbnail-size: 100px;
+        --lrndesign-gallery-thumbnail-size-sm: 150px;
+        --lrndesign-gallery-thumbnail-size-md: 200px;
+        --lrndesign-gallery-thumbnail-size-lg: 250px;
+        --lrndesign-gallery-thumbnail-size-xl: 300px;
       } 
       :host[dark]{
         --lrndesign-gallery-border-color: var(--simple-colors-background1);
@@ -217,13 +222,9 @@ A LRN element that renders a collection of gallery items into a carousel or a si
        * adds additional properties to gallery
        */
       _itemsLoaded: function(sources,sizing){
-        console.log(sources);
-        let temp = [], anchor = window.location.hash, index = sources.findIndex(i => '#'+i.id === anchor.replace('-zoom',''));
-        console.log(anchor,index);
+        let temp = sources.slice(), anchor = window.location.hash, index = sources.findIndex(i => '#'+i.id === anchor.replace('-zoom',''));
         if(sources !== undefined && this.items !== null && sources.length > 0){
-          for (i in sources) {
-            temp[i] = sources[i];
-            temp[i].heading = temp[i].title !== undefined ? 'Image Zoom' : temp[i].title+' (Image Zoom)';
+          for (i in temp) {
             temp[i].index = parseInt(i);
             temp[i].large = temp[i].large !== undefined ? temp[i].large : temp[i].src;
             temp[i].next = parseInt(i) + 1 < sources.length ? parseInt(i) + 1 : -1;
@@ -233,16 +234,15 @@ A LRN element that renders a collection of gallery items into a carousel or a si
             temp[i].thumbnail = temp[i].thumbnail !== undefined ? temp[i].thumbnail : temp[i].src;
             temp[i].zoom = temp[i].zoom !== undefined ? temp[i].zoom : true;
             if (!temp[i].zoom) {
-              temp[i].heading = temp[i].title !== undefined ? 'Image Information' : temp[i].title;
-              temp[i].tooltip = temp[i].title !== undefined ? 'View Image Information' : temp[i].title+' Information';
+              temp[i].heading = temp[i].title === undefined ? 'Image Information' : temp[i].title;
+              temp[i].tooltip = temp[i].title === undefined ? 'View Image Information' : temp[i].title+' Information';
             } else {
-              temp[i].heading = temp[i].title !== undefined ? 'Image Zoom' : temp[i].title+' (Image Zoom)';
-              temp[i].tooltip = temp[i].title !== undefined ? 'Zoom In' : temp[i].title+' Zoom';
+              temp[i].heading = temp[i].title === undefined ? 'Image Zoom' : temp[i].title+' (Image Zoom)';
+              temp[i].tooltip = temp[i].title === undefined ? 'Zoom In' : temp[i].title+' Zoom';
             }
           }
           this.__items = temp;
           this.selected = index > -1 ? this.__items[index] : this.__items[0];
-          console.log(this.__items);
           return this.__items;
         }
       },

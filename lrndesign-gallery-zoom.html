@@ -58,18 +58,16 @@ A LRN element that renders the zoom feature for the gallery.
       }
     </style>
     <lrnsys-dialog id="lrnsysdialog" dark$="[[dark]]" dynamic-images body-append title$="[[tooltip]]">
-      <span slot="button"><slot name="button-image"></slot></span>
+      <span slot="button"><iron-icon icon$="[[icon]]" hidden$="[[!_isAttrSet(icon)]]"></iron-icon></span>
       <div slot="toolbar-primary"><span aria-hidden="true">[[heading]]</span></div>
       <span slot="toolbar-secondary">
         <lrnsys-dialog-toolbar-button title="Zoom In" icon="zoom-in" id="in"></lrnsys-dialog-toolbar-button>
         <lrnsys-dialog-toolbar-button title="Zoom Out" icon="zoom-out" id="out"></lrnsys-dialog-toolbar-button>
       </span>
       <div slot="header">
-        <div>
-          <h1 style="position: absolute; left: -99999px; top:-1px; height: 0; width: 0; overflow: auto;">
-            [[heading]]
-          </h1>
-        </div>
+        <h1 style="position: absolute; left: -99999px; top:-1px; height: 0; width: 0; overflow: auto;">
+          [[heading]]
+        </h1>
       </div>
       <div>
         <img-pan-zoom 
@@ -81,7 +79,7 @@ A LRN element that renders the zoom feature for the gallery.
           zoom-per-click="1.2"  
           zoom-per-scroll="0.6">
         </img-pan-zoom>
-        <div id="details"><slot name="details"></slot></div>
+        <div id="details"></div>
       </div>
     </lrnsys-dialog>
   </template>
@@ -100,6 +98,14 @@ A LRN element that renders the zoom feature for the gallery.
 
       properties: {
         /** 
+        * optional: details for zooming
+        */
+        details: {
+          type: String,
+          value: null,
+          observer: '_detailsChanged'
+        },
+        /** 
         * heading for the zoom modal
         */
         heading: {
@@ -107,9 +113,16 @@ A LRN element that renders the zoom feature for the gallery.
           value: 'Image Zoom',
         },
         /** 
+        * optional: name for iron-icon used to indicate zoom
+        */
+        icon: {
+          type: String,
+          value: null,
+        },
+        /** 
         * heading for the zoom modal
         */
-        item: {
+        itemId: {
           type: String,
           value: null,
           observer: '_itemChanged'
@@ -147,6 +160,7 @@ A LRN element that renders the zoom feature for the gallery.
       * attached
       */
       attached: function (){
+        this.$.details.innerHTML = this.details;
         document.body.addEventListener('lrnsys-dialog-changed', this._dialogChanged.bind(this));
       },
       /** 
@@ -168,13 +182,19 @@ A LRN element that renders the zoom feature for the gallery.
       /**
        * Toggles the dialog.
        */
-       toggleDialog: function () {
+      toggleDialog: function () {
         this.$.lrnsysdialog.toggleDialog();
+      },
+      /**
+       * updates the details.
+       */
+      _detailsChanged: function (e) {
+        this.$.details.innerHTML = this.details; 
       },
       /**
        * Toggles the dialog.
        */
-       _dialogChanged: function (e) {
+      _dialogChanged: function (e) {
         if (e.detail === this.$.lrnsysdialog) {
           if (e.detail.$.modal.opened) {
             document.body.addEventListener('dialog-toolbar-button-tapped', this.imgZoom.bind(this));
@@ -189,12 +209,18 @@ A LRN element that renders the zoom feature for the gallery.
        _itemChanged: function () {
         if (this.__init !== true) {
           let anchor = window.location.hash.replace('#',''), item = anchor.replace('-zoom',''), zoom = anchor.endsWith('-zoom');
-          if(this.item == item && zoom){
+          if(this.itemId == item && zoom){
             this.__init = true;
             this.toggleDialog();
           }
         }
       },
+      /** 
+      * returns true if the given attribute is not null
+      */
+      _isAttrSet: function (attr){
+        return attr !== null && attr !== undefined;
+      }
     });
   </script>
 </dom-module>

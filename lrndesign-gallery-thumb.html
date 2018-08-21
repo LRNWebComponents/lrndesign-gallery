@@ -50,7 +50,7 @@ A LRN element that renders a thumbnail button for the gallery.
     <paper-button 
       id="lrnsysbutton"
       item$="[[item]]" 
-      aria-controls$="[[controls]]" 
+      aria-controls$="[[controls]]"
       target$="[[target]]" 
       title$="[[alt]]" 
       tabindex="-1">
@@ -98,6 +98,13 @@ A LRN element that renders a thumbnail button for the gallery.
         controls: {
           type: String,
           value: null,
+        },
+        /** 
+        * aspect ratio of media
+        */
+        imageStyle: {
+          type: String,
+          value: null
         },
         /** 
         * gallery item's id
