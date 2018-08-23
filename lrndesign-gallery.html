@@ -79,7 +79,6 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           aspect$="[[aspect]]" 
           dark$="[[dark]]"
           class="gallery-type"
-          grid-size$="[[gridSize]]"
           id="gallery-grid" 
           items$="[[__items]]"
           modal-open$="[[__modalOpen]]"
@@ -126,13 +125,6 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       behaviors: [ simpleColorsBehaviors ],
 
       properties: {
-        /** 
-        * aspect ratio of media: 1:1, 5:4, 4:3, 3:2, or 16:9
-        */
-        aspect: {
-          type: String,
-          value: '4:3'
-        },
         /**
          * Source to pull the gallery items from
          */
@@ -178,14 +170,6 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           value: {},
           notify: true,
           reflectToAttribute: true
-        },
-        /**
-         * default sizing: fit screen by cropping (cover) 
-         * or with letterboxing (contain)
-         */
-        gridSize: {
-          type: String,
-          value: 'medium'
         },
         /**
          * default sizing: fit screen by cropping (cover) 
