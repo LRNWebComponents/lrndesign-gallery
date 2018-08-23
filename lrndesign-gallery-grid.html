@@ -11,7 +11,6 @@ A LRN element that renders a collection of gallery items into a carousel or a si
 
 @microcopy - the mental model for this element
   <lrndesign-gallery-grid 
-    aspect = "1:1"                    //optional, can be 1:1, 5:4, 4:3 (default), 3:2, 16:9.
     grid-size = "small"               //optional, can be small, medium, or large.
     items = "[]"                      //required, array of items
     sizing = "contain"                //optional, "cover" for cropping (default) or "contain" for letterboxing
@@ -68,7 +67,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         width: var(--lrndesign-gallery-thumbnail-size-lg, 300px);
       }
       :host lrndesign-gallery-thumb ::slotted(* > iron-image) {
-        padding-bottom: 75%;
+        /*padding-bottom: 75%;*/
         top: 0px;
         left: 0px;
       }
@@ -98,6 +97,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
             item="[[item.id]]" 
             rounded-edges="false"
             selected$="[[_isSelected(selected)]]" 
+            image-style$="[[imageStyle]]" 
             theme$="[[theme]]"
             thumbnail="[[item.thumbnail]]" 
             target$="[[item.target]]">
@@ -131,9 +131,17 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         /** 
         * aspect ratio of media
         */
+        aspectRatio: {
+          type: Number,
+          value: '1.33333333'
+        },
+        /** 
+        * aspect ratio of media
+        */
         imageStyle: {
           type: String,
-          computed: '_getImageStyle(items)'
+          computed: '_getImageStyle(items)',
+          reflectToAttribute: true
         },
         /** 
          * array of carousel items
@@ -151,7 +159,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           type: Object,
           value: {}
         },
-        /*
+        /**
          * data for the selected item
          */
         selected: {
@@ -246,7 +254,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           img.src = items[0].src;
           if (img.naturalWidth > 0 && img.naturalHeight > 0) padding = 100*img.naturalHeight/img.naturalWidth;
         }
-        return 'padding-top: '+padding+'%;';
+        return 'padding-bottom: '+padding+'%;';
       },
     });
   </script>

@@ -72,24 +72,21 @@ A LRN element that renders a collection of gallery items into a carousel.
         position: absolute;
       }
       :host[responsive-size="sm"]:not([extra-wide])  #gallery-item, 
-      :host[responsive-size="sm"]:not([extra-wide]) #prevnext{
+      :host[responsive-size="sm"]:not([extra-wide]) #prevnext,
+      :host[responsive-size="md"]:not([extra-wide]) #gallery-item, 
+      :host[responsive-size="md"]:not([extra-wide]) #prevnext{
         height: 200px;
         max-height: 200px;
       }
-      :host[responsive-size="md"]:not([extra-wide])  #gallery-item, 
-      :host[responsive-size="md"]:not([extra-wide]) #prevnext{
+      :host[responsive-size="lg"]:not([extra-wide]) #gallery-item, 
+      :host[responsive-size="lg"]:not([extra-wide]) #prevnext{
         height: 300px;
         max-height: 300px;
       }
-      :host[responsive-size="lg"]:not([extra-wide])  #gallery-item, 
-      :host[responsive-size="lg"]:not([extra-wide]) #prevnext{
+      :host[responsive-size="xl"]:not([extra-wide]) #gallery-item, 
+      :host[responsive-size="xl"]:not([extra-wide]) #prevnext{
         height: 400px;
         max-height: 400px;
-      }
-      :host[responsive-size="xl"]:not([extra-wide])  #gallery-item, 
-      :host[responsive-size="xl"]:not([extra-wide]) #prevnext{
-        height: 500px;
-        max-height: 500px;
       }
       :host lrndesign-gallery-zoom {
         left: 0;
@@ -135,7 +132,7 @@ A LRN element that renders a collection of gallery items into a carousel.
     </style>
     <div id="gallery-item">
       <slot name="xy-start"></slot>
-      <div id="gallery-image" style$="[[imageStyle]]">
+      <div id="gallery-image">
         <iron-image 
           alt$="[[item.alt]]" 
           fade 
@@ -143,7 +140,7 @@ A LRN element that renders a collection of gallery items into a carousel.
           placeholder$="[[item.thumbnail]]" 
           sizing$="[[item.sizing]]"  
           src$="[[item.src]]"
-          style$="[[imageHeight]]">
+          style$="[[imageStyle]]">
         </iron-image>
         <lrndesign-gallery-zoom 
           dark$="[[dark]]" 
@@ -194,13 +191,6 @@ A LRN element that renders a collection of gallery items into a carousel.
           value: null,
         },
         /** 
-         * height css of iron image (sets aspect ratio in xs or extraWide)
-         */
-        imageHeight: {
-          type: String,
-          value: null,
-        },
-        /*
          * selected item's data
          */
         item: {
@@ -210,7 +200,7 @@ A LRN element that renders a collection of gallery items into a carousel.
           reflectToAttribute: true,
           observer: '_updateDetails'
         },
-        /*
+        /**
          * size for responsive CSS
          */
         responsiveSize: {

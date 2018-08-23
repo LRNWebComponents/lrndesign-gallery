@@ -13,7 +13,6 @@ A LRN element that renders a collection of gallery items into a carousel or a si
 
 @microcopy - the mental model for this element
   <lrndesign-gallery-carousel 
-    aspect = "1:1"                    //optional, can be 1:1, 5:4, 4:3 (default), 3:2, 16:9.
     items = "[]"                      //required, array of items
     sizing = "contain"                //optional, "cover" for cropping (default) or "contain" for letterboxing
     theme = "dark">                   //optional, dark or default
@@ -113,9 +112,9 @@ A LRN element that renders a collection of gallery items into a carousel or a si
     <a id$="[[__timestamp]]"></a>
     <div id="gallery" tabindex="-1" aria-live="polite" hide-navigation$="[[__hideNav]]">
       <lrndesign-gallery-carousel-item id="carousel-item" 
-        aspectRatio$="[[aspectRatio]]"
-        dark$="[[dark]]"
-        image-height$="[[imageHeight]]"
+        aspect-ratio$="[[aspectRatio]]" 
+        dark$="[[dark]]" 
+        extra-wide$="[[extraWide]]"
         image-style$="[[imageStyle]]"
         item="[[selected]]"
         responsive-size$="[[responsiveSize]]"
@@ -187,13 +186,13 @@ A LRN element that renders a collection of gallery items into a carousel or a si
 
       properties: {
         /** 
-        * aspect ratio of media: 1:1, 5:4, 4:3, 3:2, or 16:9
+        * aspect ratio of media
         */
         aspectRatio: {
           type: Number,
           value: '1.33333333'
         },
-        /*
+        /**
          * size for responsive CSS
          */
         extraWide: {
@@ -202,18 +201,11 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           reflectToAttribute: true
         },
         /** 
-         * style css of image container (sets aspect ratio)
+         * height css of iron image (sets aspect ratio in xs or extraWide)
          */
         imageStyle: {
           type: String,
           computed: '_getImageStyle(extraWide,responsiveSize)',
-        },
-        /** 
-         * height css of iron image (sets aspect ratio in xs or extraWide)
-         */
-        imageHeight: {
-          type: String,
-          computed: '_getImageHeight(extraWide,responsiveSize)',
         },
         /** 
          * array of carousel items
@@ -230,14 +222,14 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           type: Object,
           value: {}
         },
-        /*
+        /**
          * responsive size
          */
         responsiveSize: {
           type: String,
           notify: true
         },
-        /*
+        /**
          * data for the selected item
          */
         selected: {
@@ -298,7 +290,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         if(items !== undefined && items.length > 0){
           img.src = items[0].src;
           this.aspectRatio = img.naturalWidth > 0 && img.naturalHeight > 0 ? img.naturalWidth/img.naturalHeight : 1.33333333;
-          return this.aspectRatio > 2.5;
+          return this.aspectRatio > 2;
         } else {
           return false;
         }
@@ -308,27 +300,17 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       */
       _getImageStyle: function(extraWide,responsiveSize){
         if(extraWide || responsiveSize === 'xs'){
-          return '';
+          return 'padding-bottom: '+(100/this.aspectRatio)+'%;';
         } else {
           if(responsiveSize === 'xl') {
-            return 'width: '+(this.aspectRatio*500)+'px; height: 500px;';
-          } else if(responsiveSize === 'lg') {
             return 'width: '+(this.aspectRatio*400)+'px; height: 400px;';
-          } else if(responsiveSize === 'md') {
+          } else if(responsiveSize === 'lg') {
             return 'width: '+(this.aspectRatio*300)+'px; height: 300px;';
+          } else if(responsiveSize === 'md') {
+            return 'width: '+(this.aspectRatio*200)+'px; height: 200px;';
           } else {
             return 'width: '+(this.aspectRatio*200)+'px; height: 200px;';
           }
-        }
-      },
-      /** 
-      * returns the proper padding to maintain image aspect ratio and updates 
-      */
-      _getImageHeight: function(extraWide,responsiveSize){
-        if(extraWide || responsiveSize === 'xs'){
-          return 'padding-top: '+(100/this.aspectRatio)+'%;';
-        } else {
-          return '';
         }
       },
       /**
