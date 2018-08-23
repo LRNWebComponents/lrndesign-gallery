@@ -24,7 +24,6 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       "src": "PATH/TO/FULL/IMAGE/HERE.JPG",             //required
       "thumbnail": "PATH/TO/THUMBAIL/IMAGE/HERE.JPG",   //required
       "title": "IMAGE TITLE HERE",                      //optional
-      "type": "image",                                  //required, "image", "video", "audio", etc.
       "zoom": false                                     //optional, false item should have no zoom option, default is true 
     }]" 
     sizing = "contain"                //optional, "cover" for cropping (default) or "contain" for letterboxing
@@ -155,8 +154,7 @@ A LRN element that renders a collection of gallery items into a carousel or a si
         selected: {
           type: Object,
           value: {},
-          notify: true,
-          reflectToAttribute: true
+          notify: true
         },
         /**
          * default sizing: fit screen by cropping (cover) 
