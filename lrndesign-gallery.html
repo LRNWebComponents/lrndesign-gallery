@@ -15,18 +15,8 @@ A LRN element that renders a collection of gallery items into a carousel or a si
 
 @microcopy - the mental model for this element
   <lrndesign-gallery 
-    aspect = "1:1"                    //optional, can be 1:1, 5:4, 4:3 (default), 3:2, 16:9.
-    data-src = "PATH/TO/DATA.JSON"    //required
-    sizing = "contain"                //optional, "cover" for cropping (default) or "contain" for letterboxing
-    theme = "dark"                    //optional, dark or default
-    title = "My Carousel">            //optional
-    OPTIONAL TEXT ABOUT THE CAROUSEL HERE.
-  </lrndesign-gallery>
-
-  To load data into carousel:
-  <script>
-    [{
-      "alt": "IMAGE ALT TEXT",                          //required
+    sources = "[{                                       //required array of source data
+      "alt": "IMAGE ALT TEXT",                          //required array of sources
       "details": "TEXT ABOUT IMAGE HERE",               //optional   
       "id": ""                                          //required, unique id
       "large": "PATH/TO/LARGE/IMAGE/HERE.JPG",          //optional, larger image for zoom instead of src 
@@ -36,7 +26,12 @@ A LRN element that renders a collection of gallery items into a carousel or a si
       "title": "IMAGE TITLE HERE",                      //optional
       "type": "image",                                  //required, "image", "video", "audio", etc.
       "zoom": false                                     //optional, false item should have no zoom option, default is true 
-    }]
+    }]" 
+    sizing = "contain"                //optional, "cover" for cropping (default) or "contain" for letterboxing
+    theme = "dark"                    //optional, dark or default
+    title = "My Carousel">            //optional
+    OPTIONAL TEXT ABOUT THE CAROUSEL OR GRID HERE.
+  </lrndesign-gallery>
 
 -->
 
@@ -133,21 +128,21 @@ A LRN element that renders a collection of gallery items into a carousel or a si
           value: false
         },
         /** 
-         * array of carousel items
+         * array of carousel/grid items
          */
         sources: {
           type: Array,
           value: []
         },
         /** 
-         * array of carousel items
+         * array of carousel/grid items
          */
         items: {
           type: Array,
           computed: '_itemsLoaded(sources,sizing)'
         },
         /*
-         * size for responsive CSS
+         * parent size for responsive styling
          */
         responsiveSize: {
           type: String,
