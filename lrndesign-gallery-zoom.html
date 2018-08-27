@@ -4,7 +4,6 @@
 <link rel="import" href="../lrnsys-button/lrnsys-button.html">
 <link rel="import" href="../lrnsys-layout/lrnsys-dialog.html">
 <link rel="import" href="../img-pan-zoom/img-pan-zoom.html">
-<link rel="import" href="../simple-colors/simple-colors.html">
 
 <!--
 `lrndesign-gallery-zoom`
@@ -24,7 +23,7 @@ A LRN element that renders the zoom feature for the gallery.
 
 <dom-module id="lrndesign-gallery-zoom">
   <template>
-    <style>
+    <style is="custom-style">
       :host #lrnsysdialog ::slotted(#dialogtrigger){
         --app-toolbar-primary-color: var(--lrndesign-gallery-focus-color);
         --app-toolbar-secondary-color: rgba(0, 0, 0, 0.7);
@@ -89,12 +88,12 @@ A LRN element that renders the zoom feature for the gallery.
 
       is: 'lrndesign-gallery-zoom',
       
-      behaviors: [ simpleColorsBehaviors ],
-      
       listeners: {
         'navTap': '_onNavTapped',
         //'lrnsys-dialog-modal-changed': '_dialogChanged'
       },
+
+      behaviors: [simpleColorsBehaviors],
 
       properties: {
         /** 

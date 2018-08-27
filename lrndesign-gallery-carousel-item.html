@@ -2,7 +2,6 @@
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-image/iron-image.html">
 <link rel="import" href="lrndesign-gallery-zoom.html">
-<link rel="import" href="../simple-colors/simple-colors.html">
 
 <!--
 `lrndesign-gallery-carousel-item`
@@ -41,7 +40,7 @@ A LRN element that renders a collection of gallery items into a carousel.
 
 <dom-module id="lrndesign-gallery-carousel-item">
   <template>
-    <style>
+    <style is="custom-style" include="simple-colors">
       :host {
         width: 100%;
       }
@@ -101,6 +100,7 @@ A LRN element that renders a collection of gallery items into a carousel.
       }
       :host[responsive-size="xs"] #details,
       :host[extra-wide] #details {
+        margin-top: -4px;
         border-top: 4px solid var(--lrndesign-gallery-focus-color);
       }
       :host #details-inner {
@@ -143,7 +143,7 @@ A LRN element that renders a collection of gallery items into a carousel.
           style$="[[imageStyle]]">
         </iron-image>
         <lrndesign-gallery-zoom 
-          dark$="[[dark]]" 
+          dark$="[[dark]]"
           details$="[[item.details]]" 
           heading$="[[item.heading]]" 
           hidden$="[[!item.zoom]]"
@@ -179,10 +179,15 @@ A LRN element that renders a collection of gallery items into a carousel.
     Polymer({
 
       is: 'lrndesign-gallery-carousel-item',
-      
-      behaviors: [ simpleColorsBehaviors ],
 
       properties: {
+        /**
+         * dark theme?
+         */
+        dark: {
+          type: Boolean,
+          value: false
+        },
         /** 
          * style css of image container (sets aspect ratio)
          */
